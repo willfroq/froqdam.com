@@ -1,0 +1,22 @@
+body {
+    .results-counter {
+        @include text-sm;
+        column-gap: $spacing-s;
+        display: flex;
+        justify-content: center;
+        margin-right: $spacing-m;
+        white-space: nowrap;
+
+        &-bottom {
+            color: $color-grey-400;
+            margin-bottom: $spacing-m;
+            margin-top: $spacing-xxxl;
+        }
+
+        > div {
+            align-items: center;
+            display: inline-flex;
+            height: 100%;
+        }
+    }
+}

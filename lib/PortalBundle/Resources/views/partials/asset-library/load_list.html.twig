@@ -1,0 +1,31 @@
+{% set columns = get_asset_library_columns_for_user(user) %}
+
+<app-static-list url="{{ url('froq_portal.asset_library.search.load_more') }}" class="list-container"
+                 can-load-next-page-on-start="{{ (next_page is defined and next_page > 1) ? 'true' : 'false' }}">
+    <div class="list" data-role="list">
+        <div class="list-header" data-role="list_header">
+            {% for column in columns %}
+                <div {% if column.AssetLibraryColumnProperty.data not in ['thumbnail'] %}
+                    data-sortable="true" data-sort-by="{{ column.AssetLibraryColumnProperty.data }}"
+                    {% endif %}>
+                    <strong>{{ get_available_column_label(column.AssetLibraryColumnProperty.data, user) }}</strong>
+                </div>
+            {% endfor %}
+            <div>
+                <strong>Actions</strong>
+            </div>
+        </div>
+        {% include '@FroqPortalBundle/partials/asset-library/load_list_items.html.twig' %}
+    </div>
+    <app-results-counter class="results-counter results-counter-bottom">
+        <div>
+            <span>Result</span>
+        </div>
+        <div>
+            <strong>
+                <span data-role="results_counter_text">{{ totalCount ?? '0' }}</span>
+                <span>assets</span>
+            </strong>
+        </div>
+    </app-results-counter>
+</app-static-list>

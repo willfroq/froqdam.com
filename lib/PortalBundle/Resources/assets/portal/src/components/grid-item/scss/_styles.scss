@@ -1,0 +1,14 @@
+.grid-item {
+    background-color: $color-white;
+    cursor: pointer;
+    padding: $spacing-m;
+
+    &__details {
+        @include reset-list-styles;
+    }
+
+    &__image {
+        height: auto;
+        width: 100%;
+    }
+}

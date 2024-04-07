@@ -1,0 +1,8 @@
+framework:
+    messenger:
+        transports:
+            generate_asset_thumbnail:
+                dsn: 'doctrine://default?queue_name=generate_asset_thumbnail'
+
+        routing:
+            Froq\AssetBundle\Message\GenerateAssetThumbnailsMessage: generate_asset_thumbnail

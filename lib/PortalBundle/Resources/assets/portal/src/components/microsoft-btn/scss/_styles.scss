@@ -1,0 +1,36 @@
+@font-face {
+    font-family: 'Segoe UI Bold';
+    src: url('#{$baseUrl}/media/Segoe UI Bold.woff') format('woff');
+    }
+
+.microsoft-btn {
+    font-family: "Segoe UI Bold";
+    display: inline-block;
+    background-color: #ffffff;
+    color: #009383;
+    border: 2px solid #009383;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    width: 410px;
+    text-align: center;
+    line-height: 24px !important;
+}
+
+.microsoft-icon {
+    position: absolute;
+    left: 14px;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    background-image: url('#{$baseUrl}/media/icons/svg/ms-icon.svg');
+    width: 21px;
+    height: 21px;
+}
+
+.microsoft-btn:hover {
+    color: #ffffff;
+    background-color: #2f2f2f;
+    border: none;
+}

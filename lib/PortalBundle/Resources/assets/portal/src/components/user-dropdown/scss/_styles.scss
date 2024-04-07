@@ -1,0 +1,78 @@
+.user-dropdown {
+    position: relative;
+
+    &__active {
+        .user-dropdown__body {
+            display: block;
+        }
+    }
+
+    &__full-name {
+        @include text-md;
+        color: $color-black;
+        font-weight: 600;
+        margin-left: $spacing-m;
+    }
+
+    &__body {
+        bottom: 0;
+        display: none;
+        position: absolute;
+        right: 0;
+        transform: translateY(100%);
+        width: calc(100% - 46px);
+        z-index: 10;
+
+        ul {
+            @include reset-list-styles;
+            border: 1px solid $color-grey-200;
+            border-radius: 8px;
+
+            li {
+                background-color: $color-white;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: $color-grey-100;
+                }
+
+                a {
+                    color: $color-black;
+                    display: inline-block;
+                    padding: 10px 12px;
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+
+    &__head {
+        align-items: center;
+        cursor: pointer;
+        display: flex;
+
+        &:after {
+            background-image: url('#{$baseUrl}/media/icons/svg/chevron-down.svg');
+            background-position: center;
+            background-repeat: no-repeat;
+            content: '';
+            display: inline-block;
+            height: 16px;
+            margin-left: $spacing-s;
+            width: 16px;
+        }
+    }
+
+    &__initials {
+        @include text-lg;
+        align-items: center;
+        background-color: $color-pim;
+        border-radius: 50%;
+        color: $color-white;
+        display: inline-flex;
+        font-weight: 600;
+        height: 46px;
+        justify-content: center;
+        width: 46px;
+    }
+}

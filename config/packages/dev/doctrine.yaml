@@ -1,0 +1,13 @@
+doctrine:
+    dbal:
+        connections:
+            default:
+                host: '%env(FROQ_DB_HOST)%'
+                port: '%env(FROQ_DB_PORT)%'
+                dbname: '%env(FROQ_DB_NAME)%'
+                user: '%env(FROQ_DB_USER)%'
+                password: '%env(FROQ_DB_PWD)%'
+                mapping_types:
+                    enum: string
+                    bit: boolean
+                server_version: '%env(FROQ_DB_VERSION)%'

@@ -1,0 +1,36 @@
+{% set settings = user.groupAssetLibrarySettings %}
+{% set settingsDefinitions = settings.class.fieldDefinitions|default(null) %}
+{% set item = item %}
+
+<div class="asset-detail-preview__sidebar">
+    <app-asset-information class="asset-information">
+        {% if settings %}
+            {% include '@FroqPortalBundle/partials/asset-detail/assetInfoSection.html.twig' with {'settings': settings, 'item': item} %}
+
+            {% include '@FroqPortalBundle/partials/asset-detail/skuSection.html.twig' with {'settings': settings, 'item': item} %}
+
+            {% include '@FroqPortalBundle/partials/asset-detail/projectSection.html.twig' with {'settings': settings, 'item': item} %}
+
+            {% include '@FroqPortalBundle/partials/asset-detail/supplierSection.html.twig' with {'settings': settings, 'item': item} %}
+
+            {% include '@FroqPortalBundle/partials/asset-detail/printerSection.html.twig' with {'settings': settings, 'item': item} %}
+
+            <div class="asset-information__download-link-wrapper">
+                {% if item.asset %}
+                    <app-download-asset
+                        class="button button-primary button-md link-as-button asset-information__download-link"
+                        style="cursor: pointer;"
+                        href="{{ portal_asset_path(item.asset) }}">
+                        <span>Download this asset</span>
+                    </app-download-asset>
+                {% else %}
+                    <button
+                        class="button button-primary button-md link-as-button asset-information__download-link"
+                        disabled style="cursor:not-allowed">
+                        <span>No Asset Exist</span>
+                    </button>
+                {% endif %}
+            </div>
+        {% endif %}
+    </app-asset-information>
+</div>

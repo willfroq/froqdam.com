@@ -1,0 +1,141 @@
+<app-filter-option-input class="filter-option filter-option-input"
+                         filter-code="article_number">
+    <div class="filter-option__title" data-role="filter_option_title">
+        <strong>Article Number</strong>
+        <button class="filter-option__trigger"
+                data-role="filter_option_trigger"></button>
+    </div>
+    <div class="filter-option__content" data-role="filter_option_content">
+        <form class="filter-option__search-field-wrapper"
+              data-role="filter_option_search_form">
+            <input aria-label="Article Number"
+                   data-role="filter_option_search_field"
+                   class="input-text filter-option__search-field"
+                   placeholder="Article Number"
+                   type="text"
+            />
+        </form>
+    </div>
+</app-filter-option-input>
+
+<app-filter-option-date-range class="filter-option filter-option-date-range"
+                              filter-code-max="date_added_max"
+                              filter-code-min="date_added_min">
+    <div class="filter-option__title" data-role="filter_option_title">
+        <strong>Date added</strong>
+        <button class="filter-option__trigger"
+                data-role="filter_option_trigger"></button>
+    </div>
+    <div class="filter-option__content" data-role="filter_option_content">
+        <form data-role="filter_option_range_min_form">
+            <label for="added_from">From</label>
+            <div class="filter-option-date-range__field-wrapper">
+                <input data-role="filter_option_range_min"
+                       id="added_from"
+                       aria-label="From"
+                       class="input-text filter-option__field"
+                       min="0"
+                       placeholder="From"
+                       type="date"
+                />
+            </div>
+        </form>
+        <form data-role="filter_option_range_max_form">
+            <label for="added_to">To</label>
+            <div class="filter-option-date-range__field-wrapper">
+                <input data-role="filter_option_range_max"
+                       id="added_to"
+                       aria-label="To"
+                       class="input-text filter-option__field"
+                       min="0"
+                       placeholder="To"
+                       type="date"
+                />
+            </div>
+        </form>
+    </div>
+</app-filter-option-date-range>
+
+<app-filter-option-multi-select class="filter-option filter-option-multi-select"
+                                filter-code="brand"
+                                checkboxes-list-expand-text="View all"
+                                checkboxes-list-collapse-text="View less"
+                                url="{{ url('froq_portal.asset_library.search.load_category_checkboxes_list') }}">
+    <div class="filter-option__title" data-role="filter_option_title">
+        <strong>Brand</strong>
+        <button class="filter-option__trigger" data-role="filter_option_trigger"></button>
+    </div>
+    <div class="filter-option__content" data-role="filter_option_content">
+        <form class="filter-option__search-field-wrapper"
+              data-role="filter_option_search_form">
+            <input aria-label="Brand"
+                   data-role="filter_option_search_field"
+                   class="input-text filter-option__search-field"
+                   placeholder="Brand"
+                   type="text"
+            />
+        </form>
+        <ul class="filter-option-multi-select__checkboxes-list"
+            data-role="filter_option_checkboxes_list">
+            {% include '@FroqPortalBundle/partials/load-multiselect-checkboxes-list.html.twig' with { 'hasQuery' : false } %}
+        </ul>
+    </div>
+</app-filter-option-multi-select>
+
+<app-filter-option-category class="filter-option filter-option-category"
+                            filter-code="category"
+                            checkboxes-list-expand-text="View all"
+                            checkboxes-list-collapse-text="View less"
+                            url="{{ url('froq_portal.asset_library.search.load_category_checkboxes_list') }}">
+    <div class="filter-option__title" data-role="filter_option_title">
+        <strong>Category</strong>
+        <button class="filter-option__trigger" data-role="filter_option_trigger"></button>
+    </div>
+    <div class="filter-option__content" data-role="filter_option_content">
+        <form class="filter-option__search-field-wrapper"
+              data-role="filter_option_search_form">
+            <input aria-label="Category"
+                   data-role="filter_option_search_field"
+                   class="input-text filter-option__search-field"
+                   placeholder="Category"
+                   type="text"
+            />
+        </form>
+        <ul class="filter-option-category__checkboxes-list"
+            data-role="filter_option_checkboxes_list">
+            {% include '@FroqPortalBundle/partials/load-category-checkboxes-list.html.twig' with { 'hasQuery' : false } %}
+        </ul>
+    </div>
+</app-filter-option-category>
+
+<app-filter-option-number-range class="filter-option filter-option-number-range"
+                                filter-code-max="height_max"
+                                filter-code-min="height_min">
+    <div class="filter-option__title" data-role="filter_option_title">
+        <strong>Height</strong>
+        <button class="filter-option__trigger"
+                data-role="filter_option_trigger"></button>
+    </div>
+    <div class="filter-option__content" data-role="filter_option_content">
+        <form data-role="filter_option_range_min_form">
+            <label for="minimum_height">Minimum</label>
+            <input id="minimum_height"
+                   data-role="filter_option_range_min"
+                   class="input-text filter-option__field"
+                   min="0"
+                   placeholder="1000"
+                   type="number"
+            />
+        </form>
+        <form data-role="filter_option_range_max_form">
+            <label for="maximum_height">Maximum</label>
+            <input id="maximum_height"
+                   data-role="filter_option_range_max"
+                   class="input-text filter-option__field"
+                   min="0"
+                   placeholder="1000"
+                   type="number"
+            />
+        </form>
+    </div>
+</app-filter-option-number-range>

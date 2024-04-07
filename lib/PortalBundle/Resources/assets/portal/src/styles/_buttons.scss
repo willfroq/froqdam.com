@@ -1,0 +1,104 @@
+@import 'buttons/_mixins.scss';
+
+body {
+    @include generateButtonSizeClasses;
+}
+
+.button {
+    align-items: center;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: $button__border-radius;
+    box-sizing: border-box;
+    display: inline-flex;
+    font-weight: $button__font-weight;
+    transition: all 250ms ease;
+
+    &:focus {
+        outline: none;
+    }
+
+    &-ghost {
+        background-color: $button-ghost__background-color--default;
+        border-color: $button-ghost__border-color--default;
+        color: $button-ghost__color--default;
+
+        &:disabled {
+            background-color: $button__background-color--disabled;
+            border-color: $button__border-color--disabled;
+            color: $button__color--disabled;
+
+            &:hover {
+                background-color: $button__background-color--disabled;
+                border-color: $button__border-color--disabled;
+                color: $button__color--disabled;
+            }
+        }
+
+        &:focus {
+            box-shadow: $button-ghost__box-shadow--focus;
+        }
+
+        &:hover {
+            background-color: $button-ghost__background-color--hover;
+            border-color: $button-ghost__border-color--hover;
+            color: $button-ghost__color--hover;
+        }
+    }
+
+    &-icon-only {
+        align-items: center;
+        border-radius: 50%;
+        display: inline-flex;
+        justify-content: center;
+
+        &.button-xs {
+            padding: $spacing-xs;
+        }
+
+        &.button-sm {
+            padding: $spacing-s;
+        }
+
+        &.button-md {
+            padding: 10px;
+        }
+
+        &.button-lg {
+            padding: 12px;
+        }
+    }
+
+    &-primary {
+        background-color: $button-primary__background-color--default;
+        border-color: $button-primary__border-color--default;
+        color: $button-primary__color--default;
+
+        &:disabled {
+            background-color: $button__background-color--disabled;
+            border-color: $button__border-color--disabled;
+            color: $button__color--disabled;
+
+            &:hover {
+                background-color: $button__background-color--disabled;
+                border-color: $button__border-color--disabled;
+                color: $button__color--disabled;
+            }
+        }
+
+        &:focus {
+            box-shadow: $button-primary__box-shadow--focus;
+        }
+
+        &:hover {
+            background-color: $button-primary__background-color--hover;
+            border-color: $button-primary__border-color--hover;
+            color: $button-primary__color--hover;
+        }
+    }
+}
+
+.link-as-button {
+    text-decoration: none;
+}

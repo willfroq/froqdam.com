@@ -1,0 +1,29 @@
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        # automatically injects dependencies in your services
+        autowire: true
+        # automatically registers your services as commands, event subscribers, etc.
+        autoconfigure: true
+
+    Aws\S3\S3Client:
+        arguments:
+            -   version: '2006-03-01'
+                region: 'eu-central-1'
+                credentials:
+                    key: '%env(AWS_S3_ACCESS_ID)%'
+                    secret: '%env(AWS_S3_ACCESS_SECRET)%'
+
+parameters:
+    secret: 406aa1854639ba3eb7385f06e667b839
+    default_portal_dashboard_path: froq_portal.asset_library.search
+    froq.pimcore_elasticsearch.index_name.asset_library: '%env(APP_ENV)%-asset-library'
+
+when@test:
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true
+            public: true
+
+        Froq\PortalBundle\Contract\AssetResourceRepositoryInterface: '@Froq\PortalBundle\Repository\AssetResourceRepository'

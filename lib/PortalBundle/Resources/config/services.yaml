@@ -1,0 +1,32 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            $esIndexListingManager: '@youwe.pimcore_elasticsearch.index_listing_service'
+            $esIndexIdAssetLib: 'asset_library'
+            $assetLibraryElasticsearchClient: '@youwe.pimcore_elasticsearch.client.asset_library'
+            $membersSecurityLoginFormFactory: '@members.security.login.form.factory'
+
+    Froq\PortalBundle\:
+        resource: '../../*'
+        exclude: '../../{DependencyInjection,Entity,Tests}'
+
+    Froq\PortalBundle\Controller\:
+        resource: "../../Controller"
+
+    froq.pimcore.options_provider.portal.asset_lib.filter:
+        class: Froq\PortalBundle\PimcoreOptionsProvider\AssetLibFilterOptionsProvider
+        public: true
+
+    froq.pimcore.options_provider.portal.asset_lib.column:
+        class: Froq\PortalBundle\PimcoreOptionsProvider\AssetLibColumnOptionsProvider
+        public: true
+
+    froq.pimcore.options_provider.portal.asset_lib.sort:
+        class: Froq\PortalBundle\PimcoreOptionsProvider\AssetLibSortOptionsProvider
+        public: true
+
+    Froq\PortalBundle\Manager\AssetResource\ModelFilter\Filters\:
+        resource: '../../Manager/AssetResource/ModelFilter/Filters'
+        public: true

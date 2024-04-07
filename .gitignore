@@ -1,0 +1,71 @@
+# remove the following ignores for your project
+/config/pimcore/constants.php
+
+# symfony default
+/.web-server-pid
+/config/pimcore/parameters.yml
+/phpunit.xml
+/public/bundles/
+
+# local config
+/.env.local
+/.env.local.php
+/.env.*.local
+!/config/local
+/config/local/*
+!config/local/.gitkeep
+
+/var/*
+!/var/.gitkeep
+!/var/classes/
+/var/classes/DataObject
+
+!/var/config
+/var/config/system.yml
+/var/config/debug-mode.php
+/var/config/maintenance.php
+
+# project specific recommendations
+/var/config/tag-manager.php
+/var/config/reports.php
+!/var/config/data-hub
+
+/public/var/
+/public/sitemap*.xml
+
+# PHP-CS-Fixer
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+
+# composer
+/vendor/
+
+# PhpStorm / IDEA
+.idea
+# NetBeans
+nbproject
+
+# temp
+.temp
+
+# Docker
+docker-compose.override.yml
+
+#
+.DS_Store
+*.swp
+
+/build/deployer/vendor
+
+config/local/*.yaml
+config/parameters.yaml
+
+/var/config/portal
+.htaccess
+/cache/
+
+###> symfony/webpack-mix-bundle ###
+/public/build/
+node_modules/
+/public/mix-manifest.json
+###< symfony/webpack-mix-bundle ###

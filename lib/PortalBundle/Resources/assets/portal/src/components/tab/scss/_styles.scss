@@ -1,0 +1,27 @@
+body {
+    .tab {
+        @include text-lg;
+        align-items: center;
+        background-color: $color-grey-100;
+        border-bottom: 1px solid $color-grey-200;
+        border-right: 1px solid $color-grey-200;
+        border-top: 1px solid $color-grey-200;
+        box-sizing: border-box;
+        cursor: pointer;
+        display: inline-flex;
+        font-weight: 600;
+        height: 62px;
+        justify-content: center;
+        min-width: 163px;
+        padding: $spacing-m;
+
+        &:first-of-type {
+            border-left: 1px solid $color-grey-200;
+        }
+
+        &--active {
+            background-color: $color-white;
+            border-bottom: none;
+        }
+    }
+}

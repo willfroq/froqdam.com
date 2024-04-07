@@ -1,0 +1,25 @@
+{% if list is not empty %}
+    <app-dropdown-filter class="dropdown-filter" filter-code="view">
+        <div class="dropdown-filter__selector-wrapper">
+            <button class="dropdown-filter__selector"
+                    aria-label="View"
+                    data-role="dropdown_filter_selector">
+               All
+            </button>
+        </div>
+        <div class="dropdown-filter__list-wrapper">
+            <ul class="dropdown-filter__list" data-role="dropdown_filter_list">
+                <li data-role="dropdown_filter_list_item"
+                    data-code="">
+                    All
+                </li>
+                {% for item in list %}
+                    <li data-role="dropdown_filter_list_item"
+                        data-code="{{ item.id }}">
+                        {{ item.name }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </app-dropdown-filter>
+{% endif %}

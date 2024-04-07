@@ -1,0 +1,120 @@
+.pagination {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+
+    &__button {
+        @include text-md;
+        align-items: center;
+        background-color: transparent;
+        border: none;
+        color: $color-black;
+        display: inline-flex;
+        height: 48px;
+
+        &[disabled] {
+            color: $color-grey-400;
+
+            &:after,
+            &:before {
+                opacity: .5;
+            }
+        }
+
+        &--prev {
+            &:before {
+                background-image: url('#{$baseUrl}/media/icons/svg/chevron-left.svg');
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: contain;
+                content: '';
+                display: inline-block;
+                height: 24px;
+                width: 24px;
+            }
+        }
+
+        &--next {
+            &:after {
+                background-image: url('#{$baseUrl}/media/icons/svg/chevron-right.svg');
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: contain;
+                content: '';
+                display: inline-block;
+                height: 24px;
+                width: 24px;
+            }
+        }
+    }
+
+    &__page-selector-form {
+        align-items: center;
+        display: flex;
+        flex-wrap: nowrap;
+        height: 48px;
+    }
+
+    &__pages {
+        align-items: center;
+        display: inline-flex;
+        flex-wrap: nowrap;
+        margin: 0 $spacing-xs;
+        height: 48px;
+
+        &--collapse-pages {
+            .pagination__pages-button {
+                display: none;
+
+                &:first-child,
+                &:last-child,
+                &--active,
+                &--after-active,
+                &--before-active {
+                    display: block;
+                }
+            }
+        }
+
+        &-break {
+            @include text-md;
+            align-items: center;
+            display: flex;
+            height: 48px;
+            justify-content: center;
+            width: 48px;
+        }
+
+        &-button {
+            @include text-md;
+            background-color: transparent;
+            border: none;
+            box-sizing: border-box;
+            color: $color-black;
+            height: 48px;
+            text-align: center;
+            width: 48px;
+
+            &--active {
+                background-color: $color-grey-150;
+                border: 1px solid $color-grey-200;
+            }
+        }
+    }
+
+    &__size-selector {
+        &-container {
+            @include text-md;
+            color: $color-grey-400;
+
+            .input-select {
+                background-color: $color-grey-150;
+                border-radius: 2px;
+                height: 48px;
+                margin: 0 $spacing-s;
+                width: 68px;
+            }
+        }
+    }
+}

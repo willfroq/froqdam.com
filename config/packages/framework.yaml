@@ -1,0 +1,15 @@
+#### SYMFONY OVERRIDES
+framework:
+    cache:
+        prefix_seed: '%kernel.environment%.pimcore.client-name'
+    session:
+        enabled: true
+        cookie_secure: true
+        cookie_samesite: lax
+        cookie_lifetime: 15768000
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file

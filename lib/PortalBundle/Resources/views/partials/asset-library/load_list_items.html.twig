@@ -1,0 +1,53 @@
+{% set columns = get_asset_library_columns_for_user(user) %}
+
+{% for assetResource in items %}
+    {% set assetResource = get_latest_asset_resource_version(assetResource) %}
+
+    <app-list-item class="list-item" edit-popup-form-url="" edit-popup-submit-url="">
+        {% for column in columns %}
+            {% set columnKey = column.AssetLibraryColumnProperty.data %}
+            {% set columnLabel = get_available_column_label(columnKey, user) %}
+            {% set productEan = portal_asset_resource_product_ean(assetResource)|default('-')|raw %}
+            {% set productName = portal_asset_resource_product_name(assetResource)|default('-')|raw %}
+            {% set froqProjectNumber = portal_asset_resource_froq_project_number(assetResource)|default('-')|raw %}
+            {% set pimProjectNumber = portal_asset_resource_pim_project_number(assetResource)|default('-')|raw %}
+
+            <div>
+                {% if columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_THUMBNAIL') %}
+                    {% include '@FroqPortalBundle/partials/asset-thumbnail-list-view.html.twig' with { 'asset': assetResource.asset } %}
+                {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_FILE_NAME') %}
+                    {{ assetResource.asset ?  assetResource.asset.fileName : '' }}
+                {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_PRODUCT_EAN') %}
+                    {{ productEan }}
+                {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_FROQ_PROJECT_NUMBER') %}
+                    {{ froqProjectNumber }}
+                {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_PIM_PROJECT_NUMBER') %}
+                    {{ pimProjectNumber }}
+                {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_PRODUCT_NAME') %}
+                    {{ productName }}
+                {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_ASSET_NAME') %}
+                    {{ assetResource.name }}
+                {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_SKU') %}
+
+                    {{ portal_asset_resource_product_sku(assetResource)|default('-')|raw }}
+
+                {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_TYPE') %}
+                    {{ assetResource.assetType?  assetResource.assetType.name : '' }}
+                {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_PROJECT_NAME') %}
+
+                    {{ portal_asset_resource_project_name(assetResource)|default('-')|raw }}
+
+                {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_ASSET_RESOURCE_CREATION_DATE') %}
+                    {{ assetResource.creationDate | date("d-m-Y") }}
+                {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_ASSET_CREATION_DATE') %}
+                    {{ assetResource.asset ? (assetResource.asset.creationDate | date("d-m-Y")) : '' }}
+                {% endif %}
+            </div>
+        {% endfor %}
+        {% include '@FroqPortalBundle/partials/includes/table-action-dropdown.html.twig' with {'item': assetResource} only %}
+    </app-list-item>
+{% else %}
+    {% if forLoadMore is not defined or not forLoadMore %}
+        <li><em>no record found</em></li>
+    {% endif %}
+{% endfor %}

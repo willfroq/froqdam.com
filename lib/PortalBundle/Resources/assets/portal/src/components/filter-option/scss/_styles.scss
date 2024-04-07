@@ -1,0 +1,100 @@
+.filter-option {
+    @include text-sm;
+    border-top: 1px solid $color-grey-150;
+    display: block;
+
+    &:last-child {
+        border-bottom: 1px solid $color-grey-150;
+    }
+
+    &__title,
+    &__trigger {
+        display: block;
+    }
+
+    &--expanded {
+        .filter-option__content {
+            display: block;
+        }
+
+        .filter-option__trigger {
+            transform: rotate(180deg);
+        }
+    }
+
+    &__content {
+        display: none;
+        padding: $spacing-xs $spacing-m $spacing-m;
+    }
+
+    &__reset-button {
+        height: $form-element-input__height;
+        left: 0;
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        width: 34px;
+    }
+
+    &__search-field {
+        &:not(.filter-option__search-field--active) {
+            background-image: url('#{$baseUrl}/media/icons/svg/search.svg');
+        }
+
+        &.filter-option__search-field--active {
+            background-image: url('#{$baseUrl}/media/icons/svg/close.svg');
+
+            & ~ .filter-option__reset-button {
+                display: block;
+            }
+        }
+
+        & ~ .filter-option__reset-button {
+            display: none;
+        }
+
+        &.input-text {
+            background-position: 11px center;
+            background-repeat: no-repeat;
+            padding-left: 34px;
+            position: relative;
+            width: 100%;
+        }
+
+        &-wrapper {
+            position: relative;
+        }
+    }
+
+    &__title {
+        align-items: center;
+        cursor: pointer;
+        display: flex;
+        height: 42px;
+        justify-content: space-between;
+        padding: $spacing-xs 24px $spacing-xs $spacing-m;
+        position: relative;
+    }
+
+    &__trigger {
+        align-items: center;
+        background-color: transparent;
+        border: none;
+        display: inline-flex;
+        height: 24px;
+        justify-content: center;
+        position: absolute;
+        right: $spacing-m;
+        width: 24px;
+
+        &:after {
+            background-image: url('#{$baseUrl}/media/icons/svg/chevron-down.svg');
+            background-position: center;
+            background-repeat: no-repeat;
+            display: block;
+            content: '';
+            height: 24px;
+            width: 24px;
+        }
+    }
+}

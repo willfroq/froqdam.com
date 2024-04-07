@@ -1,0 +1,26 @@
+{% for item in pagination %}
+    <app-list-item class="list-item" edit-popup-form-url="" edit-popup-submit-url="">
+        <div>
+            {% include '@FroqPortalBundle/partials/asset-thumbnail-list-view.html.twig' with { 'asset': item.asset } %}
+        </div>
+        <div>
+            {{ item.asset.filename ?? '-' }}
+        </div>
+        <div>
+            {{ portal_asset_resource_product_sku(item)|default('-')|raw }}
+        </div>
+        <div>
+            {{ item.assetType.name ?? '-' }}
+        </div>
+        <div>
+            {{ portal_asset_resource_project_name(item)|default('-')|raw }}
+        </div>
+        {% include '@FroqPortalBundle/partials/includes/table-action-dropdown.html.twig' with {'item': item} only %}
+    </app-list-item>
+{% else %}
+    <app-list-item class="list-item" edit-popup-form-url="" edit-popup-submit-url="">
+        <div>
+            <em>No record found</em>
+        </div>
+    </app-list-item>
+{% endfor %}

@@ -1,0 +1,113 @@
+{% if settings.isAssetInfoSectionEnabled %}
+    <div class="asset-information__section"
+         data-role="asset_information_section">
+        <div class="asset-information__section-title" data-role="asset_information_section_title"
+             tabindex="0">
+            <strong>{{ get_section_label_for_asset_detail_config(settings, 'assetInfoSectionTitle') }}</strong>
+        </div>
+        <div class="asset-information__section-content" data-role="asset_information_section_content">
+            <dl>
+                {% if settings.assetInfoSectionItems.data.asset_type_name.enabled %}
+                    <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'assetInfoSectionItems', 'asset_type_name') }}</dt>
+                    <dd>
+                        {% if item.assetType and item.assetType.name and is_asset_library_keyword_filter_available_for_user(user, 'asset_type_name' ) %}
+                            <a href="{{ url('froq_portal.asset_library.search', {'filters': {'asset_type_name': [item.assetType.name | lower ]}}) | raw }}">
+                                {{ item.assetType.name }}
+                            </a>
+                        {% else %}
+                            {{ item.assetType.name|default('-') }}
+                        {% endif %}
+                    </dd>
+                {% endif %}
+
+                {% if settings.assetInfoSectionItems.data.creation_date.enabled %}
+                    <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'assetInfoSectionItems', 'creation_date') }}</dt>
+                    <dd>
+                        {% set fileDateAdded = portal_asset_resource_file_date_added(item) %}
+                        {% if fileDateAdded %}
+                            {{ fileDateAdded|date('Y-m-d') }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </dd>
+                {% endif %}
+
+                {% if settings.assetInfoSectionItems.data.asset_creation_date.enabled %}
+                    <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'assetInfoSectionItems', 'asset_creation_date') }}</dt>
+                    <dd>
+                        {% set fileDateCreated = portal_asset_resource_file_date_created(item) %}
+                        {% if fileDateCreated %}
+                            {{ fileDateCreated|date('Y-m-d') }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </dd>
+                {% endif %}
+
+                {% if settings.assetInfoSectionItems.data.last_modified.enabled %}
+                    <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'assetInfoSectionItems', 'last_modified') }}</dt>
+                    <dd>
+                        {% set fileDateModified = portal_asset_resource_file_date_modified(item) %}
+                        {% if fileDateModified %}
+                            {{ fileDateModified|date('Y-m-d') }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </dd>
+                {% endif %}
+
+                {% if settings.assetInfoSectionItems.data.asset_version.enabled %}
+                    <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'assetInfoSectionItems', 'asset_version') }}</dt>
+                    <dd>{{ portal_asset_resource_version(item)|default('-') }}</dd>
+                {% endif %}
+
+                {% set tags = item.getTags|default(null) %}
+
+                {% if tags is not empty %}
+                    {% if settings.assetInfoSectionItems.data.tags.enabled %}
+                        <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'assetInfoSectionItems', 'tags') }}</dt>
+
+                        <dd>
+                            {% for tag in tags %}
+                                {% set tagCode = tag.getCode|default(null) %}
+
+                                {% if tagCode %}
+                                    <div>
+                                        {% if tagCode and is_asset_library_keyword_filter_available_for_user(user, 'tags' ) %}
+                                            <a href="{{ url('froq_portal.asset_library.search', {'filters': {'tags': [tagCode | lower ]}} ) | raw }}">
+                                                {{ tagCode }}
+                                            </a>
+                                        {% else %}
+                                            {{ tagCode|default('-') }}
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </dd>
+                    {% endif %}
+                {% endif %}
+
+                {% if settings.assetInfoSectionMetadata and settings.assetInfoSectionMetadata.items %}
+                    {% for fc in settings.assetInfoSectionMetadata.items %}
+                        {% set label = fc.label %}
+                        {% set key = fc.metadataKey %}
+                        {% set value = get_asset_resource_metadata_value_by_key(item, key) %}
+
+                        {% if value %}
+                            <dt>{{ (label and (label !=''))? label : key }}</dt>
+                            <dd>
+                                {% if is_asset_library_keyword_filter_available_for_user(user, key) %}
+                                    <a href="{{ url('froq_portal.asset_library.search', {'filters': {(key): [value | lower ]}}) | raw }}">
+                                        {{ value }}
+                                    </a>
+                                {% else %}
+                                    {{ value }}
+                                {% endif %}
+                            </dd>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </dl>
+        </div>
+    </div>
+{% endif %}

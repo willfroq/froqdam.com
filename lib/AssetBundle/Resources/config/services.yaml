@@ -1,0 +1,12 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+
+    Froq\AssetBundle\:
+        resource: '../../*'
+        exclude: '../../{DependencyInjection,Entity,Tests}'
+
+    Froq\AssetBundle\Controller\:
+        resource: "../../Controller"

@@ -1,0 +1,10 @@
+// Base variables
+
+@import 'variables/_colors.scss';
+@import 'variables/_forms.scss';
+@import 'variables/_layout.scss';
+@import 'variables/_typography.scss';
+
+// UI Elements variables (must be lower in sort order as they rely on variables declared above)
+
+@import 'variables/_buttons.scss';

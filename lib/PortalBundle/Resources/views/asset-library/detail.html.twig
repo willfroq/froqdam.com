@@ -1,0 +1,57 @@
+{% extends '@FroqPortalBundle/portal-layout.html.twig' %}
+
+{% block title %}
+    {% if item.asset %}{{ item.asset.filename }} | {% endif %} Asset Library
+{% endblock %}
+
+{% block javascript_head %}
+    {{ parent() }}
+
+    {% if item.asset and item.asset.type == 'document' %}
+        <script src="{{ mix('build/portal/lib/pdfjs/pdf.worker.js') }}"></script>
+        <script src="{{ mix('build/portal/lib/pdfjs/pdf.js') }}"></script>
+    {% endif %}
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block body %}
+    {% set products = portal_asset_resource_products(item) %}
+    {% set projects = portal_asset_resource_projects(item) %}
+
+    <app-asset-title class="asset-title" id="detail-title">
+        <h5>{% if item.asset %}{{ item.asset.filename }}{% endif %}</h5>
+    </app-asset-title>
+    <div class="asset-detail-preview__wrapper">
+        {% include '@FroqPortalBundle/partials/asset-detail/asset-preview.html.twig' %}
+
+        {% include '@FroqPortalBundle/partials/asset-detail/sidebar.html.twig' %}
+    </div>
+    <main class="pt-m pb-xxl pl-xl pr-xl">
+        <app-tabs-container class="tabs-container">
+            <div class="search-results__loading-screen">
+                <span>Loading...</span>
+            </div>
+            <nav class="tabs-container__navigation">
+                <app-tab class="tab"
+                         role="button"
+                         data-role="tab"
+                         url="{{ url('froq_portal.asset_library.detail.load_versions_tab', {'id': item.id}) }}">
+                    <span>Versions</span>
+                </app-tab>
+                <app-tab class="tab"
+                         role="button"
+                         data-role="tab"
+                         url="{{ url('froq_portal.asset_library.detail.load_related_tab', {'id': item.id}) }}">
+                    <span>Related</span>
+                </app-tab>
+                <app-tab class="tab"
+                         role="button"
+                         data-role="tab"
+                         url="{{ url('froq_portal.asset_library.detail.load_linked_tab', {'id': item.id}) }}">
+                    <span>Linked</span>
+                </app-tab>
+            </nav>
+        </app-tabs-container>
+    </main>
+{% endblock body %}

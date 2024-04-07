@@ -1,0 +1,23 @@
+.filter-options {
+    @include text-md;
+    background-color: $color-white;
+    display: block;
+    height: calc(100vh - 200px);
+    min-height: 500px;
+    overflow: auto;
+
+    &__clear-all {
+        color: $color-grey-400;
+        position: absolute;
+        right: $spacing-s;
+        text-decoration: none;
+    }
+
+    &__title-wrapper {
+        align-items: center;
+        display: flex;
+        height: 48px;
+        padding: $spacing-s $spacing-m;
+        position: relative;
+    }
+}

@@ -1,0 +1,46 @@
+.filter-option-date-range {
+    @extend .filter-option-min-max;
+
+    &.filter-option--expanded {
+        .filter-option__content {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
+    &__field-wrapper {
+        @extend .input-text;
+        @include text-sm;
+        background-image: url('#{$baseUrl}/media/icons/svg/calendar.svg');
+        background-position: $spacing-s center;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        height: $form-element-input__height;
+        overflow: hidden;
+        padding-left: $spacing-l;
+        position: relative;
+
+        &:before {
+            content: attr(data-value);
+            margin-left: $spacing-xs;
+        }
+
+        input {
+            cursor: pointer;
+            opacity: 0;
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+        }
+    }
+
+    form,
+    [data-role="filter_option_range_min_form"],
+    [data-role="filter_option_range_max_form"] {
+        display: inline-block;
+        width: 48%;
+    }
+}

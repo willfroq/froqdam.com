@@ -1,0 +1,12 @@
+youwe_pimcore_single_sign_on:
+    idps:
+        onelogin:
+            idp:
+                metadataUrl: 'https://app-eu.onelogin.com/saml/metadata/445a664a-c369-487b-904c-75acbfab2f81'
+            user:
+                roles:
+                    conditional:
+                        rules:
+                            admin:
+                                contains:
+                                    - 'customer-froq'

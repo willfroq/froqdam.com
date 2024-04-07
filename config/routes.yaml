@@ -1,0 +1,6 @@
+_pimcore:
+    resource: "@PimcoreCoreBundle/Resources/config/routing.yml"
+
+home:
+    path: /
+    controller: Froq\PortalBundle\Controller\HomeController::indexAction

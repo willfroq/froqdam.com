@@ -1,0 +1,22 @@
+oneup_flysystem:
+    adapters:
+        public_uploads_adapter:
+            awss3v3:
+                client: Aws\S3\S3Client
+                bucket: '%env(AWS_S3_BUCKET_NAME)%'
+        private_uploads_adapter:
+            awss3v3:
+                client: Aws\S3\S3Client
+                bucket: '%env(AWS_S3_BUCKET_NAME)%'
+        uploads_adapter:
+            awss3v3:
+                client: Aws\S3\S3Client
+                bucket: '%env(AWS_S3_BUCKET_NAME)%'
+
+    filesystems:
+        public_uploads_filesystem:
+            adapter: uploads_adapter
+        private_uploads_filesystem:
+            adapter: uploads_adapter
+        uploads_filesystem:
+            adapter: uploads_adapter

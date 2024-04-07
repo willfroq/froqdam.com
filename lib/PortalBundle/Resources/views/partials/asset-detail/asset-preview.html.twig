@@ -1,0 +1,38 @@
+<div class="asset-detail-preview">
+    <div class="asset-detail-preview__loading-screen">
+        <span>Loading...</span>
+    </div>
+    {% if item.asset %}
+        {% set assetType = item.asset.type %}
+
+        {% if assetType == 'document' %}
+            {% set url = get_asset_document_preview_url(item.asset) %}
+
+            {% if url %}
+                <app-pdf-viewer class="pdf-viewer" url="{{ url }}"></app-pdf-viewer>
+            {% endif %}
+        {% elseif assetType == 'image' %}
+            {% set url = get_asset_image_preview_url(item.asset, 'portal_asset_detail_preview') %}
+
+            {% if url %}
+                <app-image-viewer src="{{ url }}"></app-image-viewer>
+            {% endif %}
+        {% elseif assetType == 'text' %}
+            {% set content = get_asset_text_preview_content(item.asset) %}
+
+            {% if content %}
+                <app-text-viewer>
+                    <div class="asset-detail-preview__text">{{ content | raw }}</div>
+                </app-text-viewer>
+            {% endif %}
+        {% elseif assetType == 'unknown' %}
+            {% set extension = get_asset_extension(item.asset) %}
+            {% if extension in ['fbx', 'glb', 'obj', 'gltf'] %}
+                <app-viewer-{{ extension }}
+                    class="viewer-{{ extension }}" {% if item.asset %} url="{{ portal_asset_path(item.asset) }}"{% endif %}>
+                    <canvas id="webgl"/>
+                </app-viewer-{{ extension }}>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+</div>

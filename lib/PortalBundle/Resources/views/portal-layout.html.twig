@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="initial-scale=1">
+    <title>{% block title %} FroQ Portal {% endblock %}</title>
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ mix('build/portal/dist/styles.css') }}">
+    {% endblock %}
+
+    {% block javascript_head %}
+        <script type="text/javascript" src="{{ mix('build/portal/dist/bundle.js') }}"></script>
+    {% endblock %}
+</head>
+<body>
+{% block header %}
+    <header>
+        <app-user-dropdown class="user-dropdown"
+                           fullname="{{ user }}"
+                           style="float: right">
+            <div class="user-dropdown__head" role="button" data-role="user_dropdown_selector">
+                <span class="user-dropdown__initials" data-role="user_dropdown_initials">
+                    <!-- JS Content Placeholder -->
+                </span>
+                <span class="user-dropdown__full-name" data-role="user_dropdown_full_name">
+                    <!-- JS Content Placeholder -->
+                </span>
+            </div>
+            <div class="user-dropdown__body">
+                <ul>
+                    <li>
+                        <a href="{{ path('froq_portal.auth.logout') }}">
+                            <span>Log out</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </app-user-dropdown>
+    </header>
+{% endblock %}
+{% block body %}{% endblock %}
+{% block javascripts %}{% endblock %}
+</body>
+</html>

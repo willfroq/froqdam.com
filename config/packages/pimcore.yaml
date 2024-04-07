@@ -1,0 +1,19 @@
+pimcore:
+    assets:
+        image:
+            max_pixels: 2048000000
+        frontend_prefixes:
+            source: '%env(ASSET_STORAGE_URL)%'
+            thumbnail: '%env(THUMBNAIL_STORAGE_URL)%'
+            thumbnail_deferred: '%env(THUMBNAIL_STORAGE_URL)%'
+
+    models:
+        class_overrides:
+            'Pimcore\Model\Asset\Document': 'Froq\AssetBundle\Model\DataObject\AssetDocument'
+
+    config_location:
+        image_thumbnails:
+            write_target:
+                type: 'symfony-config'
+                options:
+                    directory: '/var/www/html/var/config/image-thumbnails'

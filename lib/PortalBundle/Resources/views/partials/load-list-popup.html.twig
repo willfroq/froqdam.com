@@ -1,0 +1,27 @@
+{% for item in items %}
+    <app-list-item class="list-item" edit-popup-form-url="" edit-popup-submit-url="">
+        <div>
+            <img alt="Plantaardige plakken" src="/build/portal/media/plantaardige.png">
+        </div>
+        <div>
+            Related Item {{ item }}
+        </div>
+        <div>
+            Plantaardige plakken fenegriek kaas
+        </div>
+        <div>
+            Packshot
+        </div>
+        <div>
+            Nutriscore Cheese
+        </div>
+        {% include '@FroqPortalBundle/partials/includes/table-action-dropdown.html.twig' with {'item': item} only %}
+
+    </app-list-item>
+{% else %}
+    <app-list-item class="list-item" edit-popup-form-url="" edit-popup-submit-url="">
+        <div>
+            <em>No record found</em>
+        </div>
+    </app-list-item>
+{% endfor %}

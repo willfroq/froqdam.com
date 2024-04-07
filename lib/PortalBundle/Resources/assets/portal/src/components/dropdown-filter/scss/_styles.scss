@@ -1,0 +1,78 @@
+.dropdown-filter {
+    @include text-sm;
+    display: inline-block;
+    margin-right: $spacing-m;
+    position: relative;
+    white-space: nowrap;
+
+    button,
+    label {
+        @include text-sm;
+    }
+
+    &__list,
+    &__selector {
+        background-color: $color-white;
+        border: 1px solid $color-grey-200;
+        border-radius: 8px;
+        text-align: left;
+    }
+
+    &__active {
+        .dropdown-filter__list {
+            display: block;
+        }
+
+        .dropdown-filter__selector {
+            &:after {
+                transform: translateY(-50%) rotate(180deg);
+            }
+        }
+    }
+
+    &__list {
+        @include reset-list-styles;
+        bottom: -$spacing-m;
+        box-sizing: border-box;
+        display: none;
+        position: absolute;
+        transform: translateY(100%);
+        width: 100%;
+        z-index: 10;
+
+        li {
+            cursor: pointer;
+            padding: 10px 12px;
+
+            &:hover {
+                background-color: $color-grey-100;
+            }
+        }
+    }
+
+    &__selector {
+        font-weight: bold;
+        height: 46px;
+        min-width: 224px;
+        padding: 10px 30px 10px 12px;
+
+        &:after {
+            background-image: url('#{$baseUrl}/media/icons/svg/chevron-down.svg');
+            background-position: center;
+            background-repeat: no-repeat;
+            content: '';
+            height: 24px;
+            position: absolute;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+        }
+
+        &:before {
+            content: attr(aria-label) ':';
+            font-weight: normal;
+            margin-right: $spacing-s;
+        }
+    }
+}

@@ -1,0 +1,94 @@
+{% if settings.isProjectSectionEnabled %}
+    <div class="asset-information__section"
+         data-role="asset_information_section"
+         data-hide-text="Hide other projects"
+         data-show-text="View all projects">
+        <div class="asset-information__section-title" data-role="asset_information_section_title"
+             tabindex="0">
+            <strong>{{ get_section_label_for_asset_detail_config(settings, 'projectSectionTitle') }}</strong>
+        </div>
+        <div class="asset-information__section-content"
+             data-role="asset_information_section_content">
+            {% if projects is not empty %}
+                {% for project in projects %}
+                    <dl>
+                        {% if settings.projectSectionItems.data.category_managers.enabled %}
+                            {% set categoryManagers = portal_project_category_managers(project) %}
+                            {% if categoryManagers %}
+                                <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'projectSectionItems', 'category_managers') }}</dt>
+                                <dd>
+                                    {{ categoryManagers }}
+                                </dd>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if settings.projectSectionItems.data.project_pim_project_number.enabled and project.pim_project_number %}
+                            <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'projectSectionItems', 'project_pim_project_number') }}</dt>
+                            <dd>
+                                {% if project.pim_project_number and is_asset_library_keyword_filter_available_for_user(user, 'project_pim_project_number' ) %}
+                                    <a href="{{ url('froq_portal.asset_library.search', {'filters': {'project_pim_project_number': [project.pim_project_number | lower ]}}) | raw }}">
+                                        {{ project.pim_project_number }}
+                                    </a>
+                                {% else %}
+                                    {{ project.pim_project_number|default('-') }}
+                                {% endif %}
+                            </dd>
+                        {% endif %}
+
+                        {% if settings.projectSectionItems.data.project_name.enabled and project.name %}
+                            <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'projectSectionItems', 'project_name') }}</dt>
+                            <dd>
+                                {% if project.name and is_asset_library_keyword_filter_available_for_user(user, 'project_name' ) %}
+                                    <a href="{{ url('froq_portal.asset_library.search', {'filters': {'project_name': [project.name | lower ]}}) | raw }}">
+                                        {{ project.name }}
+                                    </a>
+                                {% else %}
+                                    {{ project.name|default('-') }}
+                                {% endif %}
+                            </dd>
+                        {% endif %}
+
+                        {% if settings.projectSectionItems.data.project_froq_project_number.enabled and project.froq_project_number %}
+                            <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'projectSectionItems', 'project_froq_project_number') }}</dt>
+                            <dd>
+                                {% if project.froq_project_number and is_asset_library_keyword_filter_available_for_user(user, 'project_froq_project_number' ) %}
+                                    <a href="{{ url('froq_portal.asset_library.search', {'filters': {'project_froq_project_number': [project.froq_project_number | lower ]}}) | raw }}">
+                                        {{ project.froq_project_number }}
+                                    </a>
+                                {% else %}
+                                    {{ project.froq_project_number|default('-') }}
+                                {% endif %}
+                            </dd>
+                        {% endif %}
+
+                        {% if settings.projectSectionItems.data.customer.enabled %}
+                            <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'projectSectionItems', 'customer') }}</dt>
+                            <dd>
+                                {% if project.customer and project.customer.name and project.froq_project_number and is_asset_library_keyword_filter_available_for_user(user, 'customer' ) %}
+                                    <a href="{{ url('froq_portal.asset_library.search', {'filters': {'customer': [project.customer.name | lower ]}}) | raw }}">
+                                        {{ project.customer.name }}
+                                    </a>
+                                {% else %}
+                                    {{ project.customer.name|default('-') }}
+                                {% endif %}
+                            </dd>
+                        {% endif %}
+
+                        {% if settings.projectSectionItems.data.project_froq_name.enabled and project.froq_name %}
+                            <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'projectSectionItems', 'project_froq_name') }}</dt>
+                            <dd>
+                                {% if project.froq_name and project.froq_project_number and is_asset_library_keyword_filter_available_for_user(user, 'project_froq_name' ) %}
+                                    <a href="{{ url('froq_portal.asset_library.search', {'filters': {'project_froq_name': [project.froq_name | lower ]}}) | raw }}">
+                                        {{ project.froq_name }}
+                                    </a>
+                                {% else %}
+                                    {{ project.froq_name|default('-') }}
+                                {% endif %}
+                            </dd>
+                        {% endif %}
+                    </dl>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endif %}

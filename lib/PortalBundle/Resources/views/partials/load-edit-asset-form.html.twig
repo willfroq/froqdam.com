@@ -1,0 +1,32 @@
+<div class="edit-popup-form__header" data-role="edit_popup_form_header">
+    <div class="edit-popup-form__title">
+        <h5>Edit Asset</h5>
+    </div>
+</div>
+<div class="edit-popup-form__content">
+    <div class="form-field required">
+        <label for="edit_asset_sku">Stock Keeping Unit</label>
+        <input type="text" name="asset_sku" class="input-text" id="edit_asset_sku" value="Cheese slices"/>
+    </div>
+    <div class="form-field required">
+        <label for="edit_asset_type">Type</label>
+        <select class="input-select" id="edit_asset_type" name="asset_type">
+            <option value="0">Option 1</option>
+            <option value="1">Option 2</option>
+            <option value="2">Option 3</option>
+        </select>
+    </div>
+    <div class="form-field required">
+        <label for="edit_asset_category">Category</label>
+        <select class="input-select" id="edit_asset_category" name="asset_category">
+            <option value="0">Option 1</option>
+            <option value="1">Option 2</option>
+            <option value="2">Option 3</option>
+        </select>
+    </div>
+    <div class="form-field required disabled">
+        <label for="edit_asset_version">Version</label>
+        <input type="text" name="asset_version" class="input-text" id="edit_asset_version" value="1 of 3" disabled/>
+        <p>Automatically calculated</p>
+    </div>
+</div>

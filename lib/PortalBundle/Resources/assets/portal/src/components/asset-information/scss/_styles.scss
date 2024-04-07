@@ -1,0 +1,118 @@
+:root {
+    --asset-information-max-height: 768px; // Default value - actual height is updated via JS eventually
+}
+
+.asset-information {
+    @include text-md;
+    background-color: $color-grey-900;
+    box-sizing: border-box;
+    color: $color-grey-300;
+    display: block;
+    height: 100%;
+    max-height: var(--asset-information-max-height);
+    overflow: auto;
+    position: relative;
+    width: 100%;
+
+    &__download-link {
+        justify-content: center;
+        width: 100%;
+
+        &-wrapper {
+            background-color: $color-grey-900;
+            bottom: 0;
+            box-sizing: border-box;
+            left: 0;
+            padding: $spacing-m;
+            position: sticky;
+            width: 100%;
+        }
+    }
+
+    &__section {
+        margin: $spacing-m $spacing-l;
+
+        &:not(:last-of-type) {
+            border-bottom: 1px solid $color-grey-600;
+            margin-bottom: $spacing-l;
+            padding-bottom: $spacing-s;
+        }
+
+        &--collapsed {
+            .asset-information__section {
+                &-content {
+                    display: none;
+                }
+
+                &-title {
+                    strong {
+                        &:after {
+                            transform: rotate(180deg);
+                        }
+                    }
+                }
+            }
+        }
+
+        &--has-multiple-entries {
+            &:not(.asset-information__section--show-all) {
+                dl {
+                    &:not(:first-of-type) {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        &-content {
+            dl {
+                display: flex;
+                flex-wrap: wrap;
+                margin: $spacing-xl 0;
+
+                dd,
+                dt {
+                    line-height: 28px;
+                    margin: 0;
+                }
+
+                dd {
+                    width: 55%;
+                }
+
+                dt {
+                    width: 45%;
+                }
+
+                a {
+                    color: inherit;
+                    font-size: inherit;
+                }
+            }
+        }
+
+        &-title {
+            color: $color-white;
+            cursor: pointer;
+
+            strong {
+                align-items: center;
+                display: inline-flex;
+
+                &:after {
+                    background-image: url('#{$baseUrl}/media/icons/svg/asset-information-toggle.svg');
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-size: contain;
+                    content: '';
+                    height: 1.5em;
+                    width: 1.5em;
+                }
+            }
+        }
+
+        &-toggle-link {
+            color: $color-grey-300;
+        }
+    }
+}

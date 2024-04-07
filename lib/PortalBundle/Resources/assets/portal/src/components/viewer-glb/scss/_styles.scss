@@ -1,0 +1,216 @@
+#webgl {
+    position: relative;
+    top: 0;
+    left: 0;
+    outline: none;
+    background-color: #4b555e;
+}
+
+body {
+    &.viewer-obj__fullscreen--active {
+        .viewer-obj__inner-wrapper {
+            height: 100%;
+        }
+
+        .viewer-obj__toolbar {
+            bottom: unset;
+            position: fixed;
+            top: 32px;
+
+            .viewer-obj__zoom-controls-list {
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+                transform: translateY(33px);
+            }
+        }
+    }
+}
+
+.viewer-obj {
+    align-items: center;
+    aspect-ratio: 1.25;
+    background-color: $color-grey-700;
+    box-sizing: border-box;
+    display: flex;
+    height: auto;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+
+    &__canvas {
+        &-wrapper {
+            display: block;
+            height: auto;
+            max-height: 100%;
+            max-width: 100%;
+            overflow: visible;
+            width: auto;
+        }
+    }
+
+    &__fullscreen-button {
+        background-image: url("#{$baseUrl}/media/icons/svg/fullscreen.svg");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 50%;
+
+        &-wrapper {
+            align-items: center;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+        }
+    }
+
+    &__inner-wrapper {
+        align-items: center;
+        aspect-ratio: 1.25;
+        background-color: $color-grey-700;
+        box-sizing: border-box;
+        display: flex;
+        height: auto;
+        justify-content: center;
+        overflow: auto;
+        width: 100%;
+    }
+
+    &__toolbar {
+        bottom: $spacing-xxl;
+        color: $color-white;
+        display: flex;
+        flex-wrap: nowrap;
+        position: absolute;
+        right: $spacing-xxl;
+
+        button {
+            @include text-xs;
+            align-items: center;
+            background-color: $color-grey-900;
+            border: none;
+            color: $color-white;
+            display: inline-flex;
+            height: 32px;
+            justify-content: center;
+            width: 32px;
+
+            &[data-role="pdf_viewer_zoom_indicator"] {
+                background-image: url("#{$baseUrl}/media/icons/svg/pdf-zoom-arrow.svg");
+                background-position: right center;
+                background-repeat: no-repeat;
+                margin: 0 1px;
+                padding-right: $spacing-m;
+                width: auto;
+                white-space: nowrap;
+            }
+
+            &[data-role="pdf_viewer_decrease_zoom_button"] {
+                position: relative;
+
+                &:before {
+                    background-image: url("#{$baseUrl}/media/icons/svg/pdf-zoom-out.svg");
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-size: 50%;
+                    content: "";
+                    height: 100%;
+                    left: 0;
+                    position: absolute;
+                    top: 0;
+                    width: 100%;
+                }
+            }
+
+            &[data-role="pdf_viewer_increase_zoom_button"] {
+                position: relative;
+
+                &:before {
+                    background-image: url("#{$baseUrl}/media/icons/svg/pdf-zoom-in.svg");
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-size: 50%;
+                    content: "";
+                    height: 100%;
+                    left: 0;
+                    position: absolute;
+                    top: 0;
+                    width: 100%;
+                }
+            }
+
+            &[data-role="pdf_viewer_increase_zoom_button"] {
+                border-bottom-right-radius: 4px;
+            }
+        }
+    }
+
+    &__page-controls {
+        &-wrapper {
+            align-items: center;
+            background-color: $color-grey-900;
+            border-radius: 4px;
+            display: flex;
+            height: 32px;
+            justify-content: center;
+            margin-right: $spacing-m;
+            overflow: hidden;
+            position: relative;
+        }
+    }
+
+    &__zoom-controls {
+        &-wrapper {
+            align-items: center;
+            border-radius: 4px;
+            display: flex;
+            height: 32px;
+            margin-right: $spacing-m;
+            position: relative;
+
+            &:not(.viewer-obj__zoom-controls-wrapper--expanded) {
+                overflow: hidden;
+            }
+
+            .viewer-obj__zoom-controls-list {
+                display: none;
+                max-height: 96px;
+                overflow-y: auto;
+                position: absolute;
+                top: 0;
+                transform: translateY(-100%);
+
+                .viewer-obj__zoom-control {
+                    background-color: $color-grey-900;
+                    text-align: center;
+                    width: 100%;
+
+                    &--active {
+                        background-color: $color-grey-600;
+                    }
+                }
+            }
+
+            &--expanded {
+                button {
+                    &[data-role="pdf_viewer_zoom_indicator"] {
+                        background-image: none;
+                    }
+
+                    &[data-role="pdf_viewer_decrease_zoom_button"] {
+                        border-bottom-left-radius: 4px;
+                    }
+
+                    &[data-role="pdf_viewer_increase_zoom_button"] {
+                        border-bottom-right-radius: 4px;
+                    }
+                }
+
+                .viewer-obj__zoom-controls-list {
+                    border-top-left-radius: 4px;
+                    border-top-right-radius: 4px;
+                    display: block;
+                }
+            }
+        }
+    }
+}

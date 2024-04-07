@@ -1,0 +1,44 @@
+{% if settings.isPrintSectionEnabled %}
+    <div class="asset-information__section"
+         data-role="asset_information_section">
+        <div class="asset-information__section-title" data-role="asset_information_section_title"
+             tabindex="0">
+            <strong>{{ get_section_label_for_asset_detail_config(settings, 'printSectionTitle') }}</strong>
+        </div>
+        <div class="asset-information__section-content" data-role="asset_information_section_content">
+            <dl>
+                {% if settings.printSectionItems.data.printingprocess.enabled%}
+                    {% set value = get_asset_resource_metadata_value_by_key(item, 'PrintingProcess') %}
+                    {% if value %}
+                        <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'printSectionItems', 'printingprocess') }}</dt>
+                        <dd>{{ value }}</dd>
+                    {% endif %}
+                {% endif %}
+
+                {% if settings.printSectionItems.data.printingworkflow.enabled%}
+                    {% set value = get_asset_resource_metadata_value_by_key(item, 'PrintingWorkflow') %}
+                    {% if value %}
+                        <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'printSectionItems', 'printingworkflow') }}</dt>
+                        <dd>{{ value }}</dd>
+                    {% endif %}
+                {% endif %}
+
+                {% if settings.printSectionItems.data.epsonmaterial.enabled%}
+                    {% set value = get_asset_resource_metadata_value_by_key(item, 'EpsonMaterial') %}
+                    {% if value %}
+                        <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'printSectionItems', 'epsonmaterial') }}</dt>
+                        <dd>{{ value }}</dd>
+                    {% endif %}
+                {% endif %}
+
+                {% if settings.printSectionItems.data.substratematerial.enabled%}
+                    {% set value = get_asset_resource_metadata_value_by_key(item, 'SubstrateMaterial') %}
+                    {% if value %}
+                        <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'printSectionItems', 'substratematerial') }}</dt>
+                        <dd>{{ value }}</dd>
+                    {% endif %}
+                {% endif %}
+            </dl>
+        </div>
+    </div>
+{% endif %}

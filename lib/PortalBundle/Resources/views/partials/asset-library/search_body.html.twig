@@ -1,0 +1,56 @@
+{% if form %}
+    {% form_theme form '@FroqPortalBundle/form-theme/library_form_theme.html.twig' %}
+    {{ form_start(form, {'attr': {'class': 'main-form'}}) }}
+    <div class="breadcrumbs-wrapper">
+        <app-breadcrumbs>
+            {#                Breadcrumbs #}
+        </app-breadcrumbs>
+    </div>
+    <div class="toolbar">
+        <div class="toolbar__column-left">
+            <h2>Asset library</h2>
+        </div>
+        <div class="toolbar__column-right">
+            {{ form_row(form.query) }}
+            <app-results-counter class="results-counter">
+                <div>
+                    <span>Result</span>
+                </div>
+                <div>
+                    <strong>
+                        <span data-role="results_counter_text">{{ totalCount ?? '0' }}</span>
+                        <span>assets</span>
+                    </strong>
+                </div>
+            </app-results-counter>
+            {{ form_row(form.sort_by) }}
+        </div>
+    </div>
+    <div class="main-content flex">
+        <aside class="mr-l">
+            <app-filter-options class="filter-options"
+                                clear-all-link-text="Clear"
+                                url="{{ url('froq_portal.asset_library.search.fetch_form_and_results') }}">
+                <div class="filter-options__title-wrapper" data-role="filter_options_title_wrapper">
+                    <strong class="filter-options__title text-md">Filters</strong>
+                </div>
+                <div class="filter-options__list" data-role="filter_options_list">
+                    {% for filter in form.filters %}
+                        {% if filter.vars.name not in [ 'query', 'page', 'size', 'sort'] %}
+                            {{ form_row(filter, {}) }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </app-filter-options>
+        </aside>
+        <section>
+            <div class="content" id="content">
+                <div class="search-results__loading-screen">
+                    <span>Loading...</span>
+                </div>
+                {% include '@FroqPortalBundle/partials/asset-library/load_' ~ itemsLayout ~ '.html.twig' %}
+            </div>
+        </section>
+    </div>
+    {{ form_end(form) }}
+{% endif %}

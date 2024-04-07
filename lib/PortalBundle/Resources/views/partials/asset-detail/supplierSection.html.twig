@@ -1,0 +1,52 @@
+{% if settings.isSupplierSectionEnabled %}
+    <div class="asset-information__section"
+         data-role="asset_information_section"
+         data-hide-text="Hide other suppliers"
+         data-show-text="View all suppliers">
+        <div class="asset-information__section-title" data-role="asset_information_section_title"
+             tabindex="0">
+            <strong>{{ get_section_label_for_asset_detail_config(settings, 'supplierSectionTitle') }}</strong>
+        </div>
+        <div class="asset-information__section-content"
+             data-role="asset_information_section_content">
+            {% if products is not empty %}
+                {% for product in products %}
+                    {% set supplier = product.supplier %}
+                    {% if supplier %}
+                        <dl>
+                            {% if settings.supplierSectionItems.data.supplier_company.enabled and supplier.company %}
+                                <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'supplierSectionItems', 'supplier_company') }}</dt>
+                                <dd>{{ supplier.company }}</dd>
+                            {% endif %}
+
+                            {% if settings.supplierSectionItems.data.supplier_contact.enabled and supplier.contact %}
+                                <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'supplierSectionItems', 'supplier_contact') }}</dt>
+                                <dd>{{ supplier.contact }}</dd>
+                            {% endif %}
+
+                            {% if settings.supplierSectionItems.data.supplier_street_and_number.enabled and supplier.contact and supplier.streetNumber %}
+                                <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'supplierSectionItems', 'supplier_street_and_number') }}</dt>
+                                <dd>{{ supplier.streetName }} + {{ supplier.streetNumber }}</dd>
+                            {% endif %}
+
+                            {% if settings.supplierSectionItems.data.supplier_postal_code_and_city.enabled and supplier.postalCode and supplier.city %}
+                                <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'supplierSectionItems', 'supplier_postal_code_and_city') }}</dt>
+                                <dd>{{ supplier.postalCode }} + {{ supplier.city }}</dd>
+                            {% endif %}
+
+                            {% if settings.supplierSectionItems.data.supplier_phone.enabled and supplier.phoneNumber %}
+                                <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'supplierSectionItems', 'supplier_phone') }}</dt>
+                                <dd>{{ supplier.phoneNumber }}</dd>
+                            {% endif %}
+
+                            {% if settings.supplierSectionItems.data.supplier_email.enabled and supplier.email %}
+                                <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'supplierSectionItems', 'supplier_email') }}</dt>
+                                <dd>{{ supplier.email }}</dd>
+                            {% endif %}
+                        </dl>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endif %}

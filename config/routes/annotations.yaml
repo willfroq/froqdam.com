@@ -1,0 +1,27 @@
+froq_portal:
+    resource: '@FroqPortalBundle/Controller/'
+    type:     annotation
+    prefix:   /portal
+    trailing_slash_on_root: false
+
+froq_portal_asset_library:
+    resource: '@FroqPortalBundle/Controller/AssetLibrary/'
+    type: annotation
+    prefix: /portal/asset-library
+
+froq_asset:
+    resource: '@FroqAssetBundle/Controller/'
+    type: annotation
+    prefix: /
+
+froq_portal_api:
+    resource: '@FroqPortalBundle/Api/Controller/'
+    type:     annotation
+    prefix:   /portal/api
+    trailing_slash_on_root: false
+
+froq_portal_webhook:
+    resource: '@FroqPortalBundle/Webhook/Controller/'
+    type:     annotation
+    prefix:   /webhook
+    trailing_slash_on_root: false

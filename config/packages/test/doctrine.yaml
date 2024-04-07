@@ -1,0 +1,27 @@
+imports:
+    - { resource: ../../config.yaml }
+
+# this cache is used during tests when setting up pimcore
+framework:
+    cache:
+        pools:
+            pimcore.cache.pool:
+                public: true
+                tags: true
+                default_lifetime: 31536000  # 1 year
+                adapter: cache.adapter.array
+
+doctrine:
+    dbal:
+        connections:
+            default:
+                host: '%env(TEST_FROQ_DB_HOST)%'
+                port: '%env(TEST_FROQ_DB_PORT)%'
+                dbname: '%env(TEST_FROQ_DB_NAME)%'
+                user: '%env(TEST_FROQ_DB_USER)%'
+                password: '%env(TEST_FROQ_DB_PWD)%'
+                unix_socket: '%env(TEST_FROQ_DB_SOCKET)%'
+                mapping_types:
+                    enum: string
+                    bit: boolean
+                server_version: '%env(TEST_FROQ_DB_VERSION)%'

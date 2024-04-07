@@ -1,0 +1,27 @@
+{% set itemId = item.id ?? '' %}
+{% set itemAsset = item.asset ?? '' %}
+{% if (itemId or itemAsset) %}
+    <div class="list-item__actions-wrapper">
+        <button class="list-item__actions-button" data-role="list_item_actions_button"></button>
+        <div class="list-item__actions-dropdown" data-role="list_item_actions_dropdown">
+            <ul class="list-item__actions-dropdown-list">
+                {% if itemId %}
+                    <li class="list-item__actions-dropdown-list-item">
+                        <a data-role="list_item_goto_link"
+                           href="{{ url('froq_portal.asset_library.detail', { 'id' : itemId }) }}">Go to item</a>
+                    </li>
+                {% endif %}
+
+                <li class="list-item__actions-dropdown-list-item">
+                    {% if itemAsset %}
+                        {% set itemAssetLink = portal_asset_path(itemAsset) %}
+                        {% if itemAssetLink %}
+                            <app-download-asset href="{{ itemAssetLink }}">Download asset
+                            </app-download-asset>
+                        {% endif %}
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endif %}

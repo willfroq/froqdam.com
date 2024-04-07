@@ -1,0 +1,67 @@
+<app-context>
+    <div class="toolbar">
+        {% include '@FroqPortalBundle/partials/includes/table-dropdown-filter.html.twig' with {'list' : assetTypeList} only %}
+        <app-sort-button class="sort-button">
+            <div class="sort-button__selector-wrapper">
+                <button class="sort-button__selector"
+                        aria-label="Sort by"
+                        data-role="sort_button_selector">File name (ASC)
+                </button>
+            </div>
+            <div class="sort-button__list-wrapper">
+                <ul class="sort-button__list" data-role="sort_button_list">
+                    <li data-role="sort_button_list_item"
+                        data-code="file_name"
+                        data-sorting-direction="asc">
+                        File name (ASC)
+                    </li>
+                    <li data-role="sort_button_list_item"
+                        data-code="file_name"
+                        data-sorting-direction="desc">
+                        File name (DESC)
+                    </li>
+                    <li data-role="sort_button_list_item"
+                        data-code="asset_type"
+                        data-sorting-direction="asc">
+                        Type (ASC)
+                    </li>
+                    <li data-role="sort_button_list_item"
+                        data-code="asset_type"
+                        data-sorting-direction="desc">
+                        Type (DESC)
+                    </li>
+                </ul>
+            </div>
+        </app-sort-button>
+    </div>
+    <div>
+        <app-list class="list-container"
+                  load-on-scroll="false"
+                  url="{{ url }}">
+            <div class="list" data-role="list">
+                <div class="list-header" data-role="list_header">
+                    <div>
+                        <strong>Thumbnail</strong>
+                    </div>
+                    <div data-sortable="true" data-sort-by="file_name">
+                        <strong>File name</strong>
+                    </div>
+                    <div>
+                        <strong>SKU</strong>
+                    </div>
+                    <div data-sortable="true" data-sort-by="asset_type">
+                        <strong>Type</strong>
+                    </div>
+                    <div>
+                        <strong>Project name</strong>
+                    </div>
+                    <div>
+                        <strong>Actions</strong>
+                    </div>
+                </div>
+                <!-- Items placeholder -->
+            </div>
+        </app-list>
+        {% include '@FroqPortalBundle/partials/includes/table-pagination.html.twig' %}
+    </div>
+</app-context>

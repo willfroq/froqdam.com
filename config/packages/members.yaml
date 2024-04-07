@@ -1,0 +1,7 @@
+members:
+    user:
+        adapter:
+            class_name: 'User' # default was 'MembersUser'
+    group:
+        adapter:
+            class_name: 'UserGroup' # default was 'MembersGroup'

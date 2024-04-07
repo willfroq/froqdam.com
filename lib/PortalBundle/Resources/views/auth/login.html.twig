@@ -1,0 +1,53 @@
+{% extends '@FroqPortalBundle/portal-layout.html.twig' %}
+
+{% block header %}
+    {# The header is overriden in login page (do not remove this) #}
+{% endblock %}
+
+{% block body %}
+
+    <main>
+        <app-login-form class="login-form">
+            <div class="login-form__inner-container">
+                <h3>
+                    <span>Log into your account</span>
+                </h3>
+                {{ form_start(form, { 'method': 'POST', 'action': path('froq_portal.auth.login_check'), 'attr': {'novalidate': 'novalidate', 'class': 'form mt-xxl' } }) }}
+                <div class="form-field email required">
+                    <label for="{{ form._username.vars.id }}">{{ field_label(form._username) }}</label>
+                    <div class="control" data-role="email_field_control">
+                        {{ form_widget(form._username,{'attr' : {'class' : 'input-text', 'placeholder': field_label(form._username)}}) }}
+                    </div>
+                    {% set error = portal_login_error() %}
+                    {% if error is not empty %}
+                        <div class="login-form-error-message">
+                            <span>Error: {{ error }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="form-field password required mt-s mb-xxl">
+                    <label for="{{ form._password.vars.id }}">{{ field_label(form._password) }}</label>
+                    <div class="control" data-role="password_field_control">
+                        {{ form_widget(form._password,{'attr' : {'class' : 'input-text', 'placeholder': field_label(form._password)}}) }}
+                    </div>
+                </div>
+                <div style="margin: 0 0 16px 0;font-size: 1rem;">
+                    <label for="{{ form._remember_me.vars.id }}">{{ field_label(form._remember_me) }}</label>
+                    {{ form_widget(form._remember_me) }}
+                </div>
+                <div>
+                    {{ form_widget(form._submit,{'attr' : {'class' : 'button button-md button-primary login-form__submit-button'}}) }}
+                </div>
+                {{ form_end(form) }}
+
+                <div style="padding-top: 25px">
+                    <a href="{{ path('connect_azure_start') }}" class="button button-md microsoft-btn">
+                        <img src="{{ mix('build/portal/media/icons/svg/ms-icon.svg') }}" class="microsoft-icon" alt="microsoft-login-button">
+                        <span>Sign in with Microsoft</span>
+                    </a>
+                </div>
+            </div>
+        </app-login-form>
+    </main>
+
+{% endblock body %}

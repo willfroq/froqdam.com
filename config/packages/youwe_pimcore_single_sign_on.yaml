@@ -1,0 +1,16 @@
+youwe_pimcore_single_sign_on:
+    idps:
+        onelogin:
+            user:
+                attributeMapping:
+                    name: 'User.email'
+                    email: 'User.email'
+                    firstname: 'User.FirstName'
+                    lastname: 'User.LastName'
+
+                folder: 'SSO/Youwe-OneLogin'
+                roles:
+                    ssoIndicator: 'OneLogin'
+                    conditional:
+                        samlRoleDefault:
+                            attribute: 'Role'

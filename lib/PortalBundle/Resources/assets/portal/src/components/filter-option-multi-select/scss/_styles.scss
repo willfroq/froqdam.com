@@ -1,0 +1,5 @@
+@import 'styles/_mixins.scss';
+
+.filter-option-multi-select {
+    @include multi-select-filter(5, #E6F5F3);
+}

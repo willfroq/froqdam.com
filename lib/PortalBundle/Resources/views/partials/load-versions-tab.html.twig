@@ -1,0 +1,73 @@
+<app-context>
+    <div class="toolbar">
+        <app-sort-button class="sort-button">
+            <div class="sort-button__selector-wrapper">
+                <button class="sort-button__selector"
+                        aria-label="Sort by"
+                        data-role="sort_button_selector">File name (ASC)
+                </button>
+            </div>
+            <div class="sort-button__list-wrapper">
+                <ul class="sort-button__list" data-role="sort_button_list">
+                    <li data-role="sort_button_list_item"
+                        data-code="file_name"
+                        data-sorting-direction="asc">
+                        File name (ASC)
+                    </li>
+                    <li data-role="sort_button_list_item"
+                        data-code="file_name"
+                        data-sorting-direction="desc">
+                        File name (DESC)
+                    </li>
+                    <li data-role="sort_button_list_item"
+                        data-code="modification_date"
+                        data-sorting-direction="asc">
+                        Modification date (ASC)
+                    </li>
+                    <li data-role="sort_button_list_item"
+                        data-code="modification_date"
+                        data-sorting-direction="desc">
+                        Modification date (DESC)
+                    </li>
+                    <li data-role="sort_button_list_item"
+                        data-code="version"
+                        data-sorting-direction="asc">
+                        Version (ASC)
+                    </li>
+                    <li data-role="sort_button_list_item"
+                        data-code="version"
+                        data-sorting-direction="desc">
+                        Version (DESC)
+                    </li>
+                </ul>
+            </div>
+        </app-sort-button>
+    </div>
+    <div>
+        <app-list class="list-container"
+                  load-on-scroll="false"
+                  url="{{ url }}">
+            <div class="list" data-role="list">
+                <div class="list-header" data-role="list_header">
+                    <div>
+                        <strong>Thumbnail</strong>
+                    </div>
+                    <div data-sortable="true" data-sort-by="file_name">
+                        <strong>File name</strong>
+                    </div>
+                    <div data-sortable="true" data-sort-by="modification_date">
+                        <strong>Modification date</strong>
+                    </div>
+                    <div data-sortable="true" data-sort-by="version">
+                        <strong>Version</strong>
+                    </div>
+                    <div>
+                        <strong>Actions</strong>
+                    </div>
+                </div>
+                <!-- Items placeholder -->
+            </div>
+        </app-list>
+        {% include '@FroqPortalBundle/partials/includes/table-pagination.html.twig' %}
+    </div>
+</app-context>

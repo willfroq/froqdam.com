@@ -1,0 +1,31 @@
+$login-form-error-message__background-color: #F8D7DA;
+$login-form-error-message__border-color: #f5C6CB;
+$login-form-error-message__color: #721C24;
+
+body {
+    .login-form {
+        display: flex;
+        justify-content: center;
+        margin-top: 88px;
+
+        &__inner-container {
+            max-width: 480px;
+        }
+
+        &__submit-button {
+            justify-content: center;
+            padding: $spacing-s $spacing-l;
+            width: 100%;
+        }
+
+        &-error-message {
+            @include text-sm;
+            background-color: $login-form-error-message__background-color;
+            border: 1px solid $login-form-error-message__border-color;
+            border-radius: 8px;
+            color: $login-form-error-message__color;
+            margin-top: $spacing-s;
+            padding: $spacing-s $spacing-m;
+        }
+    }
+}

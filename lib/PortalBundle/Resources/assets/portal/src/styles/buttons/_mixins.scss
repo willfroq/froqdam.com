@@ -1,0 +1,11 @@
+@use 'sass:map';
+
+@mixin generateButtonSizeClasses() {
+    @each $typographyStyles in $button__typography {
+        .button-#{map-get($typographyStyles, 'classSuffix')} {
+            font-size: map-get($typographyStyles, 'fontSize');
+            line-height: map-get($typographyStyles, 'lineHeight');
+            padding: map-get($typographyStyles, 'padding');
+        }
+    }
+}

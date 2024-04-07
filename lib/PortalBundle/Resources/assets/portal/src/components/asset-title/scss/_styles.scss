@@ -1,0 +1,21 @@
+.asset-title {
+    background-color: $color-grey-900;
+    border-bottom: 1px solid $color-grey-700;
+    color: $color-white;
+    display: block;
+    padding: $spacing-m $spacing-l;
+
+    &:empty {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &:not(:empty) {
+        * {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+}

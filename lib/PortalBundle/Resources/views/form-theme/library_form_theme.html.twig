@@ -1,0 +1,210 @@
+{% block froq_multiselect_checkbox_filter_row %}
+    {% set expanded = false %}
+    {% for child in form %}
+        {% if not expanded and child.vars.checked %}
+            {% set expanded = true %}
+        {% endif %}
+    {% endfor %}
+    <app-filter-option-multi-select
+        class="{% if expanded %}filter-option--expanded {% endif %} {{ form.vars.attr.class|default('') }} filter-option filter-option-multi-select"
+        filter-code="{{ form.vars.name }}"
+        checkboxes-list-expand-text="View all"
+        checkboxes-list-collapse-text="View less"
+        url="">
+        <div class="filter-option__title" data-role="filter_option_title">
+            <strong>{{ form.vars.label }}</strong>
+            <button class="filter-option__trigger" data-role="filter_option_trigger"></button>
+        </div>
+        <div class="filter-option__content" data-role="filter_option_content">
+            <div class="filter-option__search-field-wrapper" data-role="filter_option_search_form">
+                {#                <input aria-label="{{ form.vars.label }}" #}
+                {#                       data-role="filter_option_search_field" #}
+                {#                       class="input-text filter-option__search-field" #}
+                {#                       placeholder="{{ form.vars.label }}" #}
+                {#                       type="text" #}
+                {#                /> #}
+
+                <!-- Remove the following input after options search is enabled again -->
+                <input type="hidden" data-role="filter_option_search_field"/>
+            </div>
+            <ul class="filter-option-multi-select__checkboxes-list"
+                data-role="filter_option_checkboxes_list">
+                {% for child in form %}
+                    {% set id = 'filter_option_' ~ form.vars.name ~ '_checkbox_' ~ (loop.index - 1) %}
+                    <li {% if child.vars.checked %}class="filter-option-multi-select__checkboxes-list-item--active"{% endif %}>
+                        <input class="input-checkbox"
+                               name="{{ child.vars.full_name }}"
+                               data-role="filter_option_multi_select_checkbox"
+                               value="{{ (child.vars.value) }}"
+                               id="{{ id }}"
+                               type="checkbox"
+                            {% if child.vars.checked %} checked {% endif %}/>
+                        <label for="{{ id }}">
+                            <span>{{ child.vars.value }}</span>
+                            <span>({{ child.vars.attr['data-doc-count'] }})</span>
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </app-filter-option-multi-select>
+{% endblock %}
+
+{% block froq_date_range_filter_row %}
+    {% set expanded = (form.startDate.vars.value or form.endDate.vars.value) ? true : false %}
+    <app-filter-option-date-range
+        class="{% if expanded %} filter-option--expanded {% endif %} {{ form.vars.attr.class|default('') }} filter-option filter-option-date-range"
+        filter-code="{{ form.vars.name }}">
+        <div class="filter-option__title" data-role="filter_option_title">
+            <strong>{{ form.vars.label }}</strong>
+            <button class="filter-option__trigger" data-role="filter_option_trigger"></button>
+        </div>
+        <div class="filter-option__content" data-role="filter_option_content">
+            <div data-role="filter_option_range_min_form">
+                <label for="{{ form.startDate.vars.id }}">{{ form.startDate.vars.label }}</label>
+                <div class="filter-option-date-range__field-wrapper" data-value="{{ form.startDate.vars.value }}">
+                    <input data-role="filter_option_range_min"
+                           name="{{ form.startDate.vars.full_name }}"
+                           value="{{ form.startDate.vars.value }}"
+                           id="{{ form.startDate.vars.id }}"
+                           aria-label="{{ form.startDate.vars.label }}"
+                           class="input-text filter-option__field"
+                           min="0"
+                           placeholder="{{ form.startDate.vars.label }}"
+                           type="date"
+                    />
+                </div>
+            </div>
+            <div data-role="filter_option_range_max_form">
+                <label for="{{ form.endDate.vars.id }}">{{ form.endDate.vars.label }}</label>
+                <div class="filter-option-date-range__field-wrapper" data-value="{{ form.endDate.vars.value }}">
+                    <input data-role="filter_option_range_max"
+                           name="{{ form.endDate.vars.full_name }}"
+                           value="{{ form.endDate.vars.value }}"
+                           id="{{ form.endDate.vars.id }}"
+                           aria-label="{{ form.endDate.vars.label }}"
+                           class="input-text filter-option__field"
+                           min="0"
+                           placeholder="{{ form.endDate.vars.label }}"
+                           type="date"
+                    />
+                </div>
+            </div>
+        </div>
+    </app-filter-option-date-range>
+{% endblock %}
+
+{% block froq_number_range_filter_row %}
+    {% set expanded = (form.min.vars.value or form.max.vars.value) ? true : false %}
+    <app-filter-option-number-range
+        class="{% if expanded %}filter-option--expanded {% endif %} {{ form.vars.attr.class|default('') }} filter-option filter-option-number-range"
+        filter-code="{{ form.vars.name }}">
+        <div class="filter-option__title" data-role="filter_option_title">
+            <strong>{{ form.vars.label }}</strong>
+            <button class="filter-option__trigger" data-role="filter_option_trigger"></button>
+        </div>
+        <div class="filter-option__content" data-role="filter_option_content">
+            <div data-role="filter_option_range_min_form">
+                <label for="{{ form.min.vars.id }}">{{ form.min.vars.label }}</label>
+                <input id="{{ form.min.vars.id }}"
+                       name="{{ form.min.vars.full_name }}"
+                       value="{{ form.min.vars.value }}"
+                       data-role="filter_option_range_min"
+                       class="input-text filter-option__field"
+                       min="0"
+                       placeholder="1000"
+                       type="number"
+                />
+            </div>
+            <div data-role="filter_option_range_max_form">
+                <label for="{{ form.max.vars.id }}">{{ form.max.vars.label }}</label>
+                <input id="{{ form.max.vars.id }}"
+                       name="{{ form.max.vars.full_name }}"
+                       value="{{ form.max.vars.value }}"
+                       data-role="filter_option_range_max"
+                       class="input-text filter-option__field"
+                       min="0"
+                       placeholder="1000"
+                       type="number"
+                />
+            </div>
+        </div>
+    </app-filter-option-number-range>
+{% endblock %}
+
+{% block froq_input_filter_row %}
+    {% set expanded = form.vars.value ? true : false %}
+    <app-filter-option-input
+        class="{% if expanded %}filter-option--expanded {% endif %} {{ form.vars.attr.class|default('') }} filter-option filter-option-input"
+        filter-code="{{ form.vars.name }}">
+        <div class="filter-option__title" data-role="filter_option_title">
+            <strong>{{ form.vars.label }}</strong>
+            <button class="filter-option__trigger" data-role="filter_option_trigger"></button>
+        </div>
+        <div class="filter-option__content" data-role="filter_option_content">
+            <div class="filter-option__search-field-wrapper"
+                 data-role="filter_option_search_form">
+                <input aria-label="{{ form.vars.label }}"
+                       name="{{ full_name }}"
+                       value="{{ form.vars.value }}"
+                       id="{{ form.vars.id }}"
+                       data-role="filter_option_search_field"
+                       class="input-text filter-option__search-field"
+                       placeholder="{{ form.vars.label }}"
+                       type="text"
+                />
+            </div>
+        </div>
+    </app-filter-option-input>
+{% endblock %}
+
+{% block _query_row %}
+    <app-search-bar class="search-bar mr-m">
+        <div data-role="search_form">
+            <input id="{{ form.vars.id }}"
+                   value="{{ form.vars.value }}"
+                   name="{{ full_name }}"
+                   class="input-text text-sm"
+                   aria-label="search"
+                   type="text"
+                   data-role="search_input"
+                   placeholder="{{ form.vars.attr.placeholder }}"
+            />
+        </div>
+    </app-search-bar>
+{% endblock %}
+
+{% block _sort_by_row %}
+    <app-sort-button class="sort-button">
+        <div class="sort-button__selector-wrapper">
+            <button class="sort-button__selector"
+                    type="button"
+                    aria-label="Sort by"
+                    data-role="sort_button_selector">
+                {% for child in form %}
+                    {% if (child.vars.checked) %}
+                        {{ child.vars.label ~ ' (' ~ (constant('Froq\\PortalBundle\\Manager\\ES\\AssetLibrary\\AssetLibSortManager::DEFAULT_SORT_DIRECTION') | upper) ~ ')' }}
+                    {% endif %}
+                {% endfor %}
+            </button>
+        </div>
+        <div class="sort-button__list-wrapper">
+            <ul class="sort-button__list" data-role="sort_button_list">
+                {% set sortKeys = get_configured_sort_keys_for_user(form.vars.attr.user) %}
+                {% for child in form %}
+                    {% if child.vars.value == constant('Froq\\PortalBundle\\Manager\\ES\\AssetLibrary\\AssetLibSortManager::DEFAULT_SORT_BY') %}
+                        <li data-role="sort_button_list_item" data-code="{{ child.vars.value }}"
+                            data-sorting-direction="asc">{{ child.vars.label ~ ' (ASC)' }}</li>
+                        <li data-role="sort_button_list_item" data-code="{{ child.vars.value }}"
+                            data-sorting-direction="desc">{{ child.vars.label ~ ' (DESC)' }}</li>
+                    {% elseif child.vars.value in sortKeys %}
+                        <li data-role="sort_button_list_item" data-code="{{ child.vars.value }}"
+                            data-sorting-direction="asc">{{ child.vars.label ~ ' (ASC)' }}</li>
+                        <li data-role="sort_button_list_item" data-code="{{ child.vars.value }}"
+                            data-sorting-direction="desc">{{ child.vars.label ~ ' (DESC)' }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </app-sort-button>
+{% endblock %}

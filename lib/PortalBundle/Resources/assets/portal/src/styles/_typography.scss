@@ -1,0 +1,66 @@
+@import 'typography/_fonts';
+@import 'typography/_mixins';
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: $spacing-s 0;
+}
+
+body {
+    @include text-xs;
+    font-family: Montserrat, Arial, sans-serif;
+}
+
+strong {
+    font-weight: $typography__font-weight--bold;
+}
+
+h1,
+.heading-2xl {
+    @include heading-2xl;
+}
+
+h2,
+.heading-xl {
+    @include heading-xl;
+}
+
+h3,
+.heading-lg {
+    @include heading-lg;
+}
+
+h4,
+.heading-md {
+    @include heading-md;
+}
+
+h5,
+.heading-sm {
+    @include heading-sm;
+}
+
+h6,
+.heading-xs {
+    @include heading-xs;
+}
+
+.text-lg {
+    @include text-lg;
+}
+
+.text-md {
+    @include text-md;
+}
+
+.text-sm {
+    @include text-sm;
+}
+
+.text-xs {
+    @include text-xs;
+}

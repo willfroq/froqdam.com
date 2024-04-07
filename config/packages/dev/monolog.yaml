@@ -1,0 +1,8 @@
+monolog:
+    handlers:
+        streamed:
+            type: rotating_file
+            level: debug
+            path: "%kernel.logs_dir%/%kernel.environment%.log"
+            max_files: 10
+            channels: ['!deprecation']

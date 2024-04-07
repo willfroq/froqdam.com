@@ -1,0 +1,78 @@
+@import '../../filter-option-multi-select/scss/styles/_mixins.scss';
+
+.filter-option-category {
+    @include multi-select-filter(6, #E6F5F3);
+}
+
+body {
+    .filter-option-category {
+        &__checkboxes-list {
+            &-item {
+                &--has-children {
+                    flex-wrap: wrap;
+                    height: auto;
+
+                    &.filter-option-category__checkboxes-list-item--children-list-expanded {
+                        > .children-list {
+                            display: block;
+                        }
+
+                        > .top-level-selector {
+                            > .children-list__trigger {
+                                transform: rotate(180deg);
+                            }
+                        }
+                    }
+
+                    &:hover {
+                        background-color: unset;
+                    }
+
+                    > .children-list,
+                    .top-level-selector {
+                        width: 100%;
+                    }
+
+                    ul {
+                        padding-left: $spacing-m;
+
+                        li {
+                            box-sizing: border-box;
+                        }
+                    }
+
+                    .children-list {
+                        display: none;
+                    }
+
+                    .top-level-selector {
+                        align-items: center;
+                        display: flex;
+                        position: relative;
+
+                        .children-list__trigger {
+                            @extend .filter-option__trigger;
+                            right: 0;
+                            z-index: 10;
+                        }
+                    }
+                }
+            }
+
+            li {
+                margin: $spacing-xs 0;
+                padding: 0;
+            }
+
+            ul {
+                margin-top: $spacing-xs;
+            }
+        }
+
+        .filter-option-multi-select__checkboxes-list-item--active {
+            input {
+                left: 0;
+            }
+        }
+    }
+}

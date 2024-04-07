@@ -1,0 +1,108 @@
+@import 'forms/_mixins.scss';
+
+input[type="date"] {
+    color: $color-grey-500;
+}
+
+.form {
+    .control {
+        position: relative;
+
+        .password-visibility-toggle-button {
+            background-color: transparent;
+            background-image: url('#{$baseUrl}/media/icons/svg/eye-solid.svg');
+            background-position: center;
+            background-size: contain;
+            border: none;
+            height: 20px;
+            outline: none;
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+        }
+    }
+}
+
+.form-field {
+    &.disabled {
+        label,
+        p {
+            color: $color-grey-300 !important;
+        }
+    }
+
+    &.required {
+        label {
+            color: $color-black;
+            font-weight: 600;
+            margin-bottom: $spacing-xs;
+
+            &:after {
+                color: $color-delayed-red;
+                content: '*';
+                display: inline-block;
+                margin-left: $spacing-xs;
+            }
+        }
+    }
+
+    input,
+    label,
+    select,
+    textarea {
+        display: block;
+        width: 100%;
+    }
+}
+
+.input-checkbox,
+.input-radio {
+    height: 16px;
+    width: 16px;
+}
+
+.input-select {
+    @include placeholder-color($color-grey-500);
+    @include text-md;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background-color: $color-white;
+    background-image: url('#{$baseUrl}/media/icons/svg/chevron-down.svg');
+    background-position: right 5px center;
+    background-repeat: no-repeat;
+    border: 1px solid $color-grey-200;
+    border-radius: 8px;
+    height: $form-element-input__height;
+    padding: $spacing-s $spacing-l $spacing-s $spacing-m;
+
+    &:hover {
+        &:focus {
+            background-image: url('#{$baseUrl}/media/icons/svg/chevron-up.svg');
+        }
+    }
+}
+
+.input-text {
+    @include placeholder-color($color-grey-500);
+    @include text-md;
+    background-color: $color-white;
+    border: 1px solid $color-grey-200;
+    border-radius: $form-element-input__border-radius;
+    box-sizing: border-box;
+    height: $form-element-input__height;
+    padding: $form-element-input__padding;
+
+    &:active,
+    &:focus {
+        border: $color-select-blue;
+        box-shadow: $form-element-input__box-shadow--focus;
+        outline: none;
+    }
+
+    &[disabled] {
+        background-color: $color-grey-200;
+        color: $color-grey-400;
+    }
+}

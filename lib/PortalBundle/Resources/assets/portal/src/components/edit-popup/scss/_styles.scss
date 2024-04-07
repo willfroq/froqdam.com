@@ -1,0 +1,91 @@
+@keyframes activatePopupOverlay {
+    0% {
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    100% {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+}
+
+body {
+    &.has-active-edit-popup {
+        &:before {
+            animation: activatePopupOverlay 500ms forwards;
+            content: '';
+            height: 100%;
+            position: fixed;
+            z-index: 1000;
+            width: 100%;
+        }
+    }
+
+    .edit-popup {
+        height: 100%;
+        left: 50%;
+        max-height: 574px;
+        max-width: 598px;
+        overflow: hidden;
+        position: fixed;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        z-index: 1010;
+
+        &.edit-popup--active {
+            form {
+                top: 0;
+            }
+        }
+
+        form {
+            background-color: $color-white;
+            position: absolute;
+            transition: top 500ms ease-out;
+            top: 999px;
+            width: 100%;
+        }
+
+        &__close-popup-button {
+            background-color: transparent;
+            background-image: url('#{$baseUrl}/media/icons/svg/close.svg');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            border: none;
+            display: inline-block;
+            height: 32px;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            width: 32px;
+        }
+
+        &-form {
+            &__content {
+                padding: $spacing-l;
+
+                .form-field {
+                    margin-bottom: $spacing-m;
+                }
+            }
+
+            &__footer {
+                box-shadow: -1px 0 12px 5px $color-grey-200;
+                display: table;
+                width: 100%;
+
+                > div {
+                    display: table-cell;
+                    padding: $spacing-m;
+                    width: 50%;
+                }
+            }
+
+            &__header {
+                padding: $spacing-m $spacing-l;
+                position: relative;
+            }
+        }
+    }
+}

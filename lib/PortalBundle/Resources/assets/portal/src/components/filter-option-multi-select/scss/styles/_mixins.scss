@@ -1,0 +1,89 @@
+@mixin multi-select-filter($threshold, $filter-option-multi-select__active-checkbox__background-color) {
+    &__checkboxes-list {
+        @include reset-list-styles;
+        display: flex;
+        flex-wrap: wrap;
+        padding-left: 0;
+
+        &:not(.filter-option-multi-select__checkboxes-list--expanded) {
+            li {
+                &:nth-of-type(1n+#{$threshold}) {
+                    display: none;
+                }
+            }
+        }
+
+        &-item {
+            &--active {}
+        }
+
+        &-toggle {
+            color: $color-pim;
+            cursor: pointer;
+        }
+
+        li {
+            align-items: center;
+            display: flex;
+            height: 30px;
+            margin: 0 -4px 4px;
+            padding: 4px;
+            transition: background-color 250ms ease;
+            width: 100%;
+
+            &:hover {
+                background-color: $color-grey-100;
+                border-radius: 4px;
+            }
+
+            input {
+                margin-right: $spacing-s;
+            }
+
+            .filter-highlight-text {
+                font-weight: bold;
+            }
+        }
+
+        .filter-option-multi-select__checkboxes-list-item--active {
+            background-color: $filter-option-multi-select__active-checkbox__background-color;
+            border-radius: 4px;
+            display: flex !important; // Ensure active checkboxes are never hidden
+            padding-left: 34px;
+            position: relative;
+
+            &:before {
+                background-color: $filter-option-multi-select__active-checkbox__background-color;
+                background-image: url('#{$baseUrl}/media/icons/svg/checkmark-multiselect-filter.svg');
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: contain;
+                content: '';
+                height: 16px;
+                left: $spacing-s;
+                position: absolute;
+                width: 16px;
+                z-index: 0;
+            }
+
+            input {
+                cursor: pointer;
+                height: 100%;
+                left: $spacing-s;
+                opacity: 0;
+                position: absolute;
+                width: 100%;
+                z-index: 10;
+            }
+        }
+    }
+
+    // Remove this when filter options search for multi-select will be enabled again
+    .filter-option__search-field-wrapper {
+        display: none;
+
+        + ul {
+            margin-top: 0;
+        }
+    }
+}

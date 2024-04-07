@@ -1,0 +1,13 @@
+youwe_pimcore_single_sign_on:
+    idps:
+        onelogin:
+            idp:
+                metadataUrl: 'https://app-eu.onelogin.com/saml/metadata/4696774f-ea1f-4e19-ac76-df003e88699c'
+            user:
+                roles:
+                    conditional:
+                        rules:
+                            admin:
+                                contains:
+                                    - 'customer-froq'
+                                    - ['circle-pim-rotterdam', 'circle-implementation-consultants', 'role-implementation-consultant']

@@ -1,0 +1,58 @@
+@use 'sass:map';
+@use 'sass:math';
+
+@mixin generateSpacingClasses() {
+    $properties: (
+        m: 'margin',
+        p: 'padding'
+    );
+    $sides: (
+        t: 'top',
+        r: 'right',
+        b: 'bottom',
+        l: 'left'
+    );
+    $sizes: (
+        xs: $spacing-xs,
+        s: $spacing-s,
+        m: $spacing-m,
+        l: $spacing-l,
+        xl: $spacing-xl,
+        xxl: $spacing-xxl,
+        xxxl: $spacing-xxxl,
+    );
+
+    @each $propertyCode, $property in $properties {
+        @each $sideCode, $side in $sides {
+            @each $sizeCode, $size in $sizes {
+                .#{$propertyCode + '' + $sideCode}-#{$sizeCode} {
+                    #{$property}-#{$side}: $size;
+                }
+            }
+        }
+    }
+}
+
+@mixin generateLayoutColumnsClasses() {
+    @for $i from 1 through $layout-columns {
+        $width: (math.div(100%, $layout-columns)) * $i;
+
+        .col-#{$i} {
+            width: #{$width};
+        }
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: nowrap;
+        width: 100%;
+
+        &-same-height-columns {
+            display: block;
+
+            [class^="col"] {
+                float: left;
+            }
+        }
+    }
+}

@@ -1,0 +1,60 @@
+@mixin heading-2xl {
+    font-size: $heading-2xl__font-size--desktop;
+    font-weight: $heading-2xl__font-weight--desktop;
+    line-height: $heading-2xl__line-height--desktop;
+}
+
+@mixin heading-xl {
+    font-size: $heading-xl__font-size--desktop;
+    font-weight: $heading-xl__font-weight--desktop;
+    line-height: $heading-xl__line-height--desktop;
+}
+
+@mixin heading-lg {
+    font-size: $heading-lg__font-size--desktop;
+    font-weight: $heading-lg__font-weight--desktop;
+    line-height: $heading-lg__line-height--desktop;
+}
+
+@mixin heading-md {
+    font-size: $heading-md__font-size--desktop;
+    font-weight: $heading-md__font-weight--desktop;
+    line-height: $heading-md__line-height--desktop;
+}
+
+@mixin heading-sm {
+    font-size: $heading-sm__font-size--desktop;
+    font-weight: $heading-sm__font-weight--desktop;
+    line-height: $heading-sm__line-height--desktop;
+}
+
+@mixin heading-xs {
+    font-size: $heading-xs__font-size--desktop;
+    font-weight: $heading-xs__font-weight--desktop;
+    line-height: $heading-xs__line-height--desktop;
+}
+
+@mixin text-lg {
+    font-size: $text-lg__font-size--desktop;
+    line-height: $text-lg__line-height--desktop;
+}
+
+@mixin text-md {
+    font-size: $text-md__font-size--desktop;
+    line-height: $text-md__line-height--desktop;
+}
+
+@mixin text-sm {
+    font-size: $text-sm__font-size--desktop;
+    line-height: $text-sm__line-height--desktop;
+}
+
+@mixin text-xs {
+    font-size: $text-xs__font-size--desktop;
+    line-height: $text-xs__line-height--desktop;
+}
+
+@mixin reset-list-styles {
+    list-style: none;
+    padding-left: 0;
+}
