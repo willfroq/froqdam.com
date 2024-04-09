@@ -1,29 +1,26 @@
 framework:
-    #### REDIS CACHE
     cache:
-        pools:
-            pimcore.cache.pool:
-                public: true
-                tags: true
-                default_lifetime: 15768000 # 6 months
-                adapter: pimcore.cache.adapter.redis_tag_aware
-        default_redis_provider: "redis://##redis_hostname##:##redis_port##/##redis_database##"
+        prefix_seed: '%kernel.environment%.pimcore.client-name'
+    session:
+        enabled: true
+        cookie_secure: true
+        cookie_samesite: lax
+        cookie_lifetime: 15768000
 
 doctrine:
     dbal:
         connections:
             default:
-                driver: pdo_mysql
-                host: ##mysql_hostname##
-                port: ##mysql_port##
-                dbname: ##mysql_database##
-                user: ##mysql_user##
-                password: ##mysql_password##
-                charset: UTF8MB4
+                host: '%env(FROQ_DB_HOST)%'
+                port: '%env(FROQ_DB_PORT)%'
+                dbname: '%env(FROQ_DB_NAME)%'
+                user: '%env(FROQ_DB_USER)%'
+                password: '%env(FROQ_DB_PWD)%'
+                charset: 'utf8mb4'
                 mapping_types:
                     enum: string
                     bit: boolean
-                server_version: mariadb-10.6.7
+                server_version: '%env(FROQ_DB_VERSION)%'
 
 youwe_pimcore_elasticsearch:
     es_hosts:
