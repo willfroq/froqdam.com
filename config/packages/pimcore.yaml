@@ -11,9 +11,9 @@ pimcore:
         class_overrides:
             'Pimcore\Model\Asset\Document': 'Froq\AssetBundle\Model\DataObject\AssetDocument'
 
-    config_location:
-        image_thumbnails:
-            write_target:
-                type: 'symfony-config'
-                options:
-                    directory: '/var/www/html/var/config/image-thumbnails'
+#    config_location:
+#        image_thumbnails:
+#            write_target:
+#                type: 'symfony-config'
+#                options:
+#                    directory: '/var/www/html/var/config/image-thumbnails'
