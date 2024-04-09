@@ -8,6 +8,10 @@ framework:
         cookie_samesite: lax
         cookie_lifetime: 15768000
 
+youwe_pimcore_elasticsearch:
+    es_hosts:
+        - 'http://127.0.0.1:9200'
+
 when@test:
     framework:
         test: true
