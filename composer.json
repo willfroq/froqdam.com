@@ -20,6 +20,7 @@
     "oneup/flysystem-bundle": "^4.11.2",
     "pimcore/data-importer": "^1.6",
     "pimcore/pimcore": "^10.5",
+    "predis/predis": "*",
     "ruflin/elastica": "^7.3",
     "smalot/pdfparser": "*",
     "symfony/dotenv": "*",
