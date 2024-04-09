@@ -1,11 +1,13 @@
 framework:
+    #### REDIS CACHE
     cache:
-        prefix_seed: '%kernel.environment%.pimcore.client-name'
-    session:
-        enabled: true
-        cookie_secure: true
-        cookie_samesite: lax
-        cookie_lifetime: 15768000
+        pools:
+            pimcore.cache.pool:
+                public: true
+                tags: true
+                default_lifetime: 15768000 # 6 months
+                adapter: pimcore.cache.adapter.redis_tag_aware
+        default_redis_provider: "http://127.0.0.1:6379"
 
 doctrine:
     dbal:
