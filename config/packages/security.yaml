@@ -60,14 +60,13 @@ security:
                 target: froq_portal.auth.login
             user_checker: MembersBundle\Security\UserChecker
 
-        webhook:
-            pattern: ^/webhook
+        switch:
+            pattern: ^/switch
             stateless: true
             provider: members
             guard:
                 authenticators:
                     - Froq\PortalBundle\Security\ApiKeyAuthenticator
-
 
     access_control:
         # Pimcore admin ACl  // DO NOT CHANGE!
@@ -82,7 +81,7 @@ security:
         - { path: ^/portal/connect/azure, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/portal/connect/azure/check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/portal, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/webhook, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/switch, roles: IS_AUTHENTICATED_FULLY }
 
     access_decision_manager:
         strategy: unanimous

@@ -16,6 +16,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AssetLibSearchFormType extends AbstractType
 {
+    public const DEFAULT_PAGE_SIZE = 10;
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // Todo: Add some constraints
@@ -35,6 +37,7 @@ class AssetLibSearchFormType extends AbstractType
             ->add('page', IntegerType::class, [
                 'label' => false,
                 'required' => false,
+                'data'=> 1,
                 'attr' => [
                     'style' => 'display:none;',
                 ],
@@ -42,6 +45,7 @@ class AssetLibSearchFormType extends AbstractType
             ->add('size', IntegerType::class, [
                 'label' => false,
                 'required' => false,
+                'data'=> self::DEFAULT_PAGE_SIZE,
                 'attr' => [
                     'style' => 'display:none;',
                 ],

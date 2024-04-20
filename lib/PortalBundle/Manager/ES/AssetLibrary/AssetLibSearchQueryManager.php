@@ -106,7 +106,7 @@ class AssetLibSearchQueryManager
                         if ($propertyData['type'] === MappingTypes::MAPPING_TYPE_KEYWORD) {
                             $field = sprintf('%s.%s', $fieldId, $propertyKey);
                             $nestedQuery = new NestedQuery();
-                            $nestedQuery->setPath((string)$fieldId);
+                            $nestedQuery->setPath((string) $fieldId);
                             $nestedWildcardQuery = new Wildcard($field, $value);
                             $nestedQuery->setQuery($nestedWildcardQuery);
                             $wordBoolQuery->addShould($nestedQuery);

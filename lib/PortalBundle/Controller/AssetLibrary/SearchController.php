@@ -21,7 +21,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/search', name: 'froq_portal.asset_library.')]
 class SearchController extends AbstractController
 {
-    public const DEFAULT_PAGE_SIZE = 12;
     public const LAYOUT_PARAM = 'items-layout';
     public const LAYOUT_LIST = 'list';
     public const LAYOUT_GRID = 'grid';
@@ -262,15 +261,20 @@ class SearchController extends AbstractController
      */
     private function getPagination(Request $request, QueryResponseDto $queryResponseDto): array
     {
-        $page = $request->get('page', 1);
-        $size = $request->get('size', self::DEFAULT_PAGE_SIZE);
+        $page = (int)$request->get('page', 1);
+        $page = max(1, $page);
+
+        $size = (int)$request->get('size', AssetLibSearchFormType::DEFAULT_PAGE_SIZE);
+        $size = max(1, $size);
+
         $totalItems = $queryResponseDto->getTotalCount();
         $maxPages = ($totalItems > 0) ? ceil($totalItems / $size) : 1;
         $nextPage = $page < $maxPages ? ($page + 1) : false;
 
         return [
             'pages' => $maxPages,
-            'next_page' => $nextPage
+            'next_page' => $nextPage,
+            'page_size' => $size
         ];
     }
 }

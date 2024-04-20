@@ -20,8 +20,8 @@ froq_portal_api:
     prefix:   /portal/api
     trailing_slash_on_root: false
 
-froq_portal_webhook:
-    resource: '@FroqPortalBundle/Webhook/Controller/'
+froq_portal_switch:
+    resource: '@FroqAssetBundle/Switch/Controller/'
     type:     annotation
-    prefix:   /webhook
+    prefix:   /switch
     trailing_slash_on_root: false

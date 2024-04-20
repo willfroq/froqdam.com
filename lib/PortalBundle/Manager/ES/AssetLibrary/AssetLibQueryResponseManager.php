@@ -6,6 +6,7 @@ namespace Froq\PortalBundle\Manager\ES\AssetLibrary;
 
 use Froq\PortalBundle\DTO\AggregationChoiceDto;
 use Froq\PortalBundle\DTO\QueryResponseDto;
+use Pimcore\Model\DataObject\AssetResource;
 use Youwe\PimcoreElasticsearchBundle\Model\SearchResult;
 
 class AssetLibQueryResponseManager
@@ -23,6 +24,7 @@ class AssetLibQueryResponseManager
 
         $assetResources = [];
         foreach ($result as $resultItem) {
+            /** @var AssetResource[] $assetResources */
             $assetResources[] = $resultItem->getElement();
         }
         $queryResponseDto->setObjects($assetResources);

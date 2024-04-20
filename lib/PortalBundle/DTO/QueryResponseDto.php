@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Froq\PortalBundle\DTO;
 
+use Pimcore\Model\DataObject\AssetResource;
+
 class QueryResponseDto
 {
     /**
@@ -18,7 +20,7 @@ class QueryResponseDto
     private int $totalCount = 0;
 
     /**
-     * @return array<int, mixed>
+     * @return array<int, AssetResource>
      */
     public function getObjects(): array
     {
@@ -26,7 +28,7 @@ class QueryResponseDto
     }
 
     /**
-     * @param array<int, mixed> $objects
+     * @param array<int, AssetResource> $objects
      */
     public function setObjects(array $objects): void
     {

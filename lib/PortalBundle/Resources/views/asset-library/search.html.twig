@@ -13,6 +13,6 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        window.staticListPageSize = {{ constant('Froq\\PortalBundle\\Controller\\AssetLibrary\\SearchController::DEFAULT_PAGE_SIZE') }};
+        window.staticListPageSize = {{ page_size }};
     </script>
 {% endblock %}

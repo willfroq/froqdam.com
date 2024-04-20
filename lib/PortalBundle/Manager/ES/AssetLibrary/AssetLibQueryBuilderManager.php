@@ -40,6 +40,7 @@ class AssetLibQueryBuilderManager
                 $boolQuery = new Query\BoolQuery();
                 $query = new Query();
                 $query->setQuery($boolQuery);
+                $query->setParam('track_total_hits', true);
 
                 $this->searchQueryManager->buildQuerySource($query, $user, $formDto);
 

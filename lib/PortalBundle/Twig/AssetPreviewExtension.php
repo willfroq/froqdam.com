@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\Twig;
 
 use Froq\AssetBundle\Converter\RtfToHtmlConverter;
+use Froq\PortalBundle\Security\AssetPreviewHasher;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\Asset;
 use Symfony\Component\Routing\RouterInterface;
@@ -13,7 +14,10 @@ use Twig\TwigFunction;
 
 class AssetPreviewExtension extends AbstractExtension
 {
-    public function __construct(protected RouterInterface $router, protected RtfToHtmlConverter $rtfToHtmlConverter, protected ApplicationLogger $logger)
+    public function __construct(protected RouterInterface $router,
+        protected RtfToHtmlConverter $rtfToHtmlConverter,
+        protected AssetPreviewHasher $assetPreviewHasher,
+        protected ApplicationLogger $logger)
     {
     }
 
@@ -24,6 +28,7 @@ class AssetPreviewExtension extends AbstractExtension
             new TwigFunction('get_asset_image_preview_url', [$this, 'getImagePreviewURL']),
             new TwigFunction('get_asset_text_preview_content', [$this, 'getTextPreviewContent']),
             new TwigFunction('get_asset_extension', [$this, 'getAssetExtension']),
+            new TwigFunction('get_asset_thumbnail_hashed_url', [$this, 'getAssetThumbnailHashedURL']),
         ];
     }
 
@@ -78,5 +83,20 @@ class AssetPreviewExtension extends AbstractExtension
     public function getAssetExtension(Asset $asset): array|string
     {
         return pathinfo((string) $asset->getFilename(), PATHINFO_EXTENSION);
+    }
+
+    /**
+     * @param Asset $asset
+     * @param string $thumbnailName
+     *
+     * @return string
+     */
+    public function getAssetThumbnailHashedURL(Asset $asset, string $thumbnailName): string
+    {
+        return $this->router->generate('froq_portal.asset_thumbnail.asset_hashed', [
+            'thumbnailName' => $thumbnailName,
+            'assetID' => $asset->getId(),
+            'hash' => $this->assetPreviewHasher->hash((int) $asset->getId()),
+        ]);
     }
 }

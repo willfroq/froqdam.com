@@ -7,6 +7,7 @@ services:
             $esIndexIdAssetLib: 'asset_library'
             $assetLibraryElasticsearchClient: '@youwe.pimcore_elasticsearch.client.asset_library'
             $membersSecurityLoginFormFactory: '@members.security.login.form.factory'
+            $thumbnailEncryptionSecret: '%env(THUMBNAIL_ENCRYPTION_SECRET)%'
 
     Froq\PortalBundle\:
         resource: '../../*'
