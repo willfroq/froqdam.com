@@ -23,6 +23,10 @@ final class BuildSupplierFromPayload
     {
         $payload = (array) json_decode($switchUploadRequest->supplierData, true);
 
+        if (!isset($payload['supplierCode'])) {
+            return;
+        }
+
         if (empty($payload) || ($this->allPropsEmptyOrNull)($payload)) {
             return;
         }

@@ -37,6 +37,10 @@ final class BuildTags
 
         $payload = json_decode($switchUploadRequest->tagData, true);
 
+        if (!isset($payload['tagCode'])) {
+            return;
+        }
+
         if (empty($payload) || ($this->allPropsEmptyOrNull)($payload)) {
             return;
         }

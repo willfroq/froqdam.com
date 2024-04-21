@@ -40,6 +40,10 @@ final class BuildProjectFromPayload
 
         $payload = (array) json_decode($switchUploadRequest->projectData, true);
 
+        if (!isset($payload['projectCode'])) {
+            return;
+        }
+
         if (empty($payload) || ($this->allPropsEmptyOrNull)($payload)) {
             return;
         }
@@ -58,6 +62,7 @@ final class BuildProjectFromPayload
 
         if (isset($payload['projectCode'])) {
             $project->setCode($payload['projectCode']);
+            $project->setKey($payload['projectCode']);
         }
         if (isset($payload['projectName'])) {
             $project->setName($payload['projectName']);

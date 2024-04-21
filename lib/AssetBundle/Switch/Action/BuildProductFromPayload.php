@@ -7,22 +7,25 @@ namespace Froq\AssetBundle\Switch\Action;
 use Doctrine\DBAL\Driver\Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
-use Froq\AssetBundle\Switch\Enum\CategoryNames;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
 use Froq\PortalBundle\Repository\ProductRepository;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
-use Pimcore\Model\DataObject\Category;
 use Pimcore\Model\DataObject\Data\QuantityValue;
 use Pimcore\Model\DataObject\Fieldcollection;
 use Pimcore\Model\DataObject\Fieldcollection\Data\ProductAttributes;
 use Pimcore\Model\DataObject\Fieldcollection\Data\ProductContents;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Product;
+use Pimcore\Model\DataObject\QuantityValue\Unit;
 
 final class BuildProductFromPayload
 {
-    public function __construct(private readonly ProductRepository $productRepository, private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull)
+    public function __construct(
+        private readonly ProductRepository $productRepository,
+        private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
+        private readonly BuildCategoryFromPayload $buildCategoryFromPayload,
+    )
     {
     }
 
@@ -94,19 +97,33 @@ final class BuildProductFromPayload
             $product->setNetContentStatement($payload['productNetContentStatement']);
         }
 
-        if (isset($payload['netContents']) && is_array($payload['netContents'])) {
+        if (isset($payload['productNetContents']) && is_array($payload['productNetContents'])) {
             $fieldCollectionItems = [];
 
-            foreach ($payload['netContents'] as $item) {
+            foreach ($payload['productNetContents'] as $item) {
                 if (empty($item)) {
+                    continue;
+                }
+
+                $unitId = (string) array_key_first($item);
+
+                $value = (float) current($item);
+
+                $unit = Unit::getById($unitId);
+
+                if (!($unit instanceof Unit)) {
+                    continue;
+                }
+
+                if (!is_numeric($value)) {
                     continue;
                 }
 
                 $productAttributes = new ProductContents();
 
                 $quantityValue = new QuantityValue();
-                $quantityValue->setUnitId((string) array_key_first($item));
-                $quantityValue->setValue(current($item));
+                $quantityValue->setUnitId($unitId);
+                $quantityValue->setValue($value);
 
                 $productAttributes->setNetContent($quantityValue);
 
@@ -119,19 +136,33 @@ final class BuildProductFromPayload
             $product->setNetContents($netContentsFieldCollection);
         }
 
-        if (isset($payload['netUnitContents']) && is_array($payload['netUnitContents'])) {
+        if (isset($payload['productNetUnitContents']) && is_array($payload['productNetUnitContents'])) {
             $fieldCollectionItems = [];
 
-            foreach ($payload['netUnitContents'] as $item) {
+            foreach ($payload['productNetUnitContents'] as $item) {
                 if (empty($item)) {
+                    continue;
+                }
+
+                $unitId = (string) array_key_first($item);
+
+                $value = (float) current($item);
+
+                $unit = Unit::getById($unitId);
+
+                if (!($unit instanceof Unit)) {
+                    continue;
+                }
+
+                if (!is_numeric($value)) {
                     continue;
                 }
 
                 $productAttributes = new ProductContents();
 
                 $quantityValue = new QuantityValue();
-                $quantityValue->setUnitId((string) array_key_first($item));
-                $quantityValue->setValue(current($item));
+                $quantityValue->setUnitId($unitId);
+                $quantityValue->setValue($value);
 
                 $productAttributes->setNetContent($quantityValue);
 
@@ -145,55 +176,15 @@ final class BuildProductFromPayload
         }
 
         if (isset($payload['productCategories'])) {
-            $categories = [];
-
-            foreach ($payload['productCategories'] as $levelLabel => $productCategory) {
-                if (empty($productCategory)) {
-                    continue;
-                }
-
-                $categoryNames = array_column(array: CategoryNames::cases(), column_key: 'name');
-
-                $isValidCategoryName = in_array(needle: $levelLabel, haystack: $categoryNames);
-
-                if (!$isValidCategoryName) {
-                    continue;
-                }
-
-                $rootCategoryFolder = $organization->getObjectFolder() . '/';
-
-                $parentCategoryFolder = (new DataObject\Listing())
-                    ->addConditionParam('o_key = ?', AssetResourceOrganizationFolderNames::Categories->name)
-                    ->addConditionParam('o_path = ?', $rootCategoryFolder)
-                    ->current();
-
-                if (!($parentCategoryFolder instanceof DataObject)) {
-                    continue;
-                }
-
-                $category = Category::getByProducts([$product])?->current(); /** @phpstan-ignore-line */
-                if (!($category instanceof Category)) {
-                    $category = new Category();
-                }
-
-                $category->setOrganization($organization);
-                $category->setLevelLabel($levelLabel);
-                $category->setParentId((int) $parentCategoryFolder->getId());
-
-                $category->save();
-
-                $categories[] = $category;
-            }
-
-            $allCategories = [...$categories, ...$product->getCategories()];
-
-            $product->setCategories($allCategories);
+//            $product->setCategories(($this->buildCategoryFromPayload)($payload, $organization, $product));
         }
 
         $assetResources = [...$product->getAssets(), $assetResource];
 
         $product->setAssets($assetResources);
         $product->setParentId((int) $parentProductFolder->getId());
+        $product->setKey(pathinfo($switchUploadRequest->filename, PATHINFO_FILENAME));
+        $product->setPublished(true);
 
         $product->save();
     }
