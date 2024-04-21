@@ -6,6 +6,9 @@ namespace Froq\AssetBundle\Switch\Action;
 
 use Doctrine\DBAL\Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
+use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
+use Pimcore\Model\DataObject;
+use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Supplier;
 
 final class BuildSupplierFromPayload
@@ -14,8 +17,19 @@ final class BuildSupplierFromPayload
      * @throws Exception
      * @throws \Exception
      */
-    public function __invoke(SwitchUploadRequest $switchUploadRequest): void
+    public function __invoke(SwitchUploadRequest $switchUploadRequest, Organization $organization): void
     {
+        $rootSupplierFolder = $organization->getObjectFolder() . '/';
+
+        $parentSupplierFolder = (new DataObject\Listing())
+            ->addConditionParam('o_key = ?', AssetResourceOrganizationFolderNames::Suppliers->name)
+            ->addConditionParam('o_path = ?', $rootSupplierFolder)
+            ->current();
+
+        if (!($parentSupplierFolder instanceof DataObject)) {
+            return;
+        }
+
         $payload = (array) json_decode($switchUploadRequest->supplierData, true);
 
         if (!isset($payload['supplierCode'])) {
@@ -50,6 +64,10 @@ final class BuildSupplierFromPayload
         if (isset($payload['supplierEmail'])) {
             $supplier->setEmail($payload['supplierEmail']);
         }
+
+        $supplier->setPublished(true);
+        $supplier->setParentId((int) $parentSupplierFolder->getId());
+        $supplier->setKey((string) $payload['supplierCode']);
 
         $supplier->save();
     }

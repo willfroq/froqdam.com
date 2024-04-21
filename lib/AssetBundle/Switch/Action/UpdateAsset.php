@@ -154,8 +154,8 @@ final class UpdateAsset
 
         ($this->buildProductFromPayload)($switchUploadRequest, $assetResourceLatestVersion, $organization);
         ($this->buildProjectFromPayload)($switchUploadRequest, $assetResourceLatestVersion, $organization);
-        ($this->buildPrinterFromPayload)($switchUploadRequest);
-        ($this->buildSupplierFromPayload)($switchUploadRequest);
+        ($this->buildPrinterFromPayload)($switchUploadRequest, $organization);
+        ($this->buildSupplierFromPayload)($switchUploadRequest, $organization);
 
         $end = microtime(true);
         $elapsed = $end - $start;

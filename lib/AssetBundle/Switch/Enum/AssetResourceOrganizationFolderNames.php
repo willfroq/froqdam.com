@@ -15,6 +15,8 @@ enum AssetResourceOrganizationFolderNames: int
     case Tags = 7;
     case Categories = 8;
     case Packshots = 9;
+    case Printers = 10;
+    case Suppliers = 11;
 
     public function readable(): string
     {
@@ -28,6 +30,8 @@ enum AssetResourceOrganizationFolderNames: int
             self::Tags => 'Tags',
             self::Categories => 'Categories',
             self::Packshots => 'Packshots',
+            self::Printers => 'Printers',
+            self::Suppliers => 'Suppliers',
         };
     }
 }
