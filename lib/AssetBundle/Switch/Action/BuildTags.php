@@ -8,6 +8,7 @@ use Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
+use Froq\PortalBundle\Repository\TagRepository;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Organization;
@@ -15,7 +16,7 @@ use Pimcore\Model\DataObject\Tag;
 
 final class BuildTags
 {
-    public function __construct(private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull)
+    public function __construct(private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull, private readonly TagRepository $tagRepository)
     {
     }
 
@@ -37,17 +38,11 @@ final class BuildTags
 
         $payload = json_decode($switchUploadRequest->tagData, true);
 
-        if (!isset($payload['tagCode'])) {
-            return;
-        }
-
         if (empty($payload) || ($this->allPropsEmptyOrNull)($payload)) {
             return;
         }
 
         $existingTags = $assetResource->getTags();
-
-        $tagCodes = array_map(fn (Tag $tag) => $tag->getCode(), $existingTags);
 
         $newTags = [];
 
@@ -56,18 +51,18 @@ final class BuildTags
                 continue;
             }
 
-            if (count((array) $item) !== 1 && is_array($item)) {
+            if (count((array) $item) !== 2 && is_array($item)) {
                 continue;
             }
 
-            $code = (string) array_key_first($item);
-            $name = current($item);
-
-            if (empty($name)) {
+            if (!isset($item['code']) || !isset($item['name'])) {
                 continue;
             }
 
-            if (in_array(needle: $code, haystack: $tagCodes)) {
+            $code = (string) $item['code'];
+            $name = (string) $item['name'];
+
+            if ($this->tagRepository->isTagExists($organization, $code)) {
                 continue;
             }
 
@@ -76,6 +71,8 @@ final class BuildTags
             $tag->setCode($code);
             $tag->setName($name);
             $tag->setParentId((int) $parentTagFolder->getId());
+            $tag->setKey($code);
+            $tag->setPublished(true);
 
             $tag->save();
 
