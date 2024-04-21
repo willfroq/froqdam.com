@@ -6,15 +6,10 @@ namespace Froq\AssetBundle\Switch\Action;
 
 use Doctrine\DBAL\Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
-use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
 use Pimcore\Model\DataObject\Supplier;
 
 final class BuildSupplierFromPayload
 {
-    public function __construct(private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull)
-    {
-    }
-
     /**
      * @throws Exception
      * @throws \Exception
@@ -27,15 +22,10 @@ final class BuildSupplierFromPayload
             return;
         }
 
-        if (empty($payload) || ($this->allPropsEmptyOrNull)($payload)) {
-            return;
-        }
-
         $supplier = new Supplier();
 
-        if (isset($payload['supplierCode'])) {
-            $supplier->setCode($payload['supplierCode']);
-        }
+        $supplier->setCode($payload['supplierCode']);
+
         if (isset($payload['supplierCompany'])) {
             $supplier->setCompany($payload['supplierCompany']);
         }

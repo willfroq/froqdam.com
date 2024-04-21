@@ -23,10 +23,6 @@ final class BuildPrinterFromPayload
     {
         $payload = (array) json_decode($switchUploadRequest->printerData, true);
 
-        if (!isset($payload['printerCode'])) {
-            return;
-        }
-
         if (empty($payload) || ($this->allPropsEmptyOrNull)($payload)) {
             return;
         }

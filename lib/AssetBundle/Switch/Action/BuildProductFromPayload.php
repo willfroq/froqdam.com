@@ -25,8 +25,7 @@ final class BuildProductFromPayload
         private readonly ProductRepository $productRepository,
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
         private readonly BuildCategoryFromPayload $buildCategoryFromPayload,
-    )
-    {
+    ) {
     }
 
     /**
@@ -176,7 +175,7 @@ final class BuildProductFromPayload
         }
 
         if (isset($payload['productCategories'])) {
-//            $product->setCategories(($this->buildCategoryFromPayload)($payload, $organization, $product));
+            $product->setCategories(($this->buildCategoryFromPayload)($payload, $organization, $product));
         }
 
         $assetResources = [...$product->getAssets(), $assetResource];

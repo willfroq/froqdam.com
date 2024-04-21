@@ -17,6 +17,7 @@ final class BuildCategoryFromPayload
      * @throws \Exception
      *
      * @param array<string, array<string, string>> $payload
+     *
      * @return array<int, Category>
      */
     public function __invoke(array $payload, Organization $organization, Product $product): array

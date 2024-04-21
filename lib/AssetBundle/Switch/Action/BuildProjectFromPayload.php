@@ -44,7 +44,13 @@ final class BuildProjectFromPayload
             return;
         }
 
-        if (empty($payload) || ($this->allPropsEmptyOrNull)($payload)) {
+        if (($this->allPropsEmptyOrNull)($payload)) {
+            return;
+        }
+
+        $projectCode = $payload['projectCode'];
+
+        if ($this->projectRepository->isProjectExists($organization, (string) $projectCode)) {
             return;
         }
 
@@ -52,18 +58,13 @@ final class BuildProjectFromPayload
 
         $project = Project::getById($this->projectRepository->getRelatedProjectId($assetResourceId));
 
-        if ($organization->getId() !== $project?->getCustomer()?->getId()) {
-            return;
-        }
-
         if (!($project instanceof Project)) {
             $project = new Project();
         }
 
-        if (isset($payload['projectCode'])) {
-            $project->setCode($payload['projectCode']);
-            $project->setKey($payload['projectCode']);
-        }
+        $project->setCode($projectCode);
+        $project->setKey($projectCode);
+
         if (isset($payload['projectName'])) {
             $project->setName($payload['projectName']);
         }
@@ -77,7 +78,7 @@ final class BuildProjectFromPayload
             $project->setCustomer_project_number2($payload['customerProjectNumber']);
         }
         if (isset($payload['froqName'])) {
-            $project->setCustomer_project_number2($payload['froqName']);
+            $project->setFroq_name($payload['froqName']);
         }
         if (isset($payload['description'])) {
             $project->setDescription($payload['description']);
@@ -102,6 +103,8 @@ final class BuildProjectFromPayload
         $assetResources = [...$project->getAssets(), $assetResource];
 
         $project->setAssets($assetResources);
+        $project->setPublished(true);
+        $project->setCustomer($organization);
 
         $project->setParentId((int) $parentProjectFolder->getId());
 
