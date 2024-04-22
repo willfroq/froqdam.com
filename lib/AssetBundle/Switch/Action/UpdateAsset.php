@@ -134,7 +134,7 @@ final class UpdateAsset
         $assetResourceLatestVersion->setKey((string) $newAssetResourceVersionCount);
         $assetResourceLatestVersion->setMetadata($assetResourceMetadataFieldCollection);
 
-        ($this->buildTags)($switchUploadRequest, $assetResourceLatestVersion, $organization);
+        ($this->buildTags)($switchUploadRequest, $assetResourceLatestVersion, $organization, $actions);
 
         $assetResourceLatestVersion->save();
 
@@ -152,10 +152,18 @@ final class UpdateAsset
             return new SwitchUploadResponse(eventName: $switchUploadRequest->eventName, date: date('F j, Y H:i'), actions: $actions, statistics: []);
         }
 
-        ($this->buildProductFromPayload)($switchUploadRequest, $assetResourceLatestVersion, $organization);
-        ($this->buildProjectFromPayload)($switchUploadRequest, $assetResourceLatestVersion, $organization);
-        ($this->buildPrinterFromPayload)($switchUploadRequest, $organization);
-        ($this->buildSupplierFromPayload)($switchUploadRequest, $organization);
+        $existingAssetResources = $organization->getAssetResources();
+
+        $assetResources = array_unique([...$existingAssetResources, $assetResourceContainer, $latestAssetResourceVersion, $assetResourceLatestVersion]);
+
+        $organization->setAssetResources($assetResources);
+
+        $organization->save();
+
+        ($this->buildProductFromPayload)($switchUploadRequest, $assetResourceLatestVersion, $organization, $actions);
+        ($this->buildProjectFromPayload)($switchUploadRequest, $assetResourceLatestVersion, $organization, $actions);
+        ($this->buildPrinterFromPayload)($switchUploadRequest, $organization, $actions);
+        ($this->buildSupplierFromPayload)($switchUploadRequest, $organization, $actions);
 
         $end = microtime(true);
         $elapsed = $end - $start;

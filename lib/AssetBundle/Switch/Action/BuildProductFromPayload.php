@@ -8,7 +8,9 @@ use Doctrine\DBAL\Driver\Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
+use Froq\AssetBundle\Utility\IsPathExists;
 use Froq\PortalBundle\Repository\ProductRepository;
+use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Fieldcollection;
@@ -23,6 +25,8 @@ final class BuildProductFromPayload
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
         private readonly BuildCategoryFromPayload $buildCategoryFromPayload,
         private readonly BuildProductContentsFromPayload $buildProductContentsFromPayload,
+        private readonly IsPathExists $isPathExists,
+        private readonly ApplicationLogger $logger,
     ) {
     }
 
@@ -30,8 +34,10 @@ final class BuildProductFromPayload
      * @throws Exception
      * @throws \Doctrine\DBAL\Exception
      * @throws \Exception
+     *
+     * @param array<int, string> $actions
      */
-    public function __invoke(SwitchUploadRequest $switchUploadRequest, AssetResource $assetResource, Organization $organization): void
+    public function __invoke(SwitchUploadRequest $switchUploadRequest, AssetResource $assetResource, Organization $organization, array $actions): void
     {
         $rootProductFolder = $organization->getObjectFolder() . '/';
 
@@ -97,16 +103,38 @@ final class BuildProductFromPayload
         ($this->buildProductContentsFromPayload)($product, $payload);
 
         if (isset($payload['productCategories'])) {
-            $product->setCategories(($this->buildCategoryFromPayload)($payload, $organization, $product));
+            $product->setCategories(($this->buildCategoryFromPayload)($payload, $organization, $product, $switchUploadRequest, $actions));
         }
 
-        $assetResources = [...$product->getAssets(), $assetResource];
+        $assetResources = array_unique([...$product->getAssets(), $assetResource]);
 
-        $product->setAssets($assetResources);
-        $product->setParentId((int) $parentProductFolder->getId());
-        $product->setKey(pathinfo($switchUploadRequest->filename, PATHINFO_FILENAME));
-        $product->setPublished(true);
+        $productPath = $rootProductFolder.AssetResourceOrganizationFolderNames::Products->name;
 
-        $product->save();
+        if (($this->isPathExists)($switchUploadRequest, $productPath)) {
+            $message = sprintf('Related product NOT created. %s path already exists, this has to be unique.', $productPath);
+
+            $actions[] = $message;
+
+            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
+                'component' => $switchUploadRequest->eventName
+            ]);
+        }
+
+        if (!($this->isPathExists)($switchUploadRequest, $productPath)) {
+            $product->setAssets($assetResources);
+            $product->setParentId((int) $parentProductFolder->getId());
+            $product->setKey(pathinfo($switchUploadRequest->filename, PATHINFO_FILENAME));
+            $product->setPublished(true);
+
+            $product->save();
+
+            $existingProducts = $organization->getProducts();
+
+            $products = array_unique([...$existingProducts, $product]);
+
+            $organization->setProducts($products);
+
+            $organization->save();
+        }
     }
 }

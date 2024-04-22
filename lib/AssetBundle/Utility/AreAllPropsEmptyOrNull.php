@@ -2,7 +2,7 @@
 
 namespace Froq\AssetBundle\Utility;
 
-class AreAllPropsEmptyOrNull
+final class AreAllPropsEmptyOrNull
 {
     /** @param  array<string, mixed> $array */
     public function __invoke(array $array): bool

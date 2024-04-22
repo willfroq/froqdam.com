@@ -8,7 +8,9 @@ use Doctrine\DBAL\Driver\Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
+use Froq\AssetBundle\Utility\IsPathExists;
 use Froq\PortalBundle\Repository\ProjectRepository;
+use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Organization;
@@ -16,16 +18,22 @@ use Pimcore\Model\DataObject\Project;
 
 final class BuildProjectFromPayload
 {
-    public function __construct(private readonly ProjectRepository $projectRepository, private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull)
-    {
+    public function __construct(
+        private readonly ProjectRepository $projectRepository,
+        private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
+        private readonly IsPathExists $isPathExists,
+        private readonly ApplicationLogger $logger,
+    ) {
     }
 
     /**
      * @throws Exception
      * @throws \Doctrine\DBAL\Exception
      * @throws \Exception
+     *
+     * @param array<int, string> $actions
      */
-    public function __invoke(SwitchUploadRequest $switchUploadRequest, AssetResource $assetResource, Organization $organization): void
+    public function __invoke(SwitchUploadRequest $switchUploadRequest, AssetResource $assetResource, Organization $organization, array $actions): void
     {
         $rootProjectFolder = $organization->getObjectFolder() . '/';
 
@@ -100,14 +108,28 @@ final class BuildProjectFromPayload
         }
         // TODO Contacts, startDate, EndDate, ProjectFields, SuppliedMaterial
 
-        $assetResources = [...$project->getAssets(), $assetResource];
+        $assetResources = array_unique([...$project->getAssets(), $assetResource]);
 
-        $project->setAssets($assetResources);
-        $project->setPublished(true);
-        $project->setCustomer($organization);
+        $projectPath = $rootProjectFolder.AssetResourceOrganizationFolderNames::Projects->name;
 
-        $project->setParentId((int) $parentProjectFolder->getId());
+        if (($this->isPathExists)($switchUploadRequest, $projectPath)) {
+            $message = sprintf('Related project NOT created. %s path already exists, this has to be unique.', $projectPath);
 
-        $project->save();
+            $actions[] = $message;
+
+            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
+                'component' => $switchUploadRequest->eventName
+            ]);
+        }
+
+        if (!($this->isPathExists)($switchUploadRequest, $projectPath)) {
+            $project->setAssets($assetResources);
+            $project->setPublished(true);
+            $project->setCustomer($organization);
+
+            $project->setParentId((int) $parentProjectFolder->getId());
+
+            $project->save();
+        }
     }
 }

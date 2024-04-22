@@ -4,25 +4,32 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Switch\Action;
 
-use Doctrine\DBAL\Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
+use Froq\AssetBundle\Utility\IsPathExists;
+use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Printer;
 
 final class BuildPrinterFromPayload
 {
-    public function __construct(private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull)
-    {
+    public function __construct(
+        private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
+        private readonly IsPathExists $isPathExists,
+        private readonly ApplicationLogger $logger
+    ) {
     }
 
     /**
-     * @throws Exception
+     * @param SwitchUploadRequest $switchUploadRequest
+     * @param Organization $organization
+     * @param array<int, string> $action
+     *
      * @throws \Exception
      */
-    public function __invoke(SwitchUploadRequest $switchUploadRequest, Organization $organization): void
+    public function __invoke(SwitchUploadRequest $switchUploadRequest, Organization $organization, array $action): void
     {
         $rootPrinterFolder = $organization->getObjectFolder() . '/';
 
@@ -58,10 +65,24 @@ final class BuildPrinterFromPayload
 
         // TODO Printer, PrintingInks
 
-        $printer->setPublished(true);
-        $printer->setParentId((int) $parentPrinterFolder->getId());
-        $printer->setKey((string) $payload['printingProcess']);
+        $printerPath = $rootPrinterFolder.AssetResourceOrganizationFolderNames::Printers->name;
 
-        $printer->save();
+        if (($this->isPathExists)($switchUploadRequest, $printerPath)) {
+            $message = sprintf('Related printer NOT created. %s path already exists, this has to be unique.', $printerPath);
+
+            $actions[] = $message;
+
+            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
+                'component' => $switchUploadRequest->eventName
+            ]);
+        }
+
+        if (!($this->isPathExists)($switchUploadRequest, $printerPath)) {
+            $printer->setPublished(true);
+            $printer->setParentId((int) $parentPrinterFolder->getId());
+            $printer->setKey((string) $payload['printingProcess']);
+
+            $printer->save();
+        }
     }
 }

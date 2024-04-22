@@ -8,7 +8,9 @@ use Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
+use Froq\AssetBundle\Utility\IsPathExists;
 use Froq\PortalBundle\Repository\TagRepository;
+use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Organization;
@@ -16,14 +18,20 @@ use Pimcore\Model\DataObject\Tag;
 
 final class BuildTags
 {
-    public function __construct(private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull, private readonly TagRepository $tagRepository)
-    {
+    public function __construct(
+        private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
+        private readonly TagRepository $tagRepository,
+        private readonly IsPathExists $isPathExists,
+        private readonly ApplicationLogger $logger,
+    ) {
     }
 
     /**
      * @throws Exception
+     *
+     * @param array<int, string> $actions
      */
-    public function __invoke(SwitchUploadRequest $switchUploadRequest, AssetResource $assetResource, Organization $organization): void
+    public function __invoke(SwitchUploadRequest $switchUploadRequest, AssetResource $assetResource, Organization $organization, array $actions): void
     {
         $rootTagFolder = $organization->getObjectFolder() . '/';
 
@@ -66,17 +74,31 @@ final class BuildTags
                 continue;
             }
 
-            $tag = new Tag();
+            $tagPath = $rootTagFolder.AssetResourceOrganizationFolderNames::Tags->name;
 
-            $tag->setCode($code);
-            $tag->setName($name);
-            $tag->setParentId((int) $parentTagFolder->getId());
-            $tag->setKey($code);
-            $tag->setPublished(true);
+            if (($this->isPathExists)($switchUploadRequest, $tagPath)) {
+                $message = sprintf('Related Tag NOT created. %s path already exists, this has to be unique.', $tagPath);
 
-            $tag->save();
+                $actions[] = $message;
 
-            $newTags[] = $tag;
+                $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
+                    'component' => $switchUploadRequest->eventName
+                ]);
+            }
+
+            if (!($this->isPathExists)($switchUploadRequest, $tagPath)) {
+                $tag = new Tag();
+
+                $tag->setCode($code);
+                $tag->setName($name);
+                $tag->setParentId((int) $parentTagFolder->getId());
+                $tag->setKey($code);
+                $tag->setPublished(true);
+
+                $tag->save();
+
+                $newTags[] = $tag;
+            }
         }
 
         $assetResource->setTags([...$newTags, ...$existingTags]);

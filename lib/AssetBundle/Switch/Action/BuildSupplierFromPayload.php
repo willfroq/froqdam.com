@@ -7,17 +7,27 @@ namespace Froq\AssetBundle\Switch\Action;
 use Doctrine\DBAL\Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
+use Froq\AssetBundle\Utility\IsPathExists;
+use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Supplier;
 
 final class BuildSupplierFromPayload
 {
+    public function __construct(
+        private readonly IsPathExists $isPathExists,
+        private readonly ApplicationLogger $logger,
+    ) {
+    }
+
     /**
      * @throws Exception
      * @throws \Exception
+     *
+     * @param array<int, string> $actions
      */
-    public function __invoke(SwitchUploadRequest $switchUploadRequest, Organization $organization): void
+    public function __invoke(SwitchUploadRequest $switchUploadRequest, Organization $organization, array $actions): void
     {
         $rootSupplierFolder = $organization->getObjectFolder() . '/';
 
@@ -65,10 +75,24 @@ final class BuildSupplierFromPayload
             $supplier->setEmail($payload['supplierEmail']);
         }
 
-        $supplier->setPublished(true);
-        $supplier->setParentId((int) $parentSupplierFolder->getId());
-        $supplier->setKey((string) $payload['supplierCode']);
+        $supplierPath = $rootSupplierFolder.AssetResourceOrganizationFolderNames::Suppliers->name;
 
-        $supplier->save();
+        if (($this->isPathExists)($switchUploadRequest, $supplierPath)) {
+            $message = sprintf('Related supplier NOT created. %s path already exists, this has to be unique.', $supplierPath);
+
+            $actions[] = $message;
+
+            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
+                'component' => $switchUploadRequest->eventName
+            ]);
+        }
+
+        if (!($this->isPathExists)($switchUploadRequest, $supplierPath)) {
+            $supplier->setPublished(true);
+            $supplier->setParentId((int) $parentSupplierFolder->getId());
+            $supplier->setKey((string) $payload['supplierCode']);
+
+            $supplier->save();
+        }
     }
 }

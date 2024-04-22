@@ -140,7 +140,7 @@ final class CreateAsset
         $assetResourceVersionOne->setKey('1');
         $assetResourceVersionOne->setMetadata($assetResourceMetadataFieldCollection);
 
-        ($this->buildTags)($switchUploadRequest, $assetResourceVersionOne, $organization);
+        ($this->buildTags)($switchUploadRequest, $assetResourceVersionOne, $organization, $actions);
 
         $assetResourceVersionOne->save();
 
@@ -158,10 +158,16 @@ final class CreateAsset
             return new SwitchUploadResponse(eventName: $switchUploadRequest->eventName, date: date('F j, Y H:i'), actions: $actions, statistics: []);
         }
 
-        ($this->buildProductFromPayload)($switchUploadRequest, $assetResourceVersionOne, $organization);
-        ($this->buildProjectFromPayload)($switchUploadRequest, $assetResourceVersionOne, $organization);
-        ($this->buildPrinterFromPayload)($switchUploadRequest, $organization);
-        ($this->buildSupplierFromPayload)($switchUploadRequest, $organization);
+        $existingAssetResources = $organization->getAssetResources();
+
+        $organization->setAssetResources([...$existingAssetResources, $parentAssetResource, $assetResourceVersionOne]);
+
+        $organization->save();
+
+        ($this->buildProductFromPayload)($switchUploadRequest, $assetResourceVersionOne, $organization, $actions);
+        ($this->buildProjectFromPayload)($switchUploadRequest, $assetResourceVersionOne, $organization, $actions);
+        ($this->buildPrinterFromPayload)($switchUploadRequest, $organization, $actions);
+        ($this->buildSupplierFromPayload)($switchUploadRequest, $organization, $actions);
 
         $end = (float) microtime(true);
         $elapsed = $end - $start;
