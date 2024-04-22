@@ -29,7 +29,6 @@ final class SwitchUploadRequest
         #[NotBlank(message: 'CustomerCode can not be blank.')]
         #[OrganizationExists]
         public readonly string $customerCode,
-        #[NotBlank(message: 'CustomAssetFolder can not be blank.')]
         #[CustomerAssetFolderExists]
         public readonly string $customAssetFolder,
         #[NotBlank(message: 'AssetType can not be blank.')]
@@ -70,7 +69,7 @@ final class SwitchUploadRequest
         AssertProps::string($this->customerCode, 'Expected "customerCode" to be a string, got %s');
         AssertProps::string($this->customAssetFolder, 'Expected "customAssetFolder" to be a string, got %s');
         AssertProps::string($this->assetType, 'Expected "assetType" to be a string, got %s');
-        AssertProps::isInstanceOf($this->fileContents, UploadedFile::class, 'Expected "fileContents" to be instance of UploadFile, got %s');
+        AssertProps::nullOrIsInstanceOf($this->fileContents, UploadedFile::class, 'Expected "fileContents" to be instance of UploadFile, got %s');
         AssertProps::string($this->assetResourceValidFrom, 'Expected "assetResourceValidFrom" to be a string, got %s');
         AssertProps::string($this->assetResourceValidUntil, 'Expected "assetResourceValidUntil" to be a string, got %s');
         AssertProps::string($this->assetResourceMetadataFieldCollection, 'Expected "assetResourceMetadataFieldCollection" to be a string, got %s');

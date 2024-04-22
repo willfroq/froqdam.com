@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Switch\Action;
 
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
+use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\PortalBundle\Api\ValueObject\ValidationError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,14 +25,24 @@ final class BuildSwitchUploadRequest
      */
     public function __invoke(Request $request): SwitchUploadRequest
     {
-        /** @var UploadedFile $file */
+        $errors = [];
+
+        /** @var UploadedFile|null $file */
         $file = $request->files->get('fileContents');
+
+        if (!($file instanceof UploadedFile)) {
+            $errors[] = new ValidationError(propertyPath: 'fileContents', message: sprintf('FileContents %s is not a file.', $file));
+        }
+
+        $assetFolder = $request->request->get('customAssetFolder');
+
+        $customAssetFolder = $assetFolder === null || $assetFolder === '' ? AssetResourceOrganizationFolderNames::Assets->name : $assetFolder;
 
         $switchUploadRequest = new SwitchUploadRequest(
             eventName: (string) $request->request->get('eventName'),
             filename: (string) $request->request->get('filename'),
             customerCode: (string) $request->request->get('customerCode'),
-            customAssetFolder: (string) $request->request->get('customAssetFolder'),
+            customAssetFolder: (string) $customAssetFolder,
             assetType: (string) $request->request->get('assetType'),
             fileContents: $file,
             assetResourceValidFrom: (string) $request->request->get('assetResourceValidFrom'),
@@ -45,9 +56,7 @@ final class BuildSwitchUploadRequest
             errors: []
         );
 
-        $violations = (array) json_decode($this->serializer->serialize($this->validator->validate($switchUploadRequest), 'json'))->violations;
-
-        $errors = [];
+        $violations = (array) json_decode($this->serializer->serialize($this->validator->validate($switchUploadRequest), 'json'))?->violations;
 
         foreach ($violations as $violation) {
             $errors[] = new ValidationError(propertyPath: (string) $violation->propertyPath, message: (string) $violation->title);

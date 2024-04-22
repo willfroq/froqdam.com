@@ -11,13 +11,10 @@ use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
 use Froq\PortalBundle\Repository\ProductRepository;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
-use Pimcore\Model\DataObject\Data\QuantityValue;
 use Pimcore\Model\DataObject\Fieldcollection;
 use Pimcore\Model\DataObject\Fieldcollection\Data\ProductAttributes;
-use Pimcore\Model\DataObject\Fieldcollection\Data\ProductContents;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Product;
-use Pimcore\Model\DataObject\QuantityValue\Unit;
 
 final class BuildProductFromPayload
 {
@@ -25,6 +22,7 @@ final class BuildProductFromPayload
         private readonly ProductRepository $productRepository,
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
         private readonly BuildCategoryFromPayload $buildCategoryFromPayload,
+        private readonly BuildProductContentsFromPayload $buildProductContentsFromPayload,
     ) {
     }
 
@@ -92,87 +90,11 @@ final class BuildProductFromPayload
             $product->setAttributes($productAttributesFieldCollection);
         }
 
-        if (isset($payload['productNetContentStatement'])) {
+        if (isset($payload['productNetContentStatement']) && is_string($payload['productNetContentStatement'])) {
             $product->setNetContentStatement($payload['productNetContentStatement']);
         }
 
-        if (isset($payload['productNetContents']) && is_array($payload['productNetContents'])) {
-            $fieldCollectionItems = [];
-
-            foreach ($payload['productNetContents'] as $item) {
-                if (empty($item)) {
-                    continue;
-                }
-
-                $unitId = (string) array_key_first($item);
-
-                $value = (float) current($item);
-
-                $unit = Unit::getById($unitId);
-
-                if (!($unit instanceof Unit)) {
-                    continue;
-                }
-
-                if (!is_numeric($value)) {
-                    continue;
-                }
-
-                $productAttributes = new ProductContents();
-
-                $quantityValue = new QuantityValue();
-                $quantityValue->setUnitId($unitId);
-                $quantityValue->setValue($value);
-
-                $productAttributes->setNetContent($quantityValue);
-
-                $fieldCollectionItems[] = $productAttributes;
-            }
-
-            $netContentsFieldCollection = new Fieldcollection();
-            $netContentsFieldCollection->setItems($fieldCollectionItems);
-
-            $product->setNetContents($netContentsFieldCollection);
-        }
-
-        if (isset($payload['productNetUnitContents']) && is_array($payload['productNetUnitContents'])) {
-            $fieldCollectionItems = [];
-
-            foreach ($payload['productNetUnitContents'] as $item) {
-                if (empty($item)) {
-                    continue;
-                }
-
-                $unitId = (string) array_key_first($item);
-
-                $value = (float) current($item);
-
-                $unit = Unit::getById($unitId);
-
-                if (!($unit instanceof Unit)) {
-                    continue;
-                }
-
-                if (!is_numeric($value)) {
-                    continue;
-                }
-
-                $productAttributes = new ProductContents();
-
-                $quantityValue = new QuantityValue();
-                $quantityValue->setUnitId($unitId);
-                $quantityValue->setValue($value);
-
-                $productAttributes->setNetContent($quantityValue);
-
-                $fieldCollectionItems[] = $productAttributes;
-            }
-
-            $netUnitContentsFieldCollection = new Fieldcollection();
-            $netUnitContentsFieldCollection->setItems($fieldCollectionItems);
-
-            $product->setNetUnitContents($netUnitContentsFieldCollection);
-        }
+        ($this->buildProductContentsFromPayload)($product, $payload);
 
         if (isset($payload['productCategories'])) {
             $product->setCategories(($this->buildCategoryFromPayload)($payload, $organization, $product));
