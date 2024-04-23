@@ -46,9 +46,11 @@ final class BuildSupplierFromPayload
             return;
         }
 
+        $supplierCode = (string) $payload['supplierCode'];
+
         $supplier = new Supplier();
 
-        $supplier->setCode($payload['supplierCode']);
+        $supplier->setCode($supplierCode);
 
         if (isset($payload['supplierCompany'])) {
             $supplier->setCompany($payload['supplierCompany']);
@@ -75,9 +77,9 @@ final class BuildSupplierFromPayload
             $supplier->setEmail($payload['supplierEmail']);
         }
 
-        $supplierPath = $rootSupplierFolder.AssetResourceOrganizationFolderNames::Suppliers->name;
+        $supplierPath = $rootSupplierFolder.AssetResourceOrganizationFolderNames::Suppliers->name.'/';
 
-        if (($this->isPathExists)($switchUploadRequest, $supplierPath)) {
+        if (($this->isPathExists)($switchUploadRequest, $supplierCode, $supplierPath)) {
             $message = sprintf('Related supplier NOT created. %s path already exists, this has to be unique.', $supplierPath);
 
             $actions[] = $message;
@@ -87,7 +89,7 @@ final class BuildSupplierFromPayload
             ]);
         }
 
-        if (!($this->isPathExists)($switchUploadRequest, $supplierPath)) {
+        if (!($this->isPathExists)($switchUploadRequest, $supplierCode, $supplierPath)) {
             $supplier->setPublished(true);
             $supplier->setParentId((int) $parentSupplierFolder->getId());
             $supplier->setKey((string) $payload['supplierCode']);

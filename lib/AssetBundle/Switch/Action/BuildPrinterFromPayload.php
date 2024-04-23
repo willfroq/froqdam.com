@@ -65,9 +65,10 @@ final class BuildPrinterFromPayload
 
         // TODO Printer, PrintingInks
 
-        $printerPath = $rootPrinterFolder.AssetResourceOrganizationFolderNames::Printers->name;
+        $printerKey = (string) $payload['printingProcess'];
+        $printerPath = $rootPrinterFolder.AssetResourceOrganizationFolderNames::Printers->name . '/';
 
-        if (($this->isPathExists)($switchUploadRequest, $printerPath)) {
+        if (($this->isPathExists)($switchUploadRequest, $printerKey, $printerPath)) {
             $message = sprintf('Related printer NOT created. %s path already exists, this has to be unique.', $printerPath);
 
             $actions[] = $message;
@@ -77,10 +78,10 @@ final class BuildPrinterFromPayload
             ]);
         }
 
-        if (!($this->isPathExists)($switchUploadRequest, $printerPath)) {
+        if (!($this->isPathExists)($switchUploadRequest, $printerKey, $printerPath)) {
             $printer->setPublished(true);
             $printer->setParentId((int) $parentPrinterFolder->getId());
-            $printer->setKey((string) $payload['printingProcess']);
+            $printer->setKey($printerKey);
 
             $printer->save();
         }

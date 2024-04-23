@@ -108,9 +108,10 @@ final class BuildProductFromPayload
 
         $assetResources = array_unique([...$product->getAssets(), $assetResource]);
 
-        $productPath = $rootProductFolder.AssetResourceOrganizationFolderNames::Products->name;
+        $productKey = pathinfo($switchUploadRequest->filename, PATHINFO_FILENAME);
+        $productPath = $rootProductFolder.AssetResourceOrganizationFolderNames::Products->name.'/';
 
-        if (($this->isPathExists)($switchUploadRequest, $productPath)) {
+        if (($this->isPathExists)($switchUploadRequest, $productKey, $productPath)) {
             $message = sprintf('Related product NOT created. %s path already exists, this has to be unique.', $productPath);
 
             $actions[] = $message;
@@ -120,10 +121,10 @@ final class BuildProductFromPayload
             ]);
         }
 
-        if (!($this->isPathExists)($switchUploadRequest, $productPath)) {
+        if (!($this->isPathExists)($switchUploadRequest, $productKey, $productPath)) {
             $product->setAssets($assetResources);
             $product->setParentId((int) $parentProductFolder->getId());
-            $product->setKey(pathinfo($switchUploadRequest->filename, PATHINFO_FILENAME));
+            $product->setKey($productKey);
             $product->setPublished(true);
 
             $product->save();

@@ -74,9 +74,9 @@ final class BuildTags
                 continue;
             }
 
-            $tagPath = $rootTagFolder.AssetResourceOrganizationFolderNames::Tags->name;
+            $tagPath = $rootTagFolder.AssetResourceOrganizationFolderNames::Tags->name.'/';
 
-            if (($this->isPathExists)($switchUploadRequest, $tagPath)) {
+            if (($this->isPathExists)($switchUploadRequest, $code, $tagPath)) {
                 $message = sprintf('Related Tag NOT created. %s path already exists, this has to be unique.', $tagPath);
 
                 $actions[] = $message;
@@ -86,7 +86,7 @@ final class BuildTags
                 ]);
             }
 
-            if (!($this->isPathExists)($switchUploadRequest, $tagPath)) {
+            if (!($this->isPathExists)($switchUploadRequest, $code, $tagPath)) {
                 $tag = new Tag();
 
                 $tag->setCode($code);

@@ -76,9 +76,9 @@ final class BuildCategoryFromPayload
                 $category = new Category();
             }
 
-            $categoryPath = $rootCategoryFolder.AssetResourceOrganizationFolderNames::Categories->name;
+            $categoryPath = $rootCategoryFolder . "$categoriesName/$levelLabelName/";
 
-            if (($this->isPathExists)($switchUploadRequest, $categoryPath)) {
+            if (($this->isPathExists)($switchUploadRequest, $levelLabel, $categoryPath)) {
                 $message = sprintf('Related category NOT created. %s path already exists, this has to be unique.', $categoryPath);
 
                 $actions[] = $message;
@@ -88,7 +88,7 @@ final class BuildCategoryFromPayload
                 ]);
             }
 
-            if (!($this->isPathExists)($switchUploadRequest, $categoryPath)) {
+            if (!($this->isPathExists)($switchUploadRequest, $levelLabel, $categoryPath)) {
                 $category->setOrganization($organization);
                 $category->setLevelLabel($levelLabelName);
                 $category->setParentId((int) $categoryFolderLevelLabel->getId());

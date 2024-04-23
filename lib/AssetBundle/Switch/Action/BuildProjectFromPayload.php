@@ -110,9 +110,9 @@ final class BuildProjectFromPayload
 
         $assetResources = array_unique([...$project->getAssets(), $assetResource]);
 
-        $projectPath = $rootProjectFolder.AssetResourceOrganizationFolderNames::Projects->name;
+        $projectPath = $rootProjectFolder.AssetResourceOrganizationFolderNames::Projects->name.'/';
 
-        if (($this->isPathExists)($switchUploadRequest, $projectPath)) {
+        if (($this->isPathExists)($switchUploadRequest, $projectCode, $projectPath)) {
             $message = sprintf('Related project NOT created. %s path already exists, this has to be unique.', $projectPath);
 
             $actions[] = $message;
@@ -122,7 +122,7 @@ final class BuildProjectFromPayload
             ]);
         }
 
-        if (!($this->isPathExists)($switchUploadRequest, $projectPath)) {
+        if (!($this->isPathExists)($switchUploadRequest, $projectCode, $projectPath)) {
             $project->setAssets($assetResources);
             $project->setPublished(true);
             $project->setCustomer($organization);
