@@ -67,9 +67,13 @@ final class UpdateAsset
         $asset = ($this->buildFileAsset)($uploadedFile, $filename, $newAssetVersionFolder);
 
         if (!($asset instanceof Asset)) {
+            $asset?->delete(); /** @phpstan-ignore-line */
+            $newAssetVersionFolder->delete();
+
             $message = sprintf('%s is not an Asset. File might be broken.', $asset);
 
             $actions[] = $message;
+            $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
 
             $this->logger->error(
                 message: $message . implode(separator: ',', array: $actions),
@@ -110,10 +114,12 @@ final class UpdateAsset
 
         if (!($assetResourceContainer instanceof AssetResource)) {
             $asset->delete();
+            $newAssetVersionFolder->delete();
 
             $message = sprintf('%s is not an AssetResource. Asset and AssetResource might not be in sync. Rolled back to previous state.', $assetResourceContainer);
 
             $actions[] = $message;
+            $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
 
             $this->logger->error(
                 message: $message . implode(separator: ',', array: $actions),
@@ -141,9 +147,14 @@ final class UpdateAsset
         $newAssetResourceVersionCount = (int) $latestAssetResourceVersion?->getAssetVersion() + 1;
 
         if (!($latestAssetResourceVersion instanceof AssetResource)) {
+            $asset->delete();
+            $newAssetVersionFolder->delete();
+            $latestAssetResourceVersion?->delete(); /** @phpstan-ignore-line */
+
             $message = sprintf('LatestAssetResourceVersion %s does not exist.', $latestAssetResourceVersion);
 
             $actions[] = $message;
+            $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
 
             $this->logger->error(
                 message: $message . implode(separator: ',', array: $actions),
@@ -182,9 +193,15 @@ final class UpdateAsset
         $actions[] = sprintf('New AssetResourceLatestVersion with ID %d is created in %s', $newAssetResourceLatestVersion->getId(), $newAssetResourceLatestVersion->getPath());
 
         if (!($newAssetResourceLatestVersion instanceof AssetResource)) {
+            $asset->delete();
+            $newAssetVersionFolder->delete();
+            $latestAssetResourceVersion->delete();
+            $newAssetResourceLatestVersion->delete();
+
             $message = sprintf('AssetResourceLatestVersion %s does not exist.', $newAssetResourceLatestVersion);
 
             $actions[] = $message;
+            $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
 
             $this->logger->error(
                 message: $message . implode(separator: ',', array: $actions),

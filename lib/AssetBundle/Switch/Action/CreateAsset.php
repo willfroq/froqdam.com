@@ -65,9 +65,14 @@ final class CreateAsset
         $asset = ($this->buildFileAsset)($uploadedFile, $filename, $newAssetVersionFolder);
 
         if (!($asset instanceof Asset)) {
+            $asset?->delete(); /** @phpstan-ignore-line */
+
+            $newAssetVersionFolder->delete();
+
             $message = 'No Asset created. Make sure there is a file and it\'s not broken.';
 
             $actions[] = $message;
+            $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
 
             $this->logger->error(
                 message: $message . implode(separator: ',', array: $actions),
@@ -102,9 +107,13 @@ final class CreateAsset
             ->current();
 
         if (!($parentAssetResourceFolder instanceof DataObject)) {
+            $asset->delete();
+            $newAssetVersionFolder->delete();
+
             $message = sprintf('ParentAssetResourceFolder: key: %s and path: %s does not exist.', 'Assets', $rootAssetResourceFolder);
 
             $actions[] = $message;
+            $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
 
             $this->logger->error(
                 message: $message . implode(separator: ',', array: $actions),
@@ -144,9 +153,14 @@ final class CreateAsset
         $actions[] = sprintf('ParentAssetResource with ID %d is created %s', $parentAssetResource->getId(), $parentAssetResource->getPath());
 
         if (!($parentAssetResource instanceof AssetResource)) {
+            $parentAssetResource->delete();
+            $asset->delete();
+            $newAssetVersionFolder->delete();
+
             $message = sprintf('ParentAssetResource %s does not exist.', $parentAssetResource);
 
             $actions[] = $message;
+            $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
 
             $this->logger->error(
                 message: $message . implode(separator: ',', array: $actions),
@@ -182,9 +196,15 @@ final class CreateAsset
         $actions[] = sprintf('AssetResourceVersionOne with ID %d is created %s', $assetResourceVersionOne->getId(), $assetResourceVersionOne->getPath());
 
         if (!($assetResourceVersionOne instanceof AssetResource)) {
+            $parentAssetResource->delete();
+            $asset->delete();
+            $newAssetVersionFolder->delete();
+            $assetResourceVersionOne->delete();
+
             $message = sprintf('AssetResourceVersionOne %s does not exist.', $assetResourceVersionOne);
 
             $actions[] = $message;
+            $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
 
             $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
                 'component' => $switchUploadRequest->eventName
