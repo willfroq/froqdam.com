@@ -7,7 +7,7 @@ namespace Froq\AssetBundle\Switch\Action;
 use Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadResponse;
-use Pimcore\Log\ApplicationLogger;
+use Froq\AssetBundle\Switch\Handlers\SwitchUploadRequestErrorHandler;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Asset\Folder;
 use Pimcore\Model\DataObject\AssetType;
@@ -19,7 +19,10 @@ final class BuildSwitchUploadResponse
     public function __construct(
         private readonly UpdateAsset $updateAsset,
         private readonly CreateAsset $createAsset,
-        private readonly ApplicationLogger $logger,
+        private readonly BuildOrganizationObjectFolderIfNotExists $buildOrganizationObjectFolderIfNotExists,
+        private readonly BuildOrganizationAssetFolderIfNotExists $buildOrganizationAssetFolderIfNotExists,
+        private readonly LinkAssetResourceFolder $linkAssetResourceFolder,
+        private readonly SwitchUploadRequestErrorHandler $switchUploadRequestErrorHandler,
     ) {
     }
 
@@ -32,48 +35,29 @@ final class BuildSwitchUploadResponse
         $start = (float) microtime(true);
 
         $actions = [];
+        $organization = null;
+        $errorResponse = null;
+        $assetType = null;
 
-        $organization = Organization::getByCode($switchUploadRequest->customerCode)->current(); /** @phpstan-ignore-line */
-        if (!($organization instanceof Organization)) {
-            $message = sprintf('Organization Code: %s does not exist.', $switchUploadRequest->customerCode);
-
-            $actions[] = $message;
-
-            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
-                'component' => $switchUploadRequest->eventName
-            ]);
-
-            return new SwitchUploadResponse(eventName: $switchUploadRequest->eventName, date: date('F j, Y H:i'), actions: $actions, statistics: []);
-        }
-
+        /** @var UploadedFile $uploadedFile */
         $uploadedFile = $switchUploadRequest->fileContents;
 
-        if (!($uploadedFile instanceof UploadedFile)) {
-            $message = sprintf('File: %s is not a file.', $uploadedFile);
+        ($this->switchUploadRequestErrorHandler)($switchUploadRequest, $organization, $assetType, $errorResponse, $actions);
 
-            $actions[] = $message;
-
-            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
-                'component' => $switchUploadRequest->eventName
-            ]);
-
-            return new SwitchUploadResponse(eventName: $switchUploadRequest->eventName, date: date('F j, Y H:i'), actions: $actions, statistics: []);
-        }
-
-        $assetType = AssetType::getByName($switchUploadRequest->assetType)?->current(); /** @phpstan-ignore-line */
-        if (!($assetType instanceof AssetType)) {
-            $message = sprintf('%s is not an AssetType.', $assetType);
-
-            $actions[] = $message;
-
-            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
-                'component' => $switchUploadRequest->eventName
-            ]);
-
-            return new SwitchUploadResponse(eventName: $switchUploadRequest->eventName, date: date('F j, Y H:i'), actions: $actions, statistics: []);
+        if ($errorResponse instanceof SwitchUploadResponse ||
+            !($organization instanceof Organization) ||
+            !($assetType instanceof AssetType)
+        ) {
+            return $errorResponse;
         }
 
         $filename = $switchUploadRequest->filename;
+
+        ($this->linkAssetResourceFolder)($organization);
+
+        ($this->buildOrganizationObjectFolderIfNotExists)($organization);
+
+        ($this->buildOrganizationAssetFolderIfNotExists)($organization, $filename);
 
         $assetFolderPath = $organization->getAssetFolder() . '/';
 
@@ -87,7 +71,7 @@ final class BuildSwitchUploadResponse
             ->addConditionParam('filename = ?', $filename)
             ->current();
 
-        if ($assetFolderContainer instanceof Folder && $existingAsset instanceof Asset) {
+        if ($assetFolderContainer instanceof Folder && $existingAsset instanceof Asset && $uploadedFile instanceof UploadedFile) {
             return ($this->updateAsset)($assetFolderContainer, $existingAsset, $uploadedFile, $switchUploadRequest, $organization, $assetType, $start);
         }
 

@@ -7,10 +7,10 @@ namespace Froq\AssetBundle\Switch\Action;
 use Doctrine\DBAL\Driver\Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
+use Froq\AssetBundle\Switch\ValueObject\CategoryFromPayload;
+use Froq\AssetBundle\Switch\ValueObject\ProductFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
-use Froq\AssetBundle\Utility\IsPathExists;
 use Froq\PortalBundle\Repository\ProductRepository;
-use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Fieldcollection;
@@ -25,8 +25,6 @@ final class BuildProductFromPayload
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
         private readonly BuildCategoryFromPayload $buildCategoryFromPayload,
         private readonly BuildProductContentsFromPayload $buildProductContentsFromPayload,
-        private readonly IsPathExists $isPathExists,
-        private readonly ApplicationLogger $logger,
     ) {
     }
 
@@ -36,9 +34,14 @@ final class BuildProductFromPayload
      * @throws \Exception
      *
      * @param array<int, string> $actions
+     * @param array<int, AssetResource> $assetResources
      */
-    public function __invoke(SwitchUploadRequest $switchUploadRequest, AssetResource $assetResource, Organization $organization, array $actions): void
-    {
+    public function __invoke(
+        SwitchUploadRequest $switchUploadRequest,
+        array $assetResources,
+        Organization $organization,
+        array $actions
+    ): void {
         $rootProductFolder = $organization->getObjectFolder() . '/';
 
         $parentProductFolder = (new DataObject\Listing())
@@ -50,34 +53,48 @@ final class BuildProductFromPayload
             return;
         }
 
-        $payload = (array) json_decode($switchUploadRequest->productData, true);
+        $productData = (array) json_decode($switchUploadRequest->productData, true);
 
-        if (empty($payload) || ($this->allPropsEmptyOrNull)($payload)) {
+        if (empty($productData) || ($this->allPropsEmptyOrNull)($productData)) {
             return;
         }
 
-        $assetResourceId = (string) $assetResource->getId();
+        $categories = $productData['productCategories'] ?? null;
 
-        $product = Product::getById($this->productRepository->getRelatedProductId($assetResourceId));
+        $productFromPayload = new ProductFromPayload(
+            productName: $productData['productName'] ?? null,
+            productEAN: $productData['productEAN'] ?? null,
+            productSKU: $productData['productSKU'] ?? null,
+            productAttributes: $productData['productAttributes'] ?? null,
+            productNetContentStatement: $productData['productNetContentStatement'] ?? null,
+            productNetContents: $productData['productNetContents'] ?? null,
+            productNetUnitContents: $productData['productNetUnitContents'] ?? null,
+            productCategories: new CategoryFromPayload(
+                brand: $categories['brand'] ?? null,
+                campaign: $categories['campaign'] ?? null,
+                market: $categories['market'] ?? null,
+                segment: $categories['segment'] ?? null,
+                platform: $categories['platform'] ?? null,
+            )
+        );
+
+        $assetResourceId = current($assetResources) instanceof AssetResource ? current($assetResources)->getId() : '';
+
+        $product = Product::getById($this->productRepository->getRelatedProductId((string) $assetResourceId));
 
         if (!($product instanceof Product)) {
             $product = new Product();
         }
 
-        if (isset($payload['productName'])) {
-            $product->setName($payload['productName']);
-        }
-        if (isset($payload['productEAN'])) {
-            $product->setEAN($payload['productEAN']);
-        }
-        if (isset($payload['productSKU'])) {
-            $product->setSKU($payload['productSKU']);
-        }
+        $product->setName($productFromPayload->productName);
+        $product->setEAN($productFromPayload->productEAN);
+        $product->setSKU($productFromPayload->productSKU);
+        $product->setName($productFromPayload->productName);
 
-        if (isset($payload['productAttributes']) && is_array($payload['productAttributes'])) {
+        if (isset($productFromPayload->productAttributes) && is_array($productFromPayload->productAttributes)) {
             $fieldCollectionItems = [];
 
-            foreach ($payload['productAttributes'] as $item) {
+            foreach ($productFromPayload->productAttributes as $item) {
                 if (empty($item)) {
                     continue;
                 }
@@ -96,46 +113,31 @@ final class BuildProductFromPayload
             $product->setAttributes($productAttributesFieldCollection);
         }
 
-        if (isset($payload['productNetContentStatement']) && is_string($payload['productNetContentStatement'])) {
-            $product->setNetContentStatement($payload['productNetContentStatement']);
+        $product->setNetContentStatement($productFromPayload->productNetContentStatement);
+
+        ($this->buildProductContentsFromPayload)($product, $productFromPayload);
+
+        if (isset($productFromPayload->productCategories)) {
+            $product->setCategories(($this->buildCategoryFromPayload)($productFromPayload->productCategories, $organization, $product, $switchUploadRequest, $actions));
         }
 
-        ($this->buildProductContentsFromPayload)($product, $payload);
+        $recentAssetResources = [...$product->getAssets(), ...$assetResources];
 
-        if (isset($payload['productCategories'])) {
-            $product->setCategories(($this->buildCategoryFromPayload)($payload, $organization, $product, $switchUploadRequest, $actions));
-        }
+        $assetResources = array_unique($recentAssetResources);
 
-        $assetResources = array_unique([...$product->getAssets(), $assetResource]);
+        $product->setAssets($assetResources);
+        $product->setParentId((int) $parentProductFolder->getId());
+        $product->setKey(pathinfo($switchUploadRequest->filename, PATHINFO_FILENAME));
+        $product->setPublished(true);
 
-        $productKey = pathinfo($switchUploadRequest->filename, PATHINFO_FILENAME);
-        $productPath = $rootProductFolder.AssetResourceOrganizationFolderNames::Products->name.'/';
+        $product->save();
 
-        if (($this->isPathExists)($switchUploadRequest, $productKey, $productPath)) {
-            $message = sprintf('Related product NOT created. %s path already exists, this has to be unique.', $productPath);
+        $existingProducts = $organization->getProducts();
 
-            $actions[] = $message;
+        $products = array_unique([...$existingProducts, $product]);
 
-            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
-                'component' => $switchUploadRequest->eventName
-            ]);
-        }
+        $organization->setProducts($products);
 
-        if (!($this->isPathExists)($switchUploadRequest, $productKey, $productPath)) {
-            $product->setAssets($assetResources);
-            $product->setParentId((int) $parentProductFolder->getId());
-            $product->setKey($productKey);
-            $product->setPublished(true);
-
-            $product->save();
-
-            $existingProducts = $organization->getProducts();
-
-            $products = array_unique([...$existingProducts, $product]);
-
-            $organization->setProducts($products);
-
-            $organization->save();
-        }
+        $organization->save();
     }
 }

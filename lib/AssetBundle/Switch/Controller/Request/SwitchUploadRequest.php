@@ -7,7 +7,6 @@ namespace Froq\AssetBundle\Switch\Controller\Request;
 use Froq\AssetBundle\Switch\Validator\AssetTypeExists;
 use Froq\AssetBundle\Switch\Validator\CustomerAssetFolderExists;
 use Froq\AssetBundle\Switch\Validator\IsFilename;
-use Froq\AssetBundle\Switch\Validator\IsIsoDateString;
 use Froq\AssetBundle\Switch\Validator\IsJsonMaxOneLevelArray;
 use Froq\AssetBundle\Switch\Validator\IsJsonMaxThreeLevelsDeep;
 use Froq\AssetBundle\Switch\Validator\OrganizationExists;
@@ -30,7 +29,7 @@ final class SwitchUploadRequest
         #[OrganizationExists]
         public readonly string $customerCode,
         #[CustomerAssetFolderExists]
-        public readonly string $customAssetFolder,
+        public readonly ?string $customAssetFolder,
         #[NotBlank(message: 'AssetType can not be blank.')]
         #[AssetTypeExists]
         public readonly string $assetType,
@@ -38,11 +37,6 @@ final class SwitchUploadRequest
         #[Assert\File]
         public readonly ?UploadedFile $fileContents,
         #[NotBlank(message: 'AssetResourceValidFrom can not be blank.')]
-        #[IsIsoDateString]
-        public readonly string $assetResourceValidFrom,
-        #[NotBlank(message: 'AssetResourceValidFrom can not be blank.')]
-        #[IsIsoDateString]
-        public readonly string $assetResourceValidUntil,
         #[Assert\Json(message: 'AssetResourceMetadataFieldCollection is not a valid JSON')]
         #[IsJsonMaxOneLevelArray]
         public readonly string $assetResourceMetadataFieldCollection,
@@ -67,11 +61,9 @@ final class SwitchUploadRequest
         AssertProps::string($this->eventName, 'Expected "eventName" to be a string, got %s');
         AssertProps::string($this->filename, 'Expected "filename" to be a string, got %s');
         AssertProps::string($this->customerCode, 'Expected "customerCode" to be a string, got %s');
-        AssertProps::string($this->customAssetFolder, 'Expected "customAssetFolder" to be a string, got %s');
+        AssertProps::nullOrString($this->customAssetFolder, 'Expected "customAssetFolder" to be a string, got %s');
         AssertProps::string($this->assetType, 'Expected "assetType" to be a string, got %s');
         AssertProps::nullOrIsInstanceOf($this->fileContents, UploadedFile::class, 'Expected "fileContents" to be instance of UploadFile, got %s');
-        AssertProps::string($this->assetResourceValidFrom, 'Expected "assetResourceValidFrom" to be a string, got %s');
-        AssertProps::string($this->assetResourceValidUntil, 'Expected "assetResourceValidUntil" to be a string, got %s');
         AssertProps::string($this->assetResourceMetadataFieldCollection, 'Expected "assetResourceMetadataFieldCollection" to be a string, got %s');
         AssertProps::string($this->productData, 'Expected "productData" to be a string, got %s');
         AssertProps::string($this->tagData, 'Expected "tagData" to be a string, got %s');

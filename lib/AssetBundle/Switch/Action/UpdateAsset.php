@@ -7,6 +7,7 @@ namespace Froq\AssetBundle\Switch\Action;
 use Doctrine\DBAL\Driver\Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadResponse;
+use Froq\AssetBundle\Switch\Enum\LogLevelNames;
 use Froq\PortalBundle\Repository\AssetRepository;
 use Froq\PortalBundle\Repository\AssetResourceRepository;
 use Pimcore\Log\ApplicationLogger;
@@ -14,6 +15,7 @@ use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\AssetType;
 use Pimcore\Model\DataObject\Organization;
+use Pimcore\Model\DataObject\Product;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final class UpdateAsset
@@ -69,11 +71,21 @@ final class UpdateAsset
 
             $actions[] = $message;
 
-            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
-                'component' => $switchUploadRequest->eventName
-            ]);
+            $this->logger->error(
+                message: $message . implode(separator: ',', array: $actions),
+                context: ['component' => $switchUploadRequest->eventName]
+            );
 
-            return new SwitchUploadResponse(eventName: $switchUploadRequest->eventName, date: date('F j, Y H:i'), actions: $actions, statistics: []);
+            return new SwitchUploadResponse(
+                eventName: $switchUploadRequest->eventName,
+                date: date('F j, Y H:i'),
+                logLevel: LogLevelNames::ERROR->name.": $message",
+                assetId: '',
+                assetResourceId: '',
+                relatedObjects: [],
+                actions: $actions,
+                statistics: []
+            );
         }
 
         $actions[] = sprintf('Asset: %s already exist and updated as version %s new asset id: %s.', $existingAsset->getId(), $newVersionCount, $asset->getId());
@@ -97,16 +109,33 @@ final class UpdateAsset
             ->current();
 
         if (!($assetResourceContainer instanceof AssetResource)) {
-            $message = sprintf('%s is not an AssetResource. Asset and AssetResource might not be in sync.', $assetResourceContainer);
+            $asset->delete();
+
+            $message = sprintf('%s is not an AssetResource. Asset and AssetResource might not be in sync. Rolled back to previous state.', $assetResourceContainer);
 
             $actions[] = $message;
 
-            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
-                'component' => $switchUploadRequest->eventName
-            ]);
+            $this->logger->error(
+                message: $message . implode(separator: ',', array: $actions),
+                context: ['component' => $switchUploadRequest->eventName]
+            );
 
-            return new SwitchUploadResponse(eventName: $switchUploadRequest->eventName, date: date('F j, Y H:i'), actions: $actions, statistics: []);
+            return new SwitchUploadResponse(
+                eventName: $switchUploadRequest->eventName,
+                date: date('F j, Y H:i'),
+                logLevel: LogLevelNames::ERROR->name.": $message",
+                assetId: '',
+                assetResourceId: '',
+                relatedObjects: [],
+                actions: $actions,
+                statistics: []
+            );
         }
+
+        $tags = ($this->buildTags)($switchUploadRequest, $organization, $actions);
+
+        $assetResourceContainer->setTags($tags);
+        $assetResourceContainer->save();
 
         $latestAssetResourceVersion = AssetResource::getById($this->assetResourceRepository->fetchDeepestChildId((int) $assetResourceContainer->getId()));
         $newAssetResourceVersionCount = (int) $latestAssetResourceVersion?->getAssetVersion() + 1;
@@ -116,52 +145,77 @@ final class UpdateAsset
 
             $actions[] = $message;
 
-            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
-                'component' => $switchUploadRequest->eventName
-            ]);
+            $this->logger->error(
+                message: $message . implode(separator: ',', array: $actions),
+                context: ['component' => $switchUploadRequest->eventName]
+            );
 
-            return new SwitchUploadResponse(eventName: $switchUploadRequest->eventName, date: date('F j, Y H:i'), actions: $actions, statistics: []);
+            return new SwitchUploadResponse(
+                eventName: $switchUploadRequest->eventName,
+                date: date('F j, Y H:i'),
+                logLevel: LogLevelNames::ERROR->name.": $message",
+                assetId: '',
+                assetResourceId: '',
+                relatedObjects: [],
+                actions: $actions,
+                statistics: []
+            );
         }
 
-        $assetResourceLatestVersion = AssetResource::create();
-        $assetResourceLatestVersion->setPublished(true);
-        $assetResourceLatestVersion->setPath($latestAssetResourceVersion->getPath().'/');
-        $assetResourceLatestVersion->setName($filename);
-        $assetResourceLatestVersion->setParentId((int) $assetResourceContainer->getId());
-        $assetResourceLatestVersion->setAsset($asset);
-        $assetResourceLatestVersion->setAssetType($assetType);
-        $assetResourceLatestVersion->setAssetVersion($newAssetResourceVersionCount);
-        $assetResourceLatestVersion->setKey((string) $newAssetResourceVersionCount);
-        $assetResourceLatestVersion->setMetadata($assetResourceMetadataFieldCollection);
+        $latestAssetResourceVersion->setTags($tags);
+        $latestAssetResourceVersion->save();
 
-        ($this->buildTags)($switchUploadRequest, $assetResourceLatestVersion, $organization, $actions);
+        $newAssetResourceLatestVersion = AssetResource::create();
+        $newAssetResourceLatestVersion->setPublished(true);
+        $newAssetResourceLatestVersion->setPath($latestAssetResourceVersion->getPath().'/');
+        $newAssetResourceLatestVersion->setName($filename);
+        $newAssetResourceLatestVersion->setParentId((int) $assetResourceContainer->getId());
+        $newAssetResourceLatestVersion->setAsset($asset);
+        $newAssetResourceLatestVersion->setAssetType($assetType);
+        $newAssetResourceLatestVersion->setAssetVersion($newAssetResourceVersionCount);
+        $newAssetResourceLatestVersion->setKey((string) $newAssetResourceVersionCount);
+        $newAssetResourceLatestVersion->setMetadata($assetResourceMetadataFieldCollection);
+        $newAssetResourceLatestVersion->setTags($tags);
 
-        $assetResourceLatestVersion->save();
+        $newAssetResourceLatestVersion->save();
 
-        $actions[] = sprintf('AssetResourceLatestVersion with ID %d is created in %s', $assetResourceLatestVersion->getId(), $assetResourceLatestVersion->getPath());
+        $actions[] = sprintf('New AssetResourceLatestVersion with ID %d is created in %s', $newAssetResourceLatestVersion->getId(), $newAssetResourceLatestVersion->getPath());
 
-        if (!($assetResourceLatestVersion instanceof AssetResource)) {
-            $message = sprintf('AssetResourceLatestVersion %s does not exist.', $assetResourceLatestVersion);
+        if (!($newAssetResourceLatestVersion instanceof AssetResource)) {
+            $message = sprintf('AssetResourceLatestVersion %s does not exist.', $newAssetResourceLatestVersion);
 
             $actions[] = $message;
 
-            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
-                'component' => $switchUploadRequest->eventName
-            ]);
+            $this->logger->error(
+                message: $message . implode(separator: ',', array: $actions),
+                context: ['component' => $switchUploadRequest->eventName]
+            );
 
-            return new SwitchUploadResponse(eventName: $switchUploadRequest->eventName, date: date('F j, Y H:i'), actions: $actions, statistics: []);
+            return new SwitchUploadResponse(
+                eventName: $switchUploadRequest->eventName,
+                date: date('F j, Y H:i'),
+                logLevel: LogLevelNames::ERROR->name.": $message",
+                assetId: '',
+                assetResourceId: '',
+                relatedObjects: [],
+                actions: $actions,
+                statistics: []
+            );
         }
 
         $existingAssetResources = $organization->getAssetResources();
 
-        $assetResources = array_unique([...$existingAssetResources, $assetResourceContainer, $latestAssetResourceVersion, $assetResourceLatestVersion]);
+        $recentAssetResources = [...$existingAssetResources, $assetResourceContainer, $latestAssetResourceVersion, $newAssetResourceLatestVersion];
+
+        /** @var array<int, AssetResource> $assetResources */
+        $assetResources = array_unique($recentAssetResources);
 
         $organization->setAssetResources($assetResources);
 
         $organization->save();
 
-        ($this->buildProductFromPayload)($switchUploadRequest, $assetResourceLatestVersion, $organization, $actions);
-        ($this->buildProjectFromPayload)($switchUploadRequest, $assetResourceLatestVersion, $organization, $actions);
+        ($this->buildProductFromPayload)($switchUploadRequest, $assetResources, $organization, $actions);
+        ($this->buildProjectFromPayload)($switchUploadRequest, $assetResources, $organization, $actions);
         ($this->buildPrinterFromPayload)($switchUploadRequest, $organization, $actions);
         ($this->buildSupplierFromPayload)($switchUploadRequest, $organization, $actions);
 
@@ -171,15 +225,25 @@ final class UpdateAsset
         $usage = ($memUsage / 1024) / 1024;
         $peakUsage = (memory_get_peak_usage() / 1024) / 1024;
 
-        $this->logger->info(message: 'Asset Updated' . implode(separator: ',', array: $actions), context: [
-            'fileObject'    => 'Asset: ' . $asset->getId() . ': ' . $asset->getPath(),
-            'relatedObject' => 'AssetResource: ' .  $assetResourceLatestVersion->getId() . ': ' . $assetResourceLatestVersion->getPath(),
-            'component' => $switchUploadRequest->eventName
-        ]);
+        $this->logger->info(
+            message: 'Asset Updated' . implode(separator: ',', array: $actions),
+            context: [
+                'fileObject'    => 'Asset: ' . $asset->getId() . ': ' . $asset->getPath(),
+                'relatedObject' => 'AssetResource: ' .  $newAssetResourceLatestVersion->getId() . ': ' . $newAssetResourceLatestVersion->getPath(),
+                'component' => $switchUploadRequest->eventName
+            ]
+        );
 
         return new SwitchUploadResponse(
             eventName: $switchUploadRequest->eventName,
             date: date('F j, Y H:i'),
+            logLevel: LogLevelNames::SUCCESS->name.sprintf('Asset: %s and AssetResource: %s successfully updated!', $asset->getId(), $newAssetResourceLatestVersion->getId()),
+            assetId: (string) $asset->getId(),
+            assetResourceId: (string) $newAssetResourceLatestVersion->getId(),
+            relatedObjects: [
+                'productId' => current($newAssetResourceLatestVersion->getProducts()) instanceof Product ? current($newAssetResourceLatestVersion->getProducts())->getId() : '',
+                'projectId' => current($newAssetResourceLatestVersion->getProjects()) instanceof Product ? current($newAssetResourceLatestVersion->getProjects())->getId() : '',
+            ],
             actions: $actions,
             statistics: [
                 'Elapsed' => round($elapsed, 2) . ' seconds',

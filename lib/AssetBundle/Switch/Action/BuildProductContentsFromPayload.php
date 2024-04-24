@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Switch\Action;
 
+use Froq\AssetBundle\Switch\ValueObject\ProductFromPayload;
 use Pimcore\Model\DataObject\Data\QuantityValue;
 use Pimcore\Model\DataObject\Fieldcollection;
 use Pimcore\Model\DataObject\Fieldcollection\Data\ProductContents;
@@ -12,15 +13,14 @@ use Pimcore\Model\DataObject\QuantityValue\Unit;
 
 final class BuildProductContentsFromPayload
 {
-    /** @param array<string, array<string, float|int|string|null>> $payload */
-    public function __invoke(Product $product, array $payload): void
+    public function __invoke(Product $product, ProductFromPayload $productFromPayload): void
     {
-        if (isset($payload['productNetContents']) && is_array($payload['productNetContents'])) {
-            $this->setProductContents($product, $payload['productNetContents'], true);
+        if (isset($productFromPayload->productNetContents) && is_array($productFromPayload->productNetContents)) {
+            $this->setProductContents($product, $productFromPayload->productNetContents, true);
         }
 
-        if (isset($payload['productNetUnitContents']) && is_array($payload['productNetUnitContents'])) {
-            $this->setProductContents($product, $payload['productNetContents'], false);
+        if (isset($productFromPayload->productNetUnitContents) && is_array($productFromPayload->productNetUnitContents)) {
+            $this->setProductContents($product, $productFromPayload->productNetUnitContents, false);
         }
     }
 

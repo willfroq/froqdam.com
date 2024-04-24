@@ -7,32 +7,30 @@ namespace Froq\AssetBundle\Switch\Action;
 use Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
+use Froq\AssetBundle\Switch\ValueObject\TagFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
-use Froq\AssetBundle\Utility\IsPathExists;
-use Froq\PortalBundle\Repository\TagRepository;
-use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\DataObject;
-use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Tag;
 
 final class BuildTags
 {
-    public function __construct(
-        private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
-        private readonly TagRepository $tagRepository,
-        private readonly IsPathExists $isPathExists,
-        private readonly ApplicationLogger $logger,
-    ) {
+    public function __construct(private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull)
+    {
     }
 
     /**
      * @throws Exception
      *
      * @param array<int, string> $actions
+     *
+     * @return array<int, Tag>
      */
-    public function __invoke(SwitchUploadRequest $switchUploadRequest, AssetResource $assetResource, Organization $organization, array $actions): void
-    {
+    public function __invoke(
+        SwitchUploadRequest $switchUploadRequest,
+        Organization $organization,
+        array $actions
+    ): array {
         $rootTagFolder = $organization->getObjectFolder() . '/';
 
         $parentTagFolder = (new DataObject\Listing())
@@ -41,66 +39,33 @@ final class BuildTags
             ->current();
 
         if (!($parentTagFolder instanceof DataObject)) {
-            return;
+            return [];
         }
 
-        $payload = json_decode($switchUploadRequest->tagData, true);
+        $tagData = (array) json_decode($switchUploadRequest->tagData, true);
 
-        if (empty($payload) || ($this->allPropsEmptyOrNull)($payload)) {
-            return;
+        if (empty($tagData) || ($this->allPropsEmptyOrNull)($tagData)) {
+            return [];
         }
-
-        $existingTags = $assetResource->getTags();
 
         $newTags = [];
 
-        foreach ($payload as $item) {
-            if (empty($item)) {
-                continue;
-            }
+        foreach ($tagData as $tagDatum) {
+            $tagFromPayload = new TagFromPayload(code: $tagDatum['code'] ?? null, name: $tagDatum['name'] ?? null);
 
-            if (count((array) $item) !== 2 && is_array($item)) {
-                continue;
-            }
+            $tag = new Tag();
 
-            if (!isset($item['code']) || !isset($item['name'])) {
-                continue;
-            }
+            $tag->setCode($tagFromPayload->code);
+            $tag->setName($tagFromPayload->name);
+            $tag->setParentId((int) $parentTagFolder->getId());
+            $tag->setKey((string) $tagFromPayload->code);
+            $tag->setPublished(true);
 
-            $code = (string) $item['code'];
-            $name = (string) $item['name'];
+            $tag->save();
 
-            if ($this->tagRepository->isTagExists($organization, $code)) {
-                continue;
-            }
-
-            $tagPath = $rootTagFolder.AssetResourceOrganizationFolderNames::Tags->name.'/';
-
-            if (($this->isPathExists)($switchUploadRequest, $code, $tagPath)) {
-                $message = sprintf('Related Tag NOT created. %s path already exists, this has to be unique.', $tagPath);
-
-                $actions[] = $message;
-
-                $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
-                    'component' => $switchUploadRequest->eventName
-                ]);
-            }
-
-            if (!($this->isPathExists)($switchUploadRequest, $code, $tagPath)) {
-                $tag = new Tag();
-
-                $tag->setCode($code);
-                $tag->setName($name);
-                $tag->setParentId((int) $parentTagFolder->getId());
-                $tag->setKey($code);
-                $tag->setPublished(true);
-
-                $tag->save();
-
-                $newTags[] = $tag;
-            }
+            $newTags[] = $tag;
         }
 
-        $assetResource->setTags([...$newTags, ...$existingTags]);
+        return $newTags;
     }
 }

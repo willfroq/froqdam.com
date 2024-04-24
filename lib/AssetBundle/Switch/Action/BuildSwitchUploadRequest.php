@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Switch\Action;
 
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
-use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\PortalBundle\Api\ValueObject\ValidationError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +15,8 @@ final class BuildSwitchUploadRequest
 {
     public function __construct(
         private readonly ValidatorInterface $validator,
-        private readonly SerializerInterface $serializer
+        private readonly SerializerInterface $serializer,
+        private readonly ProcessSwitchUploadRequest $processSwitchUploadRequest,
     ) {
     }
 
@@ -25,18 +25,13 @@ final class BuildSwitchUploadRequest
      */
     public function __invoke(Request $request): SwitchUploadRequest
     {
-        $errors = [];
-
         /** @var UploadedFile|null $file */
         $file = $request->files->get('fileContents');
+        $customAssetFolder = null;
 
-        if (!($file instanceof UploadedFile)) {
-            $errors[] = new ValidationError(propertyPath: 'fileContents', message: sprintf('FileContents %s is not a file.', $file));
-        }
+        $errors = [];
 
-        $assetFolder = $request->request->get('customAssetFolder');
-
-        $customAssetFolder = $assetFolder === null || $assetFolder === '' ? AssetResourceOrganizationFolderNames::Assets->name : $assetFolder;
+        ($this->processSwitchUploadRequest)($request, $file, $customAssetFolder, $errors);
 
         $switchUploadRequest = new SwitchUploadRequest(
             eventName: (string) $request->request->get('eventName'),
@@ -45,8 +40,6 @@ final class BuildSwitchUploadRequest
             customAssetFolder: (string) $customAssetFolder,
             assetType: (string) $request->request->get('assetType'),
             fileContents: $file,
-            assetResourceValidFrom: (string) $request->request->get('assetResourceValidFrom'),
-            assetResourceValidUntil: (string) $request->request->get('assetResourceValidUntil'),
             assetResourceMetadataFieldCollection: (string) $request->request->get('assetResourceMetadataFieldCollection'),
             productData: (string) $request->request->get('productData'),
             tagData: (string) $request->request->get('tagData'),

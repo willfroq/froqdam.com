@@ -7,20 +7,13 @@ namespace Froq\AssetBundle\Switch\Action;
 use Doctrine\DBAL\Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
-use Froq\AssetBundle\Utility\IsPathExists;
-use Pimcore\Log\ApplicationLogger;
+use Froq\AssetBundle\Switch\ValueObject\SupplierFromPayload;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Supplier;
 
 final class BuildSupplierFromPayload
 {
-    public function __construct(
-        private readonly IsPathExists $isPathExists,
-        private readonly ApplicationLogger $logger,
-    ) {
-    }
-
     /**
      * @throws Exception
      * @throws \Exception
@@ -40,61 +33,35 @@ final class BuildSupplierFromPayload
             return;
         }
 
-        $payload = (array) json_decode($switchUploadRequest->supplierData, true);
+        $supplierData = (array) json_decode($switchUploadRequest->supplierData, true);
+        $supplierFromPayload = new SupplierFromPayload(
+            supplierCode: $supplierData['supplierCode'] ?? null,
+            supplierCompany: $supplierData['supplierCompany'] ?? null,
+            supplierContact: $supplierData['supplierContact'] ?? null,
+            supplierStreetName: $supplierData['supplierStreetName'] ?? null,
+            supplierStreetNumber: $supplierData['supplierStreetNumber'] ?? null,
+            supplierPostalCode: $supplierData['supplierPostalCode'] ?? null,
+            supplierPhoneNumber: $supplierData['supplierPhoneNumber'] ?? null,
+            supplierEmail: $supplierData['supplierEmail'] ?? null,
+        );
 
-        if (!isset($payload['supplierCode'])) {
-            return;
-        }
-
-        $supplierCode = (string) $payload['supplierCode'];
+        $supplierCode = (string) $supplierFromPayload->supplierCode;
 
         $supplier = new Supplier();
 
         $supplier->setCode($supplierCode);
+        $supplier->setCompany($supplierFromPayload->supplierCompany);
+        $supplier->setContact($supplierFromPayload->supplierContact);
+        $supplier->setStreetName($supplierFromPayload->supplierStreetName);
+        $supplier->setStreetNumber($supplierFromPayload->supplierStreetNumber);
+        $supplier->setPostalCode($supplierFromPayload->supplierPostalCode);
+        $supplier->setPhoneNumber($supplierFromPayload->supplierPhoneNumber);
+        $supplier->setEmail($supplierFromPayload->supplierEmail);
 
-        if (isset($payload['supplierCompany'])) {
-            $supplier->setCompany($payload['supplierCompany']);
-        }
-        if (isset($payload['supplierContact'])) {
-            $supplier->setContact($payload['supplierContact']);
-        }
-        if (isset($payload['supplierStreetName'])) {
-            $supplier->setStreetName($payload['supplierStreetName']);
-        }
-        if (isset($payload['supplierStreetNumber'])) {
-            $supplier->setStreetNumber($payload['supplierStreetNumber']);
-        }
-        if (isset($payload['supplierPostalCode'])) {
-            $supplier->setPostalCode($payload['supplierPostalCode']);
-        }
-        if (isset($payload['supplierCity'])) {
-            $supplier->setCity($payload['supplierCity']);
-        }
-        if (isset($payload['supplierPhoneNumber'])) {
-            $supplier->setPhoneNumber($payload['supplierPhoneNumber']);
-        }
-        if (isset($payload['supplierEmail'])) {
-            $supplier->setEmail($payload['supplierEmail']);
-        }
+        $supplier->setPublished(true);
+        $supplier->setParentId((int) $parentSupplierFolder->getId());
+        $supplier->setKey($supplierCode);
 
-        $supplierPath = $rootSupplierFolder.AssetResourceOrganizationFolderNames::Suppliers->name.'/';
-
-        if (($this->isPathExists)($switchUploadRequest, $supplierCode, $supplierPath)) {
-            $message = sprintf('Related supplier NOT created. %s path already exists, this has to be unique.', $supplierPath);
-
-            $actions[] = $message;
-
-            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
-                'component' => $switchUploadRequest->eventName
-            ]);
-        }
-
-        if (!($this->isPathExists)($switchUploadRequest, $supplierCode, $supplierPath)) {
-            $supplier->setPublished(true);
-            $supplier->setParentId((int) $parentSupplierFolder->getId());
-            $supplier->setKey((string) $payload['supplierCode']);
-
-            $supplier->save();
-        }
+        $supplier->save();
     }
 }

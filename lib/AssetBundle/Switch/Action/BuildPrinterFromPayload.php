@@ -6,9 +6,8 @@ namespace Froq\AssetBundle\Switch\Action;
 
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
+use Froq\AssetBundle\Switch\ValueObject\PrinterFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
-use Froq\AssetBundle\Utility\IsPathExists;
-use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Printer;
@@ -16,9 +15,7 @@ use Pimcore\Model\DataObject\Printer;
 final class BuildPrinterFromPayload
 {
     public function __construct(
-        private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
-        private readonly IsPathExists $isPathExists,
-        private readonly ApplicationLogger $logger
+        private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull
     ) {
     }
 
@@ -42,48 +39,31 @@ final class BuildPrinterFromPayload
             return;
         }
 
-        $payload = (array) json_decode($switchUploadRequest->printerData, true);
+        $printerData = (array) json_decode($switchUploadRequest->printerData, true);
 
-        if (empty($payload) || ($this->allPropsEmptyOrNull)($payload)) {
+        if (empty($printerData) || ($this->allPropsEmptyOrNull)($printerData)) {
             return;
         }
 
-        $printer = new Printer();
+        $printerFromPayload = new PrinterFromPayload(
+            printingProcess: $printerData['printingProcess'] ?? null,
+            printingWorkflow: $printerData['printingWorkflow'] ?? null,
+            epsonMaterial: $printerData['epsonMaterial'] ?? null,
+            substrateMaterial: $printerData['substrateMaterial'] ?? null,
+        );
 
-        if (isset($payload['printingProcess'])) {
-            $printer->setPrintingProcess($payload['printingProcess']);
-        }
-        if (isset($payload['printingWorkflow'])) {
-            $printer->setPrintingWorkflow($payload['printingWorkflow']);
-        }
-        if (isset($payload['epsonMaterial'])) {
-            $printer->setEpsonMaterial($payload['epsonMaterial']);
-        }
-        if (isset($payload['substrateMaterial'])) {
-            $printer->setSubstrateMaterial($payload['substrateMaterial']);
-        }
+        $printer = new Printer();
+        $printer->setPrintingProcess($printerFromPayload->printingProcess);
+        $printer->setPrintingWorkflow($printerFromPayload->printingWorkflow);
+        $printer->setEpsonMaterial($printerFromPayload->epsonMaterial);
+        $printer->setSubstrateMaterial($printerFromPayload->substrateMaterial);
 
         // TODO Printer, PrintingInks
 
-        $printerKey = (string) $payload['printingProcess'];
-        $printerPath = $rootPrinterFolder.AssetResourceOrganizationFolderNames::Printers->name . '/';
+        $printer->setPublished(true);
+        $printer->setParentId((int) $parentPrinterFolder->getId());
+        $printer->setKey((string) $printerFromPayload->printingProcess);
 
-        if (($this->isPathExists)($switchUploadRequest, $printerKey, $printerPath)) {
-            $message = sprintf('Related printer NOT created. %s path already exists, this has to be unique.', $printerPath);
-
-            $actions[] = $message;
-
-            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
-                'component' => $switchUploadRequest->eventName
-            ]);
-        }
-
-        if (!($this->isPathExists)($switchUploadRequest, $printerKey, $printerPath)) {
-            $printer->setPublished(true);
-            $printer->setParentId((int) $parentPrinterFolder->getId());
-            $printer->setKey($printerKey);
-
-            $printer->save();
-        }
+        $printer->save();
     }
 }

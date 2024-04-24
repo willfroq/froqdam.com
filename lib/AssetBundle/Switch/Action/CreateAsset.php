@@ -7,12 +7,15 @@ namespace Froq\AssetBundle\Switch\Action;
 use Doctrine\DBAL\Driver\Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadResponse;
+use Froq\AssetBundle\Switch\Enum\LogLevelNames;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\AssetType;
 use Pimcore\Model\DataObject\Organization;
+use Pimcore\Model\DataObject\Product;
+use Pimcore\Model\DataObject\Project;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final class CreateAsset
@@ -66,11 +69,21 @@ final class CreateAsset
 
             $actions[] = $message;
 
-            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
-                'component' => $switchUploadRequest->eventName
-            ]);
+            $this->logger->error(
+                message: $message . implode(separator: ',', array: $actions),
+                context: ['component' => $switchUploadRequest->eventName]
+            );
 
-            return new SwitchUploadResponse(eventName: $switchUploadRequest->eventName, date: date('F j, Y H:i'), actions: $actions, statistics: []);
+            return new SwitchUploadResponse(
+                eventName: $switchUploadRequest->eventName,
+                date: date('F j, Y H:i'),
+                logLevel: LogLevelNames::ERROR->name.": $message",
+                assetId: '',
+                assetResourceId: '',
+                relatedObjects: [],
+                actions: $actions,
+                statistics: []
+            );
         }
 
         $actions[] = sprintf('Asset with ID %d is created and exists as: %s fullPath: %s', $asset->getId(), $asset->getPath(), $asset->getFullPath());
@@ -93,12 +106,24 @@ final class CreateAsset
 
             $actions[] = $message;
 
-            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
-                'component' => $switchUploadRequest->eventName
-            ]);
+            $this->logger->error(
+                message: $message . implode(separator: ',', array: $actions),
+                context: ['component' => $switchUploadRequest->eventName]
+            );
 
-            return new SwitchUploadResponse(eventName: $switchUploadRequest->eventName, date: date('F j, Y H:i'), actions: $actions, statistics: []);
+            return new SwitchUploadResponse(
+                eventName: $switchUploadRequest->eventName,
+                date: date('F j, Y H:i'),
+                logLevel: LogLevelNames::ERROR->name.": $message",
+                assetId: '',
+                assetResourceId: '',
+                relatedObjects: [],
+                actions: $actions,
+                statistics: []
+            );
         }
+
+        $tags = ($this->buildTags)($switchUploadRequest, $organization, $actions);
 
         $assetFolderName = $switchUploadRequest->customAssetFolder;
 
@@ -112,6 +137,7 @@ final class CreateAsset
         $parentAssetResource->setAssetVersion(0);
         $parentAssetResource->setKey($switchUploadRequest->filename);
         $parentAssetResource->setMetadata($assetResourceMetadataFieldCollection);
+        $parentAssetResource->setTags($tags);
 
         $parentAssetResource->save();
 
@@ -122,11 +148,21 @@ final class CreateAsset
 
             $actions[] = $message;
 
-            $this->logger->error(message: $message . implode(separator: ',', array: $actions), context: [
-                'component' => $switchUploadRequest->eventName
-            ]);
+            $this->logger->error(
+                message: $message . implode(separator: ',', array: $actions),
+                context: ['component' => $switchUploadRequest->eventName]
+            );
 
-            return new SwitchUploadResponse(eventName: $switchUploadRequest->eventName, date: date('F j, Y H:i'), actions: $actions, statistics: []);
+            return new SwitchUploadResponse(
+                eventName: $switchUploadRequest->eventName,
+                date: date('F j, Y H:i'),
+                logLevel: LogLevelNames::ERROR->name.": $message",
+                assetId: '',
+                assetResourceId: '',
+                relatedObjects: [],
+                actions: $actions,
+                statistics: []
+            );
         }
 
         $assetResourceVersionOne = AssetResource::create();
@@ -139,8 +175,7 @@ final class CreateAsset
         $assetResourceVersionOne->setAssetVersion(1);
         $assetResourceVersionOne->setKey('1');
         $assetResourceVersionOne->setMetadata($assetResourceMetadataFieldCollection);
-
-        ($this->buildTags)($switchUploadRequest, $assetResourceVersionOne, $organization, $actions);
+        $assetResourceVersionOne->setTags($tags);
 
         $assetResourceVersionOne->save();
 
@@ -155,7 +190,16 @@ final class CreateAsset
                 'component' => $switchUploadRequest->eventName
             ]);
 
-            return new SwitchUploadResponse(eventName: $switchUploadRequest->eventName, date: date('F j, Y H:i'), actions: $actions, statistics: []);
+            return new SwitchUploadResponse(
+                eventName: $switchUploadRequest->eventName,
+                date: date('F j, Y H:i'),
+                logLevel: LogLevelNames::ERROR->name.": $message",
+                assetId: '',
+                assetResourceId: '',
+                relatedObjects: [],
+                actions: $actions,
+                statistics: []
+            );
         }
 
         $existingAssetResources = $organization->getAssetResources();
@@ -164,8 +208,8 @@ final class CreateAsset
 
         $organization->save();
 
-        ($this->buildProductFromPayload)($switchUploadRequest, $assetResourceVersionOne, $organization, $actions);
-        ($this->buildProjectFromPayload)($switchUploadRequest, $assetResourceVersionOne, $organization, $actions);
+        ($this->buildProductFromPayload)($switchUploadRequest, [$parentAssetResource, $assetResourceVersionOne], $organization, $actions);
+        ($this->buildProjectFromPayload)($switchUploadRequest, [$parentAssetResource, $assetResourceVersionOne], $organization, $actions);
         ($this->buildPrinterFromPayload)($switchUploadRequest, $organization, $actions);
         ($this->buildSupplierFromPayload)($switchUploadRequest, $organization, $actions);
 
@@ -184,6 +228,13 @@ final class CreateAsset
         return new SwitchUploadResponse(
             eventName: $switchUploadRequest->eventName,
             date: date('F j, Y H:i'),
+            logLevel: LogLevelNames::SUCCESS->name.': Asset Created! Upload workflow successfully finished',
+            assetId: (string) $asset->getId(),
+            assetResourceId: (string) $assetResourceVersionOne->getId(),
+            relatedObjects: [
+                'productId' => current($assetResourceVersionOne->getProducts()) instanceof Product ? current($assetResourceVersionOne->getProducts())->getId() : '',
+                'projectId' => current($assetResourceVersionOne->getProjects()) instanceof Project ? current($assetResourceVersionOne->getProjects())->getId() : '',
+            ],
             actions: $actions,
             statistics: [
                 'Elapsed' => round($elapsed, 2) . ' seconds',
