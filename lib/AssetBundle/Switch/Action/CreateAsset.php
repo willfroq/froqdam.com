@@ -65,9 +65,12 @@ final class CreateAsset
         $asset = ($this->buildFileAsset)($uploadedFile, $filename, $newAssetVersionFolder);
 
         if (!($asset instanceof Asset)) {
-            $asset?->delete(); /** @phpstan-ignore-line */
-
-            $newAssetVersionFolder->delete();
+            try {
+                $asset?->delete(); /** @phpstan-ignore-line */
+                $newAssetVersionFolder->delete();
+            } catch (\Exception $exception) {
+                throw new \Exception(message: $exception->getMessage());
+            }
 
             $message = 'No Asset created. Make sure there is a file and it\'s not broken.';
 
@@ -107,8 +110,12 @@ final class CreateAsset
             ->current();
 
         if (!($parentAssetResourceFolder instanceof DataObject)) {
-            $asset->delete();
-            $newAssetVersionFolder->delete();
+            try {
+                $asset->delete();
+                $newAssetVersionFolder->delete();
+            } catch (\Exception $exception) {
+                throw new \Exception(message: $exception->getMessage());
+            }
 
             $message = sprintf('ParentAssetResourceFolder: key: %s and path: %s does not exist.', 'Assets', $rootAssetResourceFolder);
 
@@ -153,9 +160,13 @@ final class CreateAsset
         $actions[] = sprintf('ParentAssetResource with ID %d is created %s', $parentAssetResource->getId(), $parentAssetResource->getPath());
 
         if (!($parentAssetResource instanceof AssetResource)) {
-            $parentAssetResource->delete();
-            $asset->delete();
-            $newAssetVersionFolder->delete();
+            try {
+                $parentAssetResource->delete();
+                $asset->delete();
+                $newAssetVersionFolder->delete();
+            } catch (\Exception $exception) {
+                throw new \Exception(message: $exception->getMessage());
+            }
 
             $message = sprintf('ParentAssetResource %s does not exist.', $parentAssetResource);
 
@@ -196,10 +207,14 @@ final class CreateAsset
         $actions[] = sprintf('AssetResourceVersionOne with ID %d is created %s', $assetResourceVersionOne->getId(), $assetResourceVersionOne->getPath());
 
         if (!($assetResourceVersionOne instanceof AssetResource)) {
-            $parentAssetResource->delete();
-            $asset->delete();
-            $newAssetVersionFolder->delete();
-            $assetResourceVersionOne->delete();
+            try {
+                $parentAssetResource->delete();
+                $asset->delete();
+                $newAssetVersionFolder->delete();
+                $assetResourceVersionOne->delete();
+            } catch (\Exception $exception) {
+                throw new \Exception(message: $exception->getMessage());
+            }
 
             $message = sprintf('AssetResourceVersionOne %s does not exist.', $assetResourceVersionOne);
 
