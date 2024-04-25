@@ -66,34 +66,35 @@ final class CreateAsset
         }
 
         $filename = $switchUploadRequest->filename;
+        $asset = null;
+        $assetFolderContainer = null;
+        $newAssetVersionFolder = null;
 
         $assetFolder = Asset\Folder::getByPath($assetFolderPath);
 
-        $assetFolderContainer = new Asset\Folder();
-        $assetFolderContainer->setParent($assetFolder);
-        $assetFolderContainer->setFilename($filename);
-        $assetFolderContainer->setPath($assetFolderPath);
-        $assetFolderContainer->save();
+        if ($assetFolder instanceof Asset\Folder) {
+            $assetFolderContainer = new Asset\Folder();
+            $assetFolderContainer->setParent($assetFolder);
+            $assetFolderContainer->setFilename($filename);
+            $assetFolderContainer->setPath($assetFolderPath);
+            $assetFolderContainer->save();
 
-        if (!($assetFolder instanceof Asset\Folder)) {
+            $newAssetVersionFolder = new Asset\Folder();
+            $newAssetVersionFolder->setParent($assetFolderContainer);
+            $newAssetVersionFolder->setFilename('1');
+            $newAssetVersionFolder->setPath($assetFolderPath."$filename/");
+            $newAssetVersionFolder->save();
 
+            $actions[] = sprintf('NewAssetVersionFolder with ID %d is created with path: %s', $newAssetVersionFolder->getId(), $newAssetVersionFolder->getPath());
+
+            $asset = ($this->buildFileAsset)($uploadedFile, $filename, $newAssetVersionFolder);
         }
-
-        $newAssetVersionFolder = new Asset\Folder();
-        $newAssetVersionFolder->setParent($assetFolderContainer);
-        $newAssetVersionFolder->setFilename('1');
-        $newAssetVersionFolder->setPath($assetFolderPath."$filename/");
-        $newAssetVersionFolder->save();
-
-        $actions[] = sprintf('NewAssetVersionFolder with ID %d is created with path: %s', $newAssetVersionFolder->getId(), $newAssetVersionFolder->getPath());
-
-        $asset = ($this->buildFileAsset)($uploadedFile, $filename, $newAssetVersionFolder);
 
         if (!($asset instanceof Asset)) {
             try {
                 $asset?->delete(); /** @phpstan-ignore-line */
-                $assetFolderContainer->delete();
-                $newAssetVersionFolder->delete();
+                $assetFolderContainer?->delete();
+                $newAssetVersionFolder?->delete();
             } catch (\Exception $exception) {
                 throw new \Exception(message: $exception->getMessage());
             }
@@ -138,8 +139,8 @@ final class CreateAsset
         if (!($parentAssetResourceFolder instanceof DataObject)) {
             try {
                 $asset->delete();
-                $assetFolderContainer->delete();
-                $newAssetVersionFolder->delete();
+                $assetFolderContainer?->delete();
+                $newAssetVersionFolder?->delete();
             } catch (\Exception $exception) {
                 throw new \Exception(message: $exception->getMessage());
             }
@@ -189,9 +190,9 @@ final class CreateAsset
         if (!($parentAssetResource instanceof AssetResource)) {
             try {
                 $parentAssetResource->delete();
-                $assetFolderContainer->delete();
+                $assetFolderContainer?->delete();
+                $newAssetVersionFolder?->delete();
                 $asset->delete();
-                $newAssetVersionFolder->delete();
             } catch (\Exception $exception) {
                 throw new \Exception(message: $exception->getMessage());
             }
@@ -238,8 +239,8 @@ final class CreateAsset
             try {
                 $parentAssetResource->delete();
                 $asset->delete();
-                $assetFolderContainer->delete();
-                $newAssetVersionFolder->delete();
+                $assetFolderContainer?->delete();
+                $newAssetVersionFolder?->delete();
                 $assetResourceVersionOne->delete();
             } catch (\Exception $exception) {
                 throw new \Exception(message: $exception->getMessage());
