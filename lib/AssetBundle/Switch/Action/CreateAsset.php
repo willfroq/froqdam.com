@@ -44,6 +44,27 @@ final class CreateAsset
         string $assetFolderPath,
         float $start
     ): SwitchUploadResponse {
+        if (empty($organization->getObjectFolder()) ||
+            empty($organization->getAssetFolder()) ||
+            empty($organization->getAssetResourceFolders())
+        ) {
+            $message = 'There\'s no organization AssetFolder or ObjectFolder or AssetResource paths specified. Creating them also failed, please make them manually.';
+
+            $actions[] = $message;
+            $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
+
+            return new SwitchUploadResponse(
+                eventName: $switchUploadRequest->eventName,
+                date: date('F j, Y H:i'),
+                logLevel: LogLevelNames::ERROR->name.": $message",
+                assetId: '',
+                assetResourceId: '',
+                relatedObjects: [],
+                actions: $actions,
+                statistics: []
+            );
+        }
+
         $filename = $switchUploadRequest->filename;
 
         $assetFolder = Asset\Folder::getByPath($assetFolderPath);
@@ -53,6 +74,10 @@ final class CreateAsset
         $assetFolderContainer->setFilename($filename);
         $assetFolderContainer->setPath($assetFolderPath);
         $assetFolderContainer->save();
+
+        if (!($assetFolder instanceof Asset\Folder)) {
+
+        }
 
         $newAssetVersionFolder = new Asset\Folder();
         $newAssetVersionFolder->setParent($assetFolderContainer);
@@ -67,6 +92,7 @@ final class CreateAsset
         if (!($asset instanceof Asset)) {
             try {
                 $asset?->delete(); /** @phpstan-ignore-line */
+                $assetFolderContainer->delete();
                 $newAssetVersionFolder->delete();
             } catch (\Exception $exception) {
                 throw new \Exception(message: $exception->getMessage());
@@ -112,6 +138,7 @@ final class CreateAsset
         if (!($parentAssetResourceFolder instanceof DataObject)) {
             try {
                 $asset->delete();
+                $assetFolderContainer->delete();
                 $newAssetVersionFolder->delete();
             } catch (\Exception $exception) {
                 throw new \Exception(message: $exception->getMessage());
@@ -162,6 +189,7 @@ final class CreateAsset
         if (!($parentAssetResource instanceof AssetResource)) {
             try {
                 $parentAssetResource->delete();
+                $assetFolderContainer->delete();
                 $asset->delete();
                 $newAssetVersionFolder->delete();
             } catch (\Exception $exception) {
@@ -210,6 +238,7 @@ final class CreateAsset
             try {
                 $parentAssetResource->delete();
                 $asset->delete();
+                $assetFolderContainer->delete();
                 $newAssetVersionFolder->delete();
                 $assetResourceVersionOne->delete();
             } catch (\Exception $exception) {

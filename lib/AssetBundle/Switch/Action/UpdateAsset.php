@@ -48,6 +48,27 @@ final class UpdateAsset
         AssetType $assetType,
         float $start
     ): SwitchUploadResponse {
+        if (empty($organization->getObjectFolder()) ||
+            empty($organization->getAssetFolder()) ||
+            empty($organization->getAssetResourceFolders())
+        ) {
+            $message = 'There\'s no organization AssetFolder or ObjectFolder or AssetResource paths specified. Creating them also failed, please make them manually.';
+
+            $actions[] = $message;
+            $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
+
+            return new SwitchUploadResponse(
+                eventName: $switchUploadRequest->eventName,
+                date: date('F j, Y H:i'),
+                logLevel: LogLevelNames::ERROR->name.": $message",
+                assetId: '',
+                assetResourceId: '',
+                relatedObjects: [],
+                actions: $actions,
+                statistics: []
+            );
+        }
+
         $actions[] = sprintf('AssetFolderContainer path: %s', $assetFolderContainer->getPath());
         $actions[] = sprintf('Existing asset path: %s', $existingAsset->getPath());
 
@@ -208,7 +229,6 @@ final class UpdateAsset
             try {
                 $asset->delete();
                 $newAssetVersionFolder->delete();
-                $latestAssetResourceVersion->delete();
                 $newAssetResourceLatestVersion->delete();
             } catch (\Exception $exception) {
                 throw new \Exception(message: $exception->getMessage());
@@ -270,7 +290,7 @@ final class UpdateAsset
         return new SwitchUploadResponse(
             eventName: $switchUploadRequest->eventName,
             date: date('F j, Y H:i'),
-            logLevel: LogLevelNames::SUCCESS->name.sprintf('Asset: %s and AssetResource: %s successfully updated!', $asset->getId(), $newAssetResourceLatestVersion->getId()),
+            logLevel: LogLevelNames::SUCCESS->name.sprintf(': Asset %s and AssetResource: %s successfully updated!', $asset->getId(), $newAssetResourceLatestVersion->getId()),
             assetId: (string) $asset->getId(),
             assetResourceId: (string) $newAssetResourceLatestVersion->getId(),
             relatedObjects: [
