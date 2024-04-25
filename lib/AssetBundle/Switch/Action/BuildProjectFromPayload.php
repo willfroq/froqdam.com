@@ -9,6 +9,8 @@ use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\ProjectFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
+use Froq\AssetBundle\Utility\IsPathExists;
+use Froq\PortalBundle\Api\ValueObject\ValidationError;
 use Froq\PortalBundle\Repository\ProjectRepository;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
@@ -20,6 +22,7 @@ final class BuildProjectFromPayload
     public function __construct(
         private readonly ProjectRepository $projectRepository,
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
+        private readonly IsPathExists $isPathExists,
     ) {
     }
 
@@ -102,12 +105,17 @@ final class BuildProjectFromPayload
 
         $assetResources = array_unique($existingAssetResources);
 
-        $project->setAssets($assetResources);
-        $project->setPublished(true);
-        $project->setCustomer($organization);
+        $projectPath = $rootProjectFolder.AssetResourceOrganizationFolderNames::Projects->name.'/';
+        $projectKey = $projectFromPayload->projectCode;
 
-        $project->setParentId((int) $parentProjectFolder->getId());
+        if (!($this->isPathExists)((string) $projectKey, $projectPath)) {
+            $project->setAssets($assetResources);
+            $project->setPublished(true);
+            $project->setCustomer($organization);
 
-        $project->save();
+            $project->setParentId((int) $parentProjectFolder->getId());
+
+            $project->save();
+        }
     }
 }

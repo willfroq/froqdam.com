@@ -8,6 +8,7 @@ use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\PrinterFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
+use Froq\AssetBundle\Utility\IsPathExists;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Printer;
@@ -15,7 +16,9 @@ use Pimcore\Model\DataObject\Printer;
 final class BuildPrinterFromPayload
 {
     public function __construct(
-        private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull
+        private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
+        private readonly IsPathExists $isPathExists,
+
     ) {
     }
 
@@ -52,18 +55,23 @@ final class BuildPrinterFromPayload
             substrateMaterial: $printerData['substrateMaterial'] ?? null,
         );
 
-        $printer = new Printer();
-        $printer->setPrintingProcess($printerFromPayload->printingProcess);
-        $printer->setPrintingWorkflow($printerFromPayload->printingWorkflow);
-        $printer->setEpsonMaterial($printerFromPayload->epsonMaterial);
-        $printer->setSubstrateMaterial($printerFromPayload->substrateMaterial);
+        $printerPath = $rootPrinterFolder.AssetResourceOrganizationFolderNames::Printers->name.'/';
+        $printerKey = $printerFromPayload->printingProcess;
 
-        // TODO Printer, PrintingInks
+        if (!($this->isPathExists)((string) $printerKey, $printerPath)) {
+            $printer = new Printer();
+            $printer->setPrintingProcess($printerFromPayload->printingProcess);
+            $printer->setPrintingWorkflow($printerFromPayload->printingWorkflow);
+            $printer->setEpsonMaterial($printerFromPayload->epsonMaterial);
+            $printer->setSubstrateMaterial($printerFromPayload->substrateMaterial);
 
-        $printer->setPublished(true);
-        $printer->setParentId((int) $parentPrinterFolder->getId());
-        $printer->setKey((string) $printerFromPayload->printingProcess);
+            // TODO Printer, PrintingInks
 
-        $printer->save();
+            $printer->setPublished(true);
+            $printer->setParentId((int) $parentPrinterFolder->getId());
+            $printer->setKey((string) $printerFromPayload->printingProcess);
+
+            $printer->save();
+        }
     }
 }

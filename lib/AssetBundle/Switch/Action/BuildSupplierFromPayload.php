@@ -8,12 +8,19 @@ use Doctrine\DBAL\Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\SupplierFromPayload;
+use Froq\AssetBundle\Utility\IsPathExists;
+use Froq\PortalBundle\Api\ValueObject\ValidationError;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Supplier;
 
 final class BuildSupplierFromPayload
 {
+    public function __construct(
+        private readonly IsPathExists $isPathExists,
+    ) {
+    }
+
     /**
      * @throws Exception
      * @throws \Exception
@@ -47,21 +54,26 @@ final class BuildSupplierFromPayload
 
         $supplierCode = (string) $supplierFromPayload->supplierCode;
 
-        $supplier = new Supplier();
+        $supplierPath = $rootSupplierFolder.AssetResourceOrganizationFolderNames::Suppliers->name.'/';
+        $supplierKey = $supplierCode;
 
-        $supplier->setCode($supplierCode);
-        $supplier->setCompany($supplierFromPayload->supplierCompany);
-        $supplier->setContact($supplierFromPayload->supplierContact);
-        $supplier->setStreetName($supplierFromPayload->supplierStreetName);
-        $supplier->setStreetNumber($supplierFromPayload->supplierStreetNumber);
-        $supplier->setPostalCode($supplierFromPayload->supplierPostalCode);
-        $supplier->setPhoneNumber($supplierFromPayload->supplierPhoneNumber);
-        $supplier->setEmail($supplierFromPayload->supplierEmail);
+        if (!($this->isPathExists)($supplierCode, $supplierPath)) {
+            $supplier = new Supplier();
 
-        $supplier->setPublished(true);
-        $supplier->setParentId((int) $parentSupplierFolder->getId());
-        $supplier->setKey($supplierCode);
+            $supplier->setCode($supplierCode);
+            $supplier->setCompany($supplierFromPayload->supplierCompany);
+            $supplier->setContact($supplierFromPayload->supplierContact);
+            $supplier->setStreetName($supplierFromPayload->supplierStreetName);
+            $supplier->setStreetNumber($supplierFromPayload->supplierStreetNumber);
+            $supplier->setPostalCode($supplierFromPayload->supplierPostalCode);
+            $supplier->setPhoneNumber($supplierFromPayload->supplierPhoneNumber);
+            $supplier->setEmail($supplierFromPayload->supplierEmail);
 
-        $supplier->save();
+            $supplier->setPublished(true);
+            $supplier->setParentId((int) $parentSupplierFolder->getId());
+            $supplier->setKey($supplierCode);
+
+            $supplier->save();
+        }
     }
 }

@@ -10,6 +10,8 @@ use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\CategoryFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\ProductFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
+use Froq\AssetBundle\Utility\IsPathExists;
+use Froq\PortalBundle\Api\ValueObject\ValidationError;
 use Froq\PortalBundle\Repository\ProductRepository;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
@@ -25,6 +27,7 @@ final class BuildProductFromPayload
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
         private readonly BuildCategoryFromPayload $buildCategoryFromPayload,
         private readonly BuildProductContentsFromPayload $buildProductContentsFromPayload,
+        private readonly IsPathExists $isPathExists,
     ) {
     }
 
@@ -125,19 +128,24 @@ final class BuildProductFromPayload
 
         $assetResources = array_unique($recentAssetResources);
 
-        $product->setAssets($assetResources);
-        $product->setParentId((int) $parentProductFolder->getId());
-        $product->setKey(pathinfo($switchUploadRequest->filename, PATHINFO_FILENAME));
-        $product->setPublished(true);
+        $productKey = pathinfo($switchUploadRequest->filename, PATHINFO_FILENAME);
+        $productPath = $rootProductFolder.AssetResourceOrganizationFolderNames::Products->name.'/';
 
-        $product->save();
+        if (!($this->isPathExists)($productKey, $productPath)) {
+            $product->setAssets($assetResources);
+            $product->setParentId((int) $parentProductFolder->getId());
+            $product->setKey(pathinfo($switchUploadRequest->filename, PATHINFO_FILENAME));
+            $product->setPublished(true);
 
-        $existingProducts = $organization->getProducts();
+            $product->save();
 
-        $products = array_unique([...$existingProducts, $product]);
+            $existingProducts = $organization->getProducts();
 
-        $organization->setProducts($products);
+            $products = array_unique([...$existingProducts, $product]);
 
-        $organization->save();
+            $organization->setProducts($products);
+
+            $organization->save();
+        }
     }
 }

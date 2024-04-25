@@ -9,13 +9,18 @@ use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\TagFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
+use Froq\AssetBundle\Utility\IsPathExists;
+use Froq\PortalBundle\Api\ValueObject\ValidationError;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Tag;
 
 final class BuildTags
 {
-    public function __construct(private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull)
+    public function __construct(
+        private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
+        private readonly IsPathExists $isPathExists,
+    )
     {
     }
 
@@ -48,22 +53,26 @@ final class BuildTags
             return [];
         }
 
+        $tagPath = $rootTagFolder.AssetResourceOrganizationFolderNames::Tags->name.'/';
+
         $newTags = [];
 
         foreach ($tagData as $tagDatum) {
             $tagFromPayload = new TagFromPayload(code: $tagDatum['code'] ?? null, name: $tagDatum['name'] ?? null);
 
-            $tag = new Tag();
+            if (!($this->isPathExists)((string) $tagFromPayload->code, $tagPath)) {
+                $tag = new Tag();
 
-            $tag->setCode($tagFromPayload->code);
-            $tag->setName($tagFromPayload->name);
-            $tag->setParentId((int) $parentTagFolder->getId());
-            $tag->setKey((string) $tagFromPayload->code);
-            $tag->setPublished(true);
+                $tag->setCode($tagFromPayload->code);
+                $tag->setName($tagFromPayload->name);
+                $tag->setParentId((int) $parentTagFolder->getId());
+                $tag->setKey((string) $tagFromPayload->code);
+                $tag->setPublished(true);
 
-            $tag->save();
+                $tag->save();
 
-            $newTags[] = $tag;
+                $newTags[] = $tag;
+            }
         }
 
         return $newTags;

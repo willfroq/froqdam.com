@@ -8,6 +8,7 @@ use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\Enum\CategoryNames;
 use Froq\AssetBundle\Switch\ValueObject\CategoryFromPayload;
+use Froq\AssetBundle\Utility\IsPathExists;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Category;
 use Pimcore\Model\DataObject\Organization;
@@ -15,6 +16,11 @@ use Pimcore\Model\DataObject\Product;
 
 final class BuildCategoryFromPayload
 {
+    public function __construct(
+        private readonly IsPathExists $isPathExists,
+    ) {
+    }
+
     /**
      * @throws \Exception
      *
@@ -68,15 +74,17 @@ final class BuildCategoryFromPayload
                 $category = new Category();
             }
 
-            $category->setOrganization($organization);
-            $category->setLevelLabel($levelLabelName);
-            $category->setParentId((int) $categoryFolderLevelLabel->getId());
-            $category->setKey($productCategory);
-            $category->setPublished(true);
+            if (!($this->isPathExists)($productCategory, $categoriesName.'/'.$levelLabelName.'/')) {
+                $category->setOrganization($organization);
+                $category->setLevelLabel($levelLabelName);
+                $category->setParentId((int) $categoryFolderLevelLabel->getId());
+                $category->setKey($productCategory);
+                $category->setPublished(true);
 
-            $category->save();
+                $category->save();
 
-            $categories[] = $category;
+                $categories[] = $category;
+            }
         }
 
         return [...$categories, ...$product->getCategories()];
