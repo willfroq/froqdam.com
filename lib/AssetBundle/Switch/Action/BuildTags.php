@@ -10,7 +10,6 @@ use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\TagFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
 use Froq\AssetBundle\Utility\IsPathExists;
-use Froq\PortalBundle\Api\ValueObject\ValidationError;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Tag;
@@ -20,8 +19,7 @@ final class BuildTags
     public function __construct(
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
         private readonly IsPathExists $isPathExists,
-    )
-    {
+    ) {
     }
 
     /**

@@ -11,7 +11,6 @@ use Froq\AssetBundle\Switch\ValueObject\CategoryFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\ProductFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
 use Froq\AssetBundle\Utility\IsPathExists;
-use Froq\PortalBundle\Api\ValueObject\ValidationError;
 use Froq\PortalBundle\Repository\ProductRepository;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;

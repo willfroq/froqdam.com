@@ -8,6 +8,7 @@ use Doctrine\DBAL\Driver\Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadResponse;
 use Froq\AssetBundle\Switch\Enum\LogLevelNames;
+use Froq\AssetBundle\Switch\Handlers\OrganizationFoldersErrorHandler;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
@@ -28,6 +29,7 @@ final class CreateAsset
         private readonly BuildPrinterFromPayload $buildPrinterFromPayload,
         private readonly BuildSupplierFromPayload $buildSupplierFromPayload,
         private readonly BuildTags $buildTags,
+        private readonly OrganizationFoldersErrorHandler $organizationFoldersErrorHandler,
         private readonly ApplicationLogger $logger,
     ) {
     }
@@ -44,26 +46,7 @@ final class CreateAsset
         string $assetFolderPath,
         float $start
     ): SwitchUploadResponse {
-        if (empty($organization->getObjectFolder()) ||
-            empty($organization->getAssetFolder()) ||
-            empty($organization->getAssetResourceFolders())
-        ) {
-            $message = 'There\'s no organization AssetFolder or ObjectFolder or AssetResource paths specified. Creating them also failed, please make them manually.';
-
-            $actions[] = $message;
-            $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
-
-            return new SwitchUploadResponse(
-                eventName: $switchUploadRequest->eventName,
-                date: date('F j, Y H:i'),
-                logLevel: LogLevelNames::ERROR->name.": $message",
-                assetId: '',
-                assetResourceId: '',
-                relatedObjects: [],
-                actions: $actions,
-                statistics: []
-            );
-        }
+        ($this->organizationFoldersErrorHandler)($switchUploadRequest, $organization);
 
         $filename = $switchUploadRequest->filename;
         $asset = null;

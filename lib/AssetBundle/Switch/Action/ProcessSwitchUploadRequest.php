@@ -12,6 +12,8 @@ use Froq\AssetBundle\Switch\ValueObject\ProjectFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\SupplierFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\TagFromPayload;
 use Froq\AssetBundle\Utility\IsPathExists;
+use Froq\AssetBundle\Utility\IsProjectExists;
+use Froq\AssetBundle\Utility\IsTagExists;
 use Froq\PortalBundle\Api\ValueObject\ValidationError;
 use Pimcore\Model\DataObject\Organization;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -21,6 +23,8 @@ final class ProcessSwitchUploadRequest
 {
     public function __construct(
         private readonly IsPathExists $isPathExists,
+        private readonly IsProjectExists $isProjectExists,
+        private readonly IsTagExists $isTagExists,
     ) {
     }
 
@@ -83,6 +87,10 @@ final class ProcessSwitchUploadRequest
             if (($this->isPathExists)((string) $tag->code, $tagPath)) {
                 $errors[] = new ValidationError(propertyPath: 'Tag', message: sprintf('Tag %s path already exists, this has to be unique.', $tagPath.$tag->code));
             }
+
+            if (($this->isTagExists)('Code', (string) $tag->code)) {
+                $errors[] = new ValidationError(propertyPath: 'Tag', message: sprintf('Tag %s already exists, this has to be unique.', $tag->code));
+            }
         }
 
         $projectData = (array) json_decode((string) $request->request->get('projectData'), true);
@@ -105,6 +113,18 @@ final class ProcessSwitchUploadRequest
 
         if (($this->isPathExists)((string) $projectKey, $projectPath)) {
             $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s path already exists, this has to be unique.', $projectPath.$projectKey));
+        }
+
+        if (($this->isProjectExists)('Code', (string) $projectKey)) {
+            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s already exists, this has to be unique.', $projectKey));
+        }
+
+        if (($this->isProjectExists)('pim_project_number', (string) $projectKey)) {
+            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s already exists, this has to be unique.', $projectKey));
+        }
+
+        if (($this->isProjectExists)('froq_project_number', (string) $projectKey)) {
+            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s already exists, this has to be unique.', $projectKey));
         }
 
         $printerData = (array) json_decode((string) $request->request->get('printerData'), true);

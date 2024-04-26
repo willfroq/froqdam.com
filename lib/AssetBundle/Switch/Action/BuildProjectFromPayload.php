@@ -10,7 +10,6 @@ use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\ProjectFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
 use Froq\AssetBundle\Utility\IsPathExists;
-use Froq\PortalBundle\Api\ValueObject\ValidationError;
 use Froq\PortalBundle\Repository\ProjectRepository;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;

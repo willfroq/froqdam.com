@@ -9,7 +9,6 @@ use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\SupplierFromPayload;
 use Froq\AssetBundle\Utility\IsPathExists;
-use Froq\PortalBundle\Api\ValueObject\ValidationError;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Supplier;
