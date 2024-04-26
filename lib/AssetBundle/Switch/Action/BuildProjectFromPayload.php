@@ -52,6 +52,10 @@ final class BuildProjectFromPayload
 
         $projectData = (array) json_decode($switchUploadRequest->projectData, true);
 
+        if (!isset($projectData['projectCode'])) {
+            return;
+        }
+
         if (($this->allPropsEmptyOrNull)($projectData)) {
             return;
         }

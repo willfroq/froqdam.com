@@ -47,6 +47,10 @@ final class BuildTags
 
         $tagData = (array) json_decode($switchUploadRequest->tagData, true);
 
+        if (!isset($tagData)) {
+            return [];
+        }
+
         if (empty($tagData) || ($this->allPropsEmptyOrNull)($tagData)) {
             return [];
         }
@@ -56,7 +60,11 @@ final class BuildTags
         $newTags = [];
 
         foreach ($tagData as $tagDatum) {
-            $tagFromPayload = new TagFromPayload(code: $tagDatum['code'] ?? null, name: $tagDatum['name'] ?? null);
+            if (!isset($tagDatum['code'])) {
+                continue;
+            }
+
+            $tagFromPayload = new TagFromPayload(code: $tagDatum['code'], name: $tagDatum['name'] ?? null);
 
             if (!($this->isPathExists)((string) $tagFromPayload->code, $tagPath)) {
                 $tag = new Tag();

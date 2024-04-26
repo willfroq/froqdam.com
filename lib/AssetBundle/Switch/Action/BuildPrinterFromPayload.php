@@ -44,6 +44,10 @@ final class BuildPrinterFromPayload
 
         $printerData = (array) json_decode($switchUploadRequest->printerData, true);
 
+        if (!isset($printerData['printingProcess'])) {
+            return;
+        }
+
         if (empty($printerData) || ($this->allPropsEmptyOrNull)($printerData)) {
             return;
         }

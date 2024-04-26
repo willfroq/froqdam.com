@@ -57,6 +57,10 @@ final class BuildProductFromPayload
 
         $productData = (array) json_decode($switchUploadRequest->productData, true);
 
+        if (!isset($productData['productName'])) {
+            return;
+        }
+
         if (empty($productData) || ($this->allPropsEmptyOrNull)($productData)) {
             return;
         }

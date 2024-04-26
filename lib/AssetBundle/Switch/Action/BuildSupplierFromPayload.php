@@ -8,6 +8,7 @@ use Doctrine\DBAL\Exception;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\SupplierFromPayload;
+use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
 use Froq\AssetBundle\Utility\IsPathExists;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Organization;
@@ -17,6 +18,7 @@ final class BuildSupplierFromPayload
 {
     public function __construct(
         private readonly IsPathExists $isPathExists,
+        private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
     ) {
     }
 
@@ -35,11 +37,20 @@ final class BuildSupplierFromPayload
             ->addConditionParam('o_path = ?', $rootSupplierFolder)
             ->current();
 
+        $supplierData = (array) json_decode($switchUploadRequest->supplierData, true);
+
+        if (!isset($supplierData['supplierCode'])) {
+            return;
+        }
+
         if (!($parentSupplierFolder instanceof DataObject)) {
             return;
         }
 
-        $supplierData = (array) json_decode($switchUploadRequest->supplierData, true);
+        if (($this->allPropsEmptyOrNull)($supplierData)) {
+            return;
+        }
+
         $supplierFromPayload = new SupplierFromPayload(
             supplierCode: $supplierData['supplierCode'] ?? null,
             supplierCompany: $supplierData['supplierCompany'] ?? null,
@@ -54,7 +65,6 @@ final class BuildSupplierFromPayload
         $supplierCode = (string) $supplierFromPayload->supplierCode;
 
         $supplierPath = $rootSupplierFolder.AssetResourceOrganizationFolderNames::Suppliers->name.'/';
-        $supplierKey = $supplierCode;
 
         if (!($this->isPathExists)($supplierCode, $supplierPath)) {
             $supplier = new Supplier();
