@@ -20,13 +20,13 @@ final class BuildOrganizationAssetFolderIfNotExists
             ->current();
 
         $organizationAssetFolder = (new Asset\Listing())
-            ->addConditionParam('filename = ?', 'Customers')
+            ->addConditionParam('filename = ?', 'Customer')
             ->addConditionParam('path = ?', '/S3/')
             ->current();
 
         if (!($organizationAssetFolder instanceof Asset\Folder) && $rootAssetFolder instanceof Asset\Folder) {
             $organizationAssetFolder = new Asset\Folder();
-            $organizationAssetFolder->setKey('Customers');
+            $organizationAssetFolder->setKey('Customer');
             $organizationAssetFolder->setPath('/S3/');
             $organizationAssetFolder->setParentId((int) $rootAssetFolder->getId());
             $organizationAssetFolder->save();
@@ -34,12 +34,12 @@ final class BuildOrganizationAssetFolderIfNotExists
 
         $parentAssetFolder = (new Asset\Listing())
             ->addConditionParam('filename = ?', $organization->getName())
-            ->addConditionParam('path = ?', '/S3/Customers/')
+            ->addConditionParam('path = ?', '/S3/Customer/')
             ->current();
 
         if (!($parentAssetFolder instanceof Asset\Folder) && $organizationAssetFolder instanceof Asset\Folder) {
             $parentAssetFolder = new Asset\Folder();
-            $parentAssetFolder->setPath('/S3/Customers/');
+            $parentAssetFolder->setPath('/S3/Customer/');
             $parentAssetFolder->setParentId((int) $organizationAssetFolder->getId());
             $parentAssetFolder->setKey((string) $organization->getName());
             $parentAssetFolder->save();
@@ -47,12 +47,12 @@ final class BuildOrganizationAssetFolderIfNotExists
 
         $assetFolderContainer = (new Asset\Listing())
             ->addConditionParam('filename = ?', $organization->getName())
-            ->addConditionParam('path = ?', '/S3/Customers/'.$organization->getName().'/')
+            ->addConditionParam('path = ?', '/S3/Customer/'.$organization->getName().'/')
             ->current();
 
         if ($organization->getAssetFolder() === null && $parentAssetFolder instanceof Asset\Folder) {
             $assetFolderContainer = new Asset\Folder();
-            $assetFolderContainer->setPath('/S3/Customers/'.$organization->getName().'/');
+            $assetFolderContainer->setPath('/S3/Customer/'.$organization->getName().'/');
             $assetFolderContainer->setParentId((int) $parentAssetFolder->getId());
             $assetFolderContainer->setKey(substr(str_replace(['+', '/', '='], '', base64_encode(random_bytes(10))), 0, 10));
             $assetFolderContainer->save();
