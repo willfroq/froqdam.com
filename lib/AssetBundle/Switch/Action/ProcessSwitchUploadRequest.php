@@ -61,7 +61,7 @@ final class ProcessSwitchUploadRequest
             )
         );
 
-        $productKey = pathinfo((string) $request->request->get('filename'), PATHINFO_FILENAME);
+        $productKey = pathinfo((string) $product->productName, PATHINFO_FILENAME);
         $productPath = $rootAssetResourceFolder.AssetResourceOrganizationFolderNames::Products->name.'/';
 
         if (($this->isPathExists)($productKey, $productPath)) {
