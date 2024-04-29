@@ -82,6 +82,7 @@ security:
         - { path: ^/portal/connect/azure/check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/portal, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/switch, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/pimtoday, roles: IS_AUTHENTICATED_FULLY }
 
     access_decision_manager:
         strategy: unanimous

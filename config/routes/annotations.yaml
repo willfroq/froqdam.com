@@ -25,3 +25,9 @@ froq_portal_switch:
     type:     annotation
     prefix:   /switch
     trailing_slash_on_root: false
+
+froq_portal_pimtoday:
+    resource: '@FroqAssetBundle/Switch/Controller/'
+    type:     annotation
+    prefix:   /pimtoday
+    trailing_slash_on_root: false
