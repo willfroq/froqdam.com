@@ -45,7 +45,11 @@ final class ProcessSwitchUploadRequest
         $customAssetFolder = $assetFolder === null || $assetFolder === '' ? AssetResourceOrganizationFolderNames::Assets->name : $assetFolder;
 
         $organization = Organization::getByCode((string) $request->request->get('customerCode'))->current(); /** @phpstan-ignore-line */
-        $rootAssetResourceFolder = $organization === false ? '' : $organization->getObjectFolder() . '/';
+        if (!($organization instanceof Organization)) {
+            return;
+        }
+
+        $rootAssetResourceFolder = $organization->getObjectFolder() . '/';
 
         $productData = (array) json_decode((string) $request->request->get('productData'), true);
         $categories = $productData['productCategories'] ?? null ;

@@ -48,7 +48,7 @@ final class BuildPrinterFromPayload
             return;
         }
 
-        if (empty($printerData) || ($this->allPropsEmptyOrNull)($printerData)) {
+        if (($this->allPropsEmptyOrNull)($printerData)) {
             return;
         }
 

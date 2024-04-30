@@ -47,10 +47,6 @@ final class BuildTags
 
         $tagData = (array) json_decode($switchUploadRequest->tagData, true);
 
-        if (!isset($tagData)) {
-            return [];
-        }
-
         if (empty($tagData) || ($this->allPropsEmptyOrNull)($tagData)) {
             return [];
         }

@@ -61,7 +61,7 @@ final class BuildProductFromPayload
             return;
         }
 
-        if (empty($productData) || ($this->allPropsEmptyOrNull)($productData)) {
+        if (($this->allPropsEmptyOrNull)($productData)) {
             return;
         }
 
