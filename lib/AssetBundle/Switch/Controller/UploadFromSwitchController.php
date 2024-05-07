@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/upload', name: 'froq_portal_switch.switch_upload', methods: [Request::METHOD_POST])]
+#[Route('/upload', name: 'froq_portal_switch.upload', methods: [Request::METHOD_POST])]
 final class UploadFromSwitchController extends AbstractController
 {
     /**

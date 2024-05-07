@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Froq\AssetBundle\Switch\Controller;
+namespace Froq\AssetBundle\Pimtoday\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,7 +15,7 @@ final class PimTodayUploadController extends AbstractController
     public function __invoke(Request $request): JsonResponse
     {
         return $this->json(data: [
-            'payload' => $request->request->get('payload'),
+            'youSentThis' => $request->request->get('payload'),
         ]);
     }
 }
