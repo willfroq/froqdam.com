@@ -37,7 +37,7 @@ final class BuildCategoryFromPayload
                 continue;
             }
 
-            $levelLabelName = ucfirst($levelLabel);
+            $levelLabelName = ucfirst($levelLabel).'s';
 
             $categoryNames = array_column(array: CategoryNames::cases(), column_key: 'name');
 
