@@ -84,7 +84,7 @@ class AssetLibFilterOptionsProvider implements SelectOptionsProviderInterface
             ['key' => 'Campaign', 'value' => 'product_category_campaign'],
             ['key' => 'Market', 'value' => 'product_category_market'],
             ['key' => 'Customer (Organization name)', 'value' => 'customer'],
-            ['key' => 'Epson Material', 'value' => 'epson_material'],
+            ['key' => 'Epson Material', 'value' => 'epsonmaterial'],
             ['key' => 'File Name', 'value' => 'file_name'],
             ['key' => 'GMG Flow', 'value' => 'gmgflow'],
             ['key' => 'Grammage (Product Attribute)', 'value' => 'grammage'],

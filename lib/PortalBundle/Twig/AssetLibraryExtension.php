@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\Twig;
 
 use Froq\AssetBundle\Manager\AssetResource\AssetResourceFieldCollectionsManager;
+use Froq\PortalBundle\Contract\AssetLibraryExtensionInterface;
 use Froq\PortalBundle\Helper\AssetResourceHierarchyHelper;
 use Froq\PortalBundle\Manager\ES\AssetLibrary\AssetLibMappingManager;
 use Froq\PortalBundle\Manager\UserSettings\AssetLibrary\ColumnConfigurationManager;
@@ -17,7 +18,7 @@ use Pimcore\Model\DataObject\User;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class AssetLibraryExtension extends AbstractExtension
+class AssetLibraryExtension extends AbstractExtension implements AssetLibraryExtensionInterface
 {
     public function __construct(protected AssetLibMappingManager $libMappingManager,
         protected ColumnConfigurationManager $columnConfigManager,

@@ -41,6 +41,7 @@ class AssetLibAggregationsManager
         $termsAggregation = new TermsAggregation($fieldId);
         $termsAggregation->setField($fieldId);
         $termsAggregation->setSize(50);
+        $termsAggregation->setOrder('_term', 'asc');
         $query->addAggregation($termsAggregation);
     }
 
@@ -55,6 +56,7 @@ class AssetLibAggregationsManager
                 $termsAggregation = new TermsAggregation((string) $propertyKey);
                 $termsAggregation->setSize(50);
                 $termsAggregation->setField(sprintf('%s.%s', $fieldId, $propertyKey));
+                $termsAggregation->setOrder('_term', 'asc');
                 $nestedAggregation->addAggregation($termsAggregation);
                 $query->addAggregation($nestedAggregation);
                 break;

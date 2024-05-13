@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Froq\PortalBundle\Action;
 
+use Froq\PortalBundle\Contract\AssetLibraryExtensionInterface;
+use Froq\PortalBundle\Contract\PortalDetailExtensionInterface;
 use Froq\PortalBundle\Helper\AssetResourceHierarchyHelper;
-use Froq\PortalBundle\Twig\AssetLibraryExtension;
-use Froq\PortalBundle\Twig\PortalDetailExtension;
 use Pimcore\Model\DataObject\AssetResource;
 
 final class BuildCsvDownloadItems
 {
     public function __construct(
-        private readonly AssetLibraryExtension $assetLibraryExtension,
-        private readonly PortalDetailExtension $portalDetailExtension,
+        private readonly AssetLibraryExtensionInterface $assetLibraryExtension,
+        private readonly PortalDetailExtensionInterface $portalDetailExtension,
     ) {
 
     }

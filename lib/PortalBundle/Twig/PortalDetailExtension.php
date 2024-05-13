@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Froq\PortalBundle\Twig;
 
+use Froq\PortalBundle\Contract\PortalDetailExtensionInterface;
 use Froq\PortalBundle\Helper\AssetResourceCategoryHelper;
 use Froq\PortalBundle\Helper\AssetResourceHierarchyHelper;
 use Froq\PortalBundle\Helper\StrHelper;
@@ -20,7 +21,7 @@ use Throwable;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class PortalDetailExtension extends AbstractExtension
+class PortalDetailExtension extends AbstractExtension implements PortalDetailExtensionInterface
 {
     public function getFunctions(): array
     {

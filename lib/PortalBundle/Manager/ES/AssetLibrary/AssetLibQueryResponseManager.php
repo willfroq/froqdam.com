@@ -24,6 +24,10 @@ class AssetLibQueryResponseManager
 
         $assetResources = [];
         foreach ($result as $resultItem) {
+            if (!($resultItem->getElement() instanceof AssetResource)) {
+                continue;
+            }
+
             /** @var AssetResource[] $assetResources */
             $assetResources[] = $resultItem->getElement();
         }

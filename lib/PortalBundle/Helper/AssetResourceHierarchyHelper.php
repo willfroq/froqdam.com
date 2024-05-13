@@ -83,7 +83,7 @@ class AssetResourceHierarchyHelper
         $latest = $assetResource;
 
         /** @var AssetResource $child */
-        foreach ($children as $child) {
+        foreach ($children ?? [] as $child) {
             if ($child->getAssetVersion() > $latest->getAssetVersion()) {
                 $latest = $child;
             }

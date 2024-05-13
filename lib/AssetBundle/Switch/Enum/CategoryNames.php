@@ -6,20 +6,20 @@ namespace Froq\AssetBundle\Switch\Enum;
 
 enum CategoryNames: int
 {
-    case Brand = 1;
-    case Campaign = 2;
-    case Market = 3;
-    case Segment = 4;
-    case Platform = 5;
+    case Brands = 1;
+    case Campaigns = 2;
+    case Markets = 3;
+    case Segments = 4;
+    case Platforms = 5;
 
     public function readable(): string
     {
         return match ($this) {
-            self::Brand => 'Brand',
-            self::Campaign => 'Campaign',
-            self::Market => 'Market',
-            self::Segment => 'Segment',
-            self::Platform => 'Platform',
+            self::Brands => 'Brands',
+            self::Campaigns => 'Campaigns',
+            self::Markets => 'Markets',
+            self::Segments => 'Segments',
+            self::Platforms => 'Platforms',
         };
     }
 }

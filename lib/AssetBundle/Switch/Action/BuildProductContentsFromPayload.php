@@ -50,7 +50,7 @@ final class BuildProductContentsFromPayload
 
         $quantityValue = new QuantityValue();
         $quantityValue->setUnitId($unit->getId());
-        $quantityValue->setValue($value);
+        $quantityValue->setValue((float) $value);
 
         $productContents->setNetContent($quantityValue);
 

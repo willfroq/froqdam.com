@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-#[Route('/download-csv', name: 'froq_portal_asset_library')]
+#[Route('/download-csv', name: 'froq_portal_asset_library.download.csv')]
 final class DownloadCsvController extends AbstractController
 {
     public function __construct(

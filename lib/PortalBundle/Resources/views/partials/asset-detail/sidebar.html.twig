@@ -20,7 +20,7 @@
                     <app-download-asset
                         class="button button-primary button-md link-as-button asset-information__download-link"
                         style="cursor: pointer;"
-                        href="{{ portal_asset_path(item.asset) }}">
+                        href="{{ path('froq_portal.asset_library.detail.download.file', {'id': item.id}) }}">
                         <span>Download this asset</span>
                     </app-download-asset>
                 {% else %}
