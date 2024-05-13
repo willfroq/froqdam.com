@@ -60,12 +60,12 @@ final class BuildCategoryFromPayload
                 continue;
             }
 
-            $categoryFolderLevelLabel = (new Category\Listing())
+            $categoryFolderLevelLabel = (new DataObject\Listing())
                 ->addConditionParam('o_key = ?', $levelLabelName)
                 ->addConditionParam('o_path = ?', $rootCategoryFolder . "$categoriesName/")
                 ->current();
 
-            if (!($categoryFolderLevelLabel instanceof Category)) {
+            if (!($categoryFolderLevelLabel instanceof DataObject)) {
                 continue;
             }
 
