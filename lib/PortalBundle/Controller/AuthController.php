@@ -11,10 +11,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 #[Route('/auth', name: 'froq_portal.auth.')]
 class AuthController extends MembersAuthController
 {
+    use TargetPathTrait;
+
     public function __construct(protected FactoryInterface $membersSecurityLoginFormFactory)
     {
         parent::__construct($membersSecurityLoginFormFactory);
@@ -23,16 +26,20 @@ class AuthController extends MembersAuthController
     #[Route('/login', name: 'login', methods: ['GET'])]
     public function loginAction(Request $request): Response
     {
+        if ($this->getUser()) {
+            $routeName = !is_array($this->getParameter('default_portal_dashboard_path')) ? $this->getParameter('default_portal_dashboard_path') : '';
+
+            return $this->redirectToRoute((string) $routeName);
+        }
+
         $authErrorKey = Security::AUTHENTICATION_ERROR;
         $lastUsernameKey = Security::LAST_USERNAME;
-
         $session = $request->getSession();
+        $targetPath = $this->getTargetPath($session, 'portal');
+        $failurePath = $request->get('_failure_path', null);
 
         // last username entered by the user
         $lastUsername = $session->get($lastUsernameKey);
-
-        $targetPath = $request->get('_target_path', null);
-        $failurePath = $request->get('_failure_path', null);
 
         $form = $this->formFactory->createUnnamedFormWithOptions([
             'last_username' => $lastUsername,

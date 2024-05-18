@@ -38,8 +38,12 @@
                 <div>
                     {{ form_widget(form._submit,{'attr' : {'class' : 'button button-md button-primary login-form__submit-button'}}) }}
                 </div>
-                {{ form_end(form) }}
 
+                {% if form._target_path is defined %}
+                    {{ form_widget(form._target_path) }}
+                {% endif %}
+
+                {{ form_end(form) }}
                 <div style="padding-top: 25px">
                     <a href="{{ path('connect_azure_start') }}" class="button button-md microsoft-btn">
                         <img src="{{ mix('build/portal/media/icons/svg/ms-icon.svg') }}" class="microsoft-icon" alt="microsoft-login-button">

@@ -3,6 +3,7 @@ services:
         autowire: true
         autoconfigure: true
         bind:
+            'string $projectDirectory': '%kernel.project_dir%'
 
     Froq\AssetBundle\:
         resource: '../../*'

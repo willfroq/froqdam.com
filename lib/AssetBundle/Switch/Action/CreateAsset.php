@@ -252,7 +252,7 @@ final class CreateAsset
 
         $existingAssetResources = $organization->getAssetResources();
 
-        $organization->setAssetResources([...$existingAssetResources, $parentAssetResource, $assetResourceVersionOne]);
+        $organization->setAssetResources(array_values(array_unique([...$existingAssetResources, $parentAssetResource, $assetResourceVersionOne])));
 
         $organization->save();
 

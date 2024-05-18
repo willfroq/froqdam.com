@@ -10,13 +10,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/download-file/{id<\d+>}', name: 'froq_portal.asset_library.detail.download.file', methods: [Request::METHOD_GET])]
 final class DownloadFileController extends AbstractController
 {
-    public function __invoke(int $id): NotFoundHttpException|StreamedResponse
+    public function __invoke(int $id): StreamedResponse
     {
         $asset = AssetResource::getById($id)?->getAsset();
 

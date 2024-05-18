@@ -1,8 +1,18 @@
 framework:
     messenger:
+        default_bus: command.bus
+        buses:
+            command.bus:
+        failure_transport: switch_upload_failed
         transports:
             generate_asset_thumbnail:
                 dsn: 'doctrine://default?queue_name=generate_asset_thumbnail'
+            switch_upload:
+                dsn: 'doctrine://default?queue_name=switch_upload'
+                retry_strategy:
+                    delay: 500
+            switch_upload_failed: 'doctrine://default?queue_name=switch_upload_failed'
 
         routing:
             Froq\AssetBundle\Message\GenerateAssetThumbnailsMessage: generate_asset_thumbnail
+            Froq\AssetBundle\Switch\Message\UploadFromSwitch: switch_upload
