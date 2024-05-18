@@ -24,7 +24,7 @@ final class DeleteTemporaryFile
     public function __invoke(string $filePath): void
     {
         try {
-            if (!$this->filesystem->exists($filePath)) {
+            if ($this->filesystem->exists($filePath)) {
                 $this->filesystem->remove($filePath);
             }
         } catch (IOExceptionInterface $exception) {
