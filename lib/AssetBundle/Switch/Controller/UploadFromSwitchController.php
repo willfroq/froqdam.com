@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Switch\Controller;
 
 use Froq\AssetBundle\Switch\Action\BuildSwitchUploadRequest;
-use Froq\AssetBundle\Switch\Action\BuildSwitchUploadResponse;
 use Froq\AssetBundle\Switch\Action\CreateTemporaryFile;
 use Froq\AssetBundle\Switch\Message\UploadFromSwitch;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +22,6 @@ final class UploadFromSwitchController extends AbstractController
     public function __invoke(
         Request $request,
         BuildSwitchUploadRequest $buildSwitchUploadRequest,
-        BuildSwitchUploadResponse $buildSwitchUploadResponse,
         MessageBusInterface $messageBus,
         CreateTemporaryFile $createTemporaryFile
     ): JsonResponse {

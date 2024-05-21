@@ -50,7 +50,7 @@ final class BuildOrganizationAssetFolderIfNotExists
             ->addConditionParam('path = ?', '/S3/Customer/'.$organization->getName().'/')
             ->current();
 
-        if ($organization->getAssetFolder() === null && $parentAssetFolder instanceof Asset\Folder) {
+        if (!($assetFolderContainer instanceof Asset\Folder) && $parentAssetFolder instanceof Asset\Folder) {
             $assetFolderContainer = new Asset\Folder();
             $assetFolderContainer->setPath('/S3/Customer/'.$organization->getName().'/');
             $assetFolderContainer->setParentId((int) $parentAssetFolder->getId());
