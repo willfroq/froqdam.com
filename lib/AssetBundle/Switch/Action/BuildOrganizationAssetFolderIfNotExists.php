@@ -52,7 +52,7 @@ final class BuildOrganizationAssetFolderIfNotExists
 
         $assetFolderContainer = $assetFolderContainer !== false ? $assetFolderContainer : null;
 
-        if (!$assetFolderContainer?->hasChildren() && $parentAssetFolder instanceof Asset\Folder) {
+        if (!$assetFolderContainer?->hasChildren() && $organization->getAssetFolder() === null && $parentAssetFolder instanceof Asset\Folder) {
             $assetFolderContainer = new Asset\Folder();
             $assetFolderContainer->setPath('/S3/Customer/'.$organization->getName().'/');
             $assetFolderContainer->setParentId((int) $parentAssetFolder->getId());
