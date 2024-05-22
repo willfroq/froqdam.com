@@ -241,7 +241,7 @@ final class UpdateAsset
 
         $existingAssetResources = $organization->getAssetResources();
 
-        $recentAssetResources = array_values(array_unique([...$existingAssetResources, $assetResourceContainer, $latestAssetResourceVersion, $newAssetResourceLatestVersion]));
+        $recentAssetResources = array_values(array_unique([...$existingAssetResources, $assetResourceContainer]));
 
         /** @var array<int, AssetResource> $assetResources */
         $assetResources = array_unique($recentAssetResources);

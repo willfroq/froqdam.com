@@ -159,7 +159,6 @@ final class CreateAsset
         $parentAssetResource->setPath("$rootAssetResourceFolder/$assetFolderName/$filename/");
         $parentAssetResource->setName($switchUploadRequest->filename);
         $parentAssetResource->setParentId((int)$parentAssetResourceFolder->getId());
-        $parentAssetResource->setAsset($asset);
         $parentAssetResource->setAssetType($assetType);
         $parentAssetResource->setAssetVersion(0);
         $parentAssetResource->setKey($switchUploadRequest->filename);
