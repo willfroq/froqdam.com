@@ -7,11 +7,13 @@ namespace Froq\AssetBundle\Switch\MessageHandler;
 use Doctrine\DBAL\Driver\Exception;
 use Froq\AssetBundle\Switch\Action\BuildSwitchUploadResponse;
 use Froq\AssetBundle\Switch\Action\DeleteTemporaryFile;
+use Froq\AssetBundle\Switch\Action\Email\SendCriticalErrorEmail;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Message\UploadFromSwitch;
 use Froq\AssetBundle\Utility\ImplodeAssociativeArray;
 use Pimcore\Log\ApplicationLogger;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(fromTransport: 'switch_upload', handles: UploadFromSwitch::class, method: '__invoke', priority: 10)]
@@ -22,12 +24,14 @@ final class UploadFromSwitchHandler
         private readonly ApplicationLogger $applicationLogger,
         private readonly ImplodeAssociativeArray $implodeAssociativeArray,
         private readonly DeleteTemporaryFile $deleteTemporaryFile,
+        private readonly SendCriticalErrorEmail $sendCriticalErrorEmail
     ) {
     }
 
     /**
      * @throws Exception
-     * @throws \Exception
+     * @throws \Exception|TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     public function __invoke(UploadFromSwitch $uploadFromSwitch): void
     {
@@ -55,6 +59,8 @@ final class UploadFromSwitchHandler
             ($this->deleteTemporaryFile)($uploadFromSwitch->temporaryFilePath);
         } catch (\Exception $exception) {
             $this->applicationLogger->error(message: $exception->getMessage());
+
+            ($this->sendCriticalErrorEmail)($uploadFromSwitch->filename);
 
             throw new \Exception(message: $exception->getMessage());
         }

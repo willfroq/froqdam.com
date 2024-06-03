@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Switch\Action;
 
 use Doctrine\DBAL\Driver\Exception;
+use Froq\AssetBundle\Switch\Action\Email\SendCriticalErrorEmail;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadResponse;
 use Froq\AssetBundle\Switch\Enum\LogLevelNames;
@@ -18,6 +19,7 @@ use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Product;
 use Pimcore\Model\DataObject\Project;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 final class CreateAsset
 {
@@ -31,12 +33,14 @@ final class CreateAsset
         private readonly BuildTags $buildTags,
         private readonly OrganizationFoldersErrorHandler $organizationFoldersErrorHandler,
         private readonly ApplicationLogger $logger,
+        private readonly SendCriticalErrorEmail $sendCriticalErrorEmail
     ) {
     }
 
     /**
      * @throws \Exception
-     * @throws Exception
+     * @throws Exception|TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     public function __invoke(
         UploadedFile $uploadedFile,
@@ -92,6 +96,8 @@ final class CreateAsset
                 context: ['component' => $switchUploadRequest->eventName]
             );
 
+            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
+
             return new SwitchUploadResponse(
                 eventName: $switchUploadRequest->eventName,
                 date: date('F j, Y H:i'),
@@ -137,6 +143,8 @@ final class CreateAsset
                 message: $message . implode(separator: ',', array: $actions),
                 context: ['component' => $switchUploadRequest->eventName]
             );
+
+            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
 
             return new SwitchUploadResponse(
                 eventName: $switchUploadRequest->eventName,
@@ -189,6 +197,8 @@ final class CreateAsset
                 context: ['component' => $switchUploadRequest->eventName]
             );
 
+            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
+
             return new SwitchUploadResponse(
                 eventName: $switchUploadRequest->eventName,
                 date: date('F j, Y H:i'),
@@ -237,6 +247,8 @@ final class CreateAsset
                 'component' => $switchUploadRequest->eventName
             ]);
 
+            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
+
             return new SwitchUploadResponse(
                 eventName: $switchUploadRequest->eventName,
                 date: date('F j, Y H:i'),
@@ -255,8 +267,8 @@ final class CreateAsset
 
         $organization->save();
 
-        ($this->buildProductFromPayload)($switchUploadRequest, [$parentAssetResource, $assetResourceVersionOne], $organization, $actions);
-        ($this->buildProjectFromPayload)($switchUploadRequest, [$parentAssetResource, $assetResourceVersionOne], $organization, $actions);
+        ($this->buildProductFromPayload)($switchUploadRequest, [$parentAssetResource], $organization, $actions);
+        ($this->buildProjectFromPayload)($switchUploadRequest, [$parentAssetResource], $organization, $actions);
         ($this->buildPrinterFromPayload)($switchUploadRequest, $organization, $actions);
         ($this->buildSupplierFromPayload)($switchUploadRequest, $organization, $actions);
 

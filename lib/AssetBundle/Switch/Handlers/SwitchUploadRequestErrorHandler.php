@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Switch\Handlers;
 
+use Froq\AssetBundle\Switch\Action\Email\SendCriticalErrorEmail;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadResponse;
 use Froq\AssetBundle\Switch\Enum\LogLevelNames;
@@ -14,7 +15,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final class SwitchUploadRequestErrorHandler
 {
-    public function __construct(private readonly ApplicationLogger $logger)
+    public function __construct(private readonly ApplicationLogger $logger, private readonly SendCriticalErrorEmail $sendCriticalErrorEmail)
     {
     }
 
@@ -38,6 +39,8 @@ final class SwitchUploadRequestErrorHandler
                     'component' => $switchUploadRequest->eventName
                 ]
             );
+
+            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
 
             $switchUploadResponse = new SwitchUploadResponse(
                 eventName: $switchUploadRequest->eventName,
@@ -63,6 +66,8 @@ final class SwitchUploadRequestErrorHandler
                 ]
             );
 
+            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
+
             $switchUploadResponse = new SwitchUploadResponse(
                 eventName: $switchUploadRequest->eventName,
                 date: date('F j, Y H:i'),
@@ -87,6 +92,8 @@ final class SwitchUploadRequestErrorHandler
                     'component' => $switchUploadRequest->eventName
                 ]
             );
+
+            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
 
             $switchUploadResponse = new SwitchUploadResponse(
                 eventName: $switchUploadRequest->eventName,

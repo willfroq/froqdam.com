@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Switch\Action;
 
 use Exception;
+use Froq\AssetBundle\Switch\Action\Email\SendCriticalErrorEmail;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadResponse;
 use Froq\AssetBundle\Switch\Handlers\SwitchUploadRequestErrorHandler;
@@ -13,6 +14,7 @@ use Pimcore\Model\Asset\Folder;
 use Pimcore\Model\DataObject\AssetType;
 use Pimcore\Model\DataObject\Organization;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 final class BuildSwitchUploadResponse
 {
@@ -23,12 +25,14 @@ final class BuildSwitchUploadResponse
         private readonly BuildOrganizationAssetFolderIfNotExists $buildOrganizationAssetFolderIfNotExists,
         private readonly LinkAssetResourceFolder $linkAssetResourceFolder,
         private readonly SwitchUploadRequestErrorHandler $switchUploadRequestErrorHandler,
+        private readonly SendCriticalErrorEmail $sendCriticalErrorEmail
     ) {
     }
 
     /**
      * @throws Exception
-     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Driver\Exception|TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     public function __invoke(SwitchUploadRequest $switchUploadRequest): SwitchUploadResponse
     {
@@ -48,6 +52,8 @@ final class BuildSwitchUploadResponse
             !($organization instanceof Organization) ||
             !($assetType instanceof AssetType)
         ) {
+            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
+
             return $errorResponse;
         }
 

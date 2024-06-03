@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Switch\Action;
 
 use Exception;
+use Froq\AssetBundle\Switch\Action\Email\SendCriticalErrorEmail;
 use Pimcore\Log\ApplicationLogger;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -16,7 +17,8 @@ final class CreateTemporaryFile
     public function __construct(
         private readonly string $projectDirectory,
         private readonly ApplicationLogger $applicationLogger,
-        private readonly Filesystem $filesystem
+        private readonly Filesystem $filesystem,
+        private readonly SendCriticalErrorEmail $sendCriticalErrorEmail
     ) {
     }
 
@@ -47,6 +49,8 @@ final class CreateTemporaryFile
             }
         } catch (FileException $exception) {
             $this->applicationLogger->error(message: $exception->getMessage(), context: ['component' => 'upload']);
+
+            ($this->sendCriticalErrorEmail)($newFilename);
 
             throw new FileException(message: $exception->getMessage());
         }
