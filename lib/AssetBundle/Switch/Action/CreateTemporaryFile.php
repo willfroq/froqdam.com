@@ -11,6 +11,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 final class CreateTemporaryFile
 {
@@ -23,7 +24,8 @@ final class CreateTemporaryFile
     }
 
     /**
-     * @throws Exception
+     * @throws Exception|TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     public function __invoke(Request $request): string
     {
@@ -50,7 +52,7 @@ final class CreateTemporaryFile
         } catch (FileException $exception) {
             $this->applicationLogger->error(message: $exception->getMessage(), context: ['component' => 'upload']);
 
-            ($this->sendCriticalErrorEmail)($newFilename);
+            ($this->sendCriticalErrorEmail)($request->files->get('filename'));
 
             throw new FileException(message: $exception->getMessage());
         }

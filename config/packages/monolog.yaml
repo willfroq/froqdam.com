@@ -1,2 +1,25 @@
 monolog:
-  channels: [messenger_audit]
+    channels: [messenger_audit, elastica]
+    handlers:
+        elastica:
+            type: stream
+            path: "%kernel.logs_dir%/elastica.log"
+            level: error
+            channels: [ elastica ]
+        main:
+            type: fingers_crossed
+            action_level: critical
+            handler: nested
+            buffer_size: 50
+        nested:
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+        console:
+            type: console
+            process_psr_3_messages: false
+            channels: [ "!event", "!doctrine" ]
+        deprecation:
+            type: stream
+            path: "%kernel.logs_dir%/%kernel.environment%.deprecations.log"
+            channels: [ "php" ]

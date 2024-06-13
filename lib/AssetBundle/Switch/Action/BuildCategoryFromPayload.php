@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Switch\Action;
 
+use Froq\AssetBundle\Switch\Action\RelatedObject\CreateCategoryFolder;
+use Froq\AssetBundle\Switch\Action\RelatedObject\CreateCategoryFolderLevelLabel;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\Enum\CategoryNames;
@@ -18,6 +20,8 @@ final class BuildCategoryFromPayload
 {
     public function __construct(
         private readonly IsPathExists $isPathExists,
+        private readonly CreateCategoryFolder $createCategoryFolder,
+        private readonly CreateCategoryFolderLevelLabel $createCategoryFolderLevelLabel,
     ) {
     }
 
@@ -49,7 +53,7 @@ final class BuildCategoryFromPayload
 
             $rootCategoryFolder = $organization->getObjectFolder() . '/';
 
-            $categoriesName = AssetResourceOrganizationFolderNames::Categories->name;
+            $categoriesName = AssetResourceOrganizationFolderNames::Categories->readable();
 
             $parentCategoryFolder = (new DataObject\Listing())
                 ->addConditionParam('o_key = ?', $categoriesName)
@@ -57,7 +61,7 @@ final class BuildCategoryFromPayload
                 ->current();
 
             if (!($parentCategoryFolder instanceof DataObject)) {
-                continue;
+                $parentCategoryFolder = ($this->createCategoryFolder)($organization, $rootCategoryFolder);
             }
 
             $categoryFolderLevelLabel = (new DataObject\Listing())
@@ -66,7 +70,7 @@ final class BuildCategoryFromPayload
                 ->current();
 
             if (!($categoryFolderLevelLabel instanceof DataObject)) {
-                continue;
+                $categoryFolderLevelLabel = ($this->createCategoryFolderLevelLabel)($organization, $parentCategoryFolder, $levelLabelName);
             }
 
             $category = Category::getByProducts($product)?->current(); /** @phpstan-ignore-line */
@@ -74,7 +78,7 @@ final class BuildCategoryFromPayload
                 $category = new Category();
             }
 
-            if (!($this->isPathExists)($productCategory, $categoriesName.'/'.$levelLabelName.'/')) {
+            if (!($this->isPathExists)($productCategory, $rootCategoryFolder.$categoriesName.'/'.$levelLabelName.'/')) {
                 $category->setOrganization($organization);
                 $category->setLevelLabel($levelLabelName);
                 $category->setParentId((int) $categoryFolderLevelLabel->getId());
@@ -83,10 +87,12 @@ final class BuildCategoryFromPayload
 
                 $category->save();
 
-                $categories[] = $category;
+                if ($category instanceof Category) {
+                    $categories[] = $category;
+                }
             }
         }
 
-        return [...$categories, ...$product->getCategories()];
+        return array_values(array_unique([...$categories, ...$product->getCategories()]));
     }
 }

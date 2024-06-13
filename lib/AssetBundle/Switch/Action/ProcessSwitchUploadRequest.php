@@ -70,17 +70,21 @@ final class ProcessSwitchUploadRequest
             )
         );
 
-        $productKey = pathinfo((string) $product->productName, PATHINFO_FILENAME);
-        $productPath = $rootAssetResourceFolder.AssetResourceOrganizationFolderNames::Products->name.'/';
+        $productKey = (string) $product->productName;
+        $productPath = $rootAssetResourceFolder.AssetResourceOrganizationFolderNames::Products->readable().'/';
+
+        if (!isset($product->productName)) {
+            $errors[] = new ValidationError(propertyPath: 'Product', message: sprintf('Product %s has no product name.', $productPath.$productKey));
+        }
 
         if (($this->isPathExists)($productKey, $productPath)) {
             $errors[] = new ValidationError(propertyPath: 'Product', message: sprintf('Product %s path already exists, this has to be unique.', $productPath.$productKey));
         }
 
-        $categoryPath = $rootAssetResourceFolder.AssetResourceOrganizationFolderNames::Categories->name.'/';
+        $categoryPath = $rootAssetResourceFolder.AssetResourceOrganizationFolderNames::Categories->readable().'/';
 
         foreach ($product->productCategories?->toArray() ?? [] as $levelLabelName => $categoryName) {
-            $categoryLevelLabelName = ucfirst($levelLabelName);
+            $categoryLevelLabelName = ucfirst($levelLabelName).'s';
 
             if (($this->isPathExists)((string) $categoryName, $categoryPath.$categoryLevelLabelName.'/')) {
                 $errors[] = new ValidationError(propertyPath: 'Category', message: sprintf('Category %s path already exists, this has to be unique.', $categoryPath.$categoryLevelLabelName.'/'.$categoryName));
@@ -118,22 +122,38 @@ final class ProcessSwitchUploadRequest
         );
 
         $projectPath = $rootAssetResourceFolder.AssetResourceOrganizationFolderNames::Projects->name.'/';
-        $projectKey = $project->projectCode;
+        $projectKey = $project->froqName;
 
         if (($this->isPathExists)((string) $projectKey, $projectPath)) {
             $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s path already exists, this has to be unique.', $projectPath.$projectKey));
         }
 
-        if (($this->isProjectExists)('Code', (string) $projectKey)) {
+        if (($this->isProjectExists)('Code', (string) $project->projectCode)) {
             $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s already exists, this has to be unique.', $projectKey));
         }
 
-        if (($this->isProjectExists)('pim_project_number', (string) $projectKey)) {
+        if (($this->isProjectExists)('pim_project_number', (string) $project->pimProjectNumber)) {
             $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s already exists, this has to be unique.', $projectKey));
         }
 
-        if (($this->isProjectExists)('froq_project_number', (string) $projectKey)) {
+        if (($this->isProjectExists)('froq_project_number', (string) $project->froqProjectNumber)) {
             $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s already exists, this has to be unique.', $projectKey));
+        }
+
+        if (!isset($project->froqProjectNumber)) {
+            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s has no froqProjectNumber.', $projectKey));
+        }
+
+        if (!isset($project->froqName)) {
+            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s has no froqName.', $projectKey));
+        }
+
+        if (!isset($project->projectName)) {
+            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s has no projectName.', $projectKey));
+        }
+
+        if (!isset($project->projectCode)) {
+            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s has no projectCode.', $projectKey));
         }
 
         $printerData = (array) json_decode((string) $request->request->get('printerData'), true);

@@ -11,24 +11,23 @@ use Pimcore\Model\DataObject\Tag;
 
 final class TagRepository
 {
+    /**
+     * @throws \Exception
+     */
     public function isTagExists(Organization $organization, string $code): bool
     {
-        $rootTagFolder = $organization->getObjectFolder() . '/';
-
-        $tagName = AssetResourceOrganizationFolderNames::Tags->name;
-
         $parentTagFolder = (new DataObject\Listing())
-            ->addConditionParam('o_key = ?', $tagName)
-            ->addConditionParam('o_path = ?', $rootTagFolder)
+            ->addConditionParam('o_key = ?', AssetResourceOrganizationFolderNames::Tags->readable())
+            ->addConditionParam('o_path = ?', $organization->getObjectFolder() . '/')
             ->current();
 
         if (!($parentTagFolder instanceof DataObject)) {
-            return false;
+            throw new \Exception(message: 'No Tag folder folder i.e. /Customers/org-name/Tags/');
         }
 
         $tag = (new Tag\Listing())
             ->addConditionParam('o_key = ?', $code)
-            ->addConditionParam('o_path = ?', $rootTagFolder . "$tagName/")
+            ->addConditionParam('o_path = ?', $organization->getObjectFolder().'/'.AssetResourceOrganizationFolderNames::Tags->readable().'/')
             ->current();
 
         if ($tag instanceof Tag) {

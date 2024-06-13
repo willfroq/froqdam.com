@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Switch\Action;
 
+use Froq\AssetBundle\Switch\Action\RelatedObject\CreatePrinterFolder;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\PrinterFromPayload;
@@ -18,6 +19,7 @@ final class BuildPrinterFromPayload
     public function __construct(
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
         private readonly IsPathExists $isPathExists,
+        private readonly CreatePrinterFolder $createPrinterFolder,
 
     ) {
     }
@@ -38,10 +40,6 @@ final class BuildPrinterFromPayload
             ->addConditionParam('o_path = ?', $rootPrinterFolder)
             ->current();
 
-        if (!($parentPrinterFolder instanceof DataObject)) {
-            return;
-        }
-
         $printerData = (array) json_decode($switchUploadRequest->printerData, true);
 
         if (!isset($printerData['printingProcess'])) {
@@ -52,6 +50,10 @@ final class BuildPrinterFromPayload
             return;
         }
 
+        if (!($parentPrinterFolder instanceof DataObject)) {
+            $parentPrinterFolder = ($this->createPrinterFolder)($organization, $rootPrinterFolder);
+        }
+
         $printerFromPayload = new PrinterFromPayload(
             printingProcess: $printerData['printingProcess'] ?? null,
             printingWorkflow: $printerData['printingWorkflow'] ?? null,
@@ -59,7 +61,7 @@ final class BuildPrinterFromPayload
             substrateMaterial: $printerData['substrateMaterial'] ?? null,
         );
 
-        $printerPath = $rootPrinterFolder.AssetResourceOrganizationFolderNames::Printers->name.'/';
+        $printerPath = $rootPrinterFolder.AssetResourceOrganizationFolderNames::Printers->readable().'/';
         $printerKey = $printerFromPayload->printingProcess;
 
         if (!($this->isPathExists)((string) $printerKey, $printerPath)) {

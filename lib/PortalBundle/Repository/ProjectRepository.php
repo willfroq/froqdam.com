@@ -27,24 +27,23 @@ final class ProjectRepository
         return (int) $statement->executeQuery()->fetchOne(); /** @phpstan-ignore-line */
     }
 
+    /**
+     * @throws \Exception
+     */
     public function isProjectExists(Organization $organization, string $code): bool
     {
-        $rootProjectFolder = $organization->getObjectFolder() . '/';
-
-        $projectName = AssetResourceOrganizationFolderNames::Projects->name;
-
         $parentProjectFolder = (new DataObject\Listing())
-            ->addConditionParam('o_key = ?', $projectName)
-            ->addConditionParam('o_path = ?', $rootProjectFolder)
+            ->addConditionParam('o_key = ?', AssetResourceOrganizationFolderNames::Projects->readable())
+            ->addConditionParam('o_path = ?', $organization->getObjectFolder() . '/')
             ->current();
 
         if (!($parentProjectFolder instanceof DataObject)) {
-            return false;
+            throw new \Exception(message: 'No Project folder folder i.e. /Customers/org-name/Projects/');
         }
 
         $project = (new Project\Listing())
             ->addConditionParam('o_key = ?', $code)
-            ->addConditionParam('o_path = ?', $rootProjectFolder . "$projectName/")
+            ->addConditionParam('o_path = ?', $organization->getObjectFolder().'/'.AssetResourceOrganizationFolderNames::Projects->readable().'/')
             ->current();
 
         if ($project instanceof Project) {

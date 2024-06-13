@@ -5,19 +5,23 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Switch\Action;
 
 use Doctrine\DBAL\Driver\Exception;
+use Froq\AssetBundle\Switch\Action\Email\SendCriticalErrorEmail;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadResponse;
+use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\Enum\LogLevelNames;
 use Froq\AssetBundle\Switch\Handlers\OrganizationFoldersErrorHandler;
 use Froq\PortalBundle\Repository\AssetRepository;
 use Froq\PortalBundle\Repository\AssetResourceRepository;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\Asset;
+use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\AssetType;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Product;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 final class UpdateAsset
 {
@@ -26,19 +30,20 @@ final class UpdateAsset
         private readonly BuildAssetResourceMetadata $buildAssetResourceMetadata,
         private readonly AssetRepository $assetRepository,
         private readonly AssetResourceRepository $assetResourceRepository,
-        private readonly BuildProductFromPayload $buildProductFromPayload,
-        private readonly BuildProjectFromPayload $buildProjectFromPayload,
-        private readonly BuildPrinterFromPayload $buildPrinterFromPayload,
-        private readonly BuildSupplierFromPayload $buildSupplierFromPayload,
         private readonly BuildTags $buildTags,
         private readonly OrganizationFoldersErrorHandler $organizationFoldersErrorHandler,
         private readonly ApplicationLogger $logger,
+        private readonly SendCriticalErrorEmail $sendCriticalErrorEmail,
+        private readonly BuildProductFromPayload $buildProductFromPayload,
+        private readonly BuildProjectFromPayload $buildProjectFromPayload,
     ) {
     }
 
     /**
      * @throws Exception
      * @throws \Doctrine\DBAL\Exception
+     * @throws Exception|TransportExceptionInterface
+     * @throws TransportExceptionInterface
      * @throws \Exception
      */
     public function __invoke(
@@ -87,6 +92,8 @@ final class UpdateAsset
                 message: $message . implode(separator: ',', array: $actions),
                 context: ['component' => $switchUploadRequest->eventName]
             );
+
+            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
 
             return new SwitchUploadResponse(
                 eventName: $switchUploadRequest->eventName,
@@ -138,6 +145,8 @@ final class UpdateAsset
                 context: ['component' => $switchUploadRequest->eventName]
             );
 
+            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
+
             return new SwitchUploadResponse(
                 eventName: $switchUploadRequest->eventName,
                 date: date('F j, Y H:i'),
@@ -177,6 +186,8 @@ final class UpdateAsset
                 context: ['component' => $switchUploadRequest->eventName]
             );
 
+            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
+
             return new SwitchUploadResponse(
                 eventName: $switchUploadRequest->eventName,
                 date: date('F j, Y H:i'),
@@ -189,7 +200,6 @@ final class UpdateAsset
             );
         }
 
-        $latestAssetResourceVersion->setTags($tags);
         $latestAssetResourceVersion->save();
 
         $newAssetResourceLatestVersion = AssetResource::create();
@@ -199,10 +209,9 @@ final class UpdateAsset
         $newAssetResourceLatestVersion->setParentId((int) $assetResourceContainer->getId());
         $newAssetResourceLatestVersion->setAsset($asset);
         $newAssetResourceLatestVersion->setAssetType($assetType);
+        $newAssetResourceLatestVersion->setMetadata($assetResourceMetadataFieldCollection);
         $newAssetResourceLatestVersion->setAssetVersion($newAssetResourceVersionCount);
         $newAssetResourceLatestVersion->setKey((string) $newAssetResourceVersionCount);
-        $newAssetResourceLatestVersion->setMetadata($assetResourceMetadataFieldCollection);
-        $newAssetResourceLatestVersion->setTags($tags);
 
         $newAssetResourceLatestVersion->save();
 
@@ -227,6 +236,8 @@ final class UpdateAsset
                 context: ['component' => $switchUploadRequest->eventName]
             );
 
+            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
+
             return new SwitchUploadResponse(
                 eventName: $switchUploadRequest->eventName,
                 date: date('F j, Y H:i'),
@@ -241,7 +252,7 @@ final class UpdateAsset
 
         $existingAssetResources = $organization->getAssetResources();
 
-        $recentAssetResources = array_values(array_unique([...$existingAssetResources, $assetResourceContainer]));
+        $recentAssetResources = array_values(array_unique([...$existingAssetResources, $newAssetResourceLatestVersion, $assetResourceContainer]));
 
         /** @var array<int, AssetResource> $assetResources */
         $assetResources = array_unique($recentAssetResources);
@@ -250,10 +261,17 @@ final class UpdateAsset
 
         $organization->save();
 
-        ($this->buildProductFromPayload)($switchUploadRequest, $assetResources, $organization, $actions);
-        ($this->buildProjectFromPayload)($switchUploadRequest, $assetResources, $organization, $actions);
-        ($this->buildPrinterFromPayload)($switchUploadRequest, $organization, $actions);
-        ($this->buildSupplierFromPayload)($switchUploadRequest, $organization, $actions);
+        $parentAssetResource = (new DataObject\Listing())
+            ->addConditionParam('o_key = ?', $filename)
+            ->addConditionParam('o_path = ?', $organization->getObjectFolder().'/'.AssetResourceOrganizationFolderNames::Assets->readable().'/')
+            ->current();
+
+        if (!($parentAssetResource instanceof AssetResource)) {
+            throw new \Exception(message: 'No AssetResource container folder i.e. /Customers/org-name/Assets/');
+        }
+
+        ($this->buildProductFromPayload)($switchUploadRequest, [$parentAssetResource], $organization, $actions);
+        ($this->buildProjectFromPayload)($switchUploadRequest, [$parentAssetResource], $organization, $actions);
 
         $end = microtime(true);
         $elapsed = $end - $start;

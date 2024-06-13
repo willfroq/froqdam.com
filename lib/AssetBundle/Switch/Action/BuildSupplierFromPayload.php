@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Switch\Action;
 
 use Doctrine\DBAL\Exception;
+use Froq\AssetBundle\Switch\Action\RelatedObject\CreateSupplierFolder;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\SupplierFromPayload;
@@ -19,6 +20,7 @@ final class BuildSupplierFromPayload
     public function __construct(
         private readonly IsPathExists $isPathExists,
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
+        private readonly CreateSupplierFolder $createSupplierFolder,
     ) {
     }
 
@@ -44,7 +46,7 @@ final class BuildSupplierFromPayload
         }
 
         if (!($parentSupplierFolder instanceof DataObject)) {
-            return;
+            $parentSupplierFolder = ($this->createSupplierFolder)($organization, $rootSupplierFolder);
         }
 
         if (($this->allPropsEmptyOrNull)($supplierData)) {

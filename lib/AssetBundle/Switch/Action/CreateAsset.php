@@ -33,7 +33,7 @@ final class CreateAsset
         private readonly BuildTags $buildTags,
         private readonly OrganizationFoldersErrorHandler $organizationFoldersErrorHandler,
         private readonly ApplicationLogger $logger,
-        private readonly SendCriticalErrorEmail $sendCriticalErrorEmail
+        private readonly SendCriticalErrorEmail $sendCriticalErrorEmail,
     ) {
     }
 
@@ -170,7 +170,6 @@ final class CreateAsset
         $parentAssetResource->setAssetType($assetType);
         $parentAssetResource->setAssetVersion(0);
         $parentAssetResource->setKey($switchUploadRequest->filename);
-        $parentAssetResource->setMetadata($assetResourceMetadataFieldCollection);
         $parentAssetResource->setTags($tags);
 
         $parentAssetResource->save();
@@ -219,9 +218,8 @@ final class CreateAsset
         $assetResourceVersionOne->setAsset($asset);
         $assetResourceVersionOne->setAssetType($assetType);
         $assetResourceVersionOne->setAssetVersion(1);
-        $assetResourceVersionOne->setKey('1');
         $assetResourceVersionOne->setMetadata($assetResourceMetadataFieldCollection);
-        $assetResourceVersionOne->setTags($tags);
+        $assetResourceVersionOne->setKey('1');
 
         $assetResourceVersionOne->save();
 

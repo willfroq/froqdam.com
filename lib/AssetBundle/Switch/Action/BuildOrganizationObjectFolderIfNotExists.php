@@ -5,18 +5,23 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Switch\Action;
 
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
+use Froq\AssetBundle\Utility\HasObjectFolder;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Folder;
 use Pimcore\Model\DataObject\Organization;
 
 final class BuildOrganizationObjectFolderIfNotExists
 {
+    public function __construct(private readonly HasObjectFolder $hasObjectFolder)
+    {
+    }
+
     /**
      * @throws \Exception
      */
     public function __invoke(Organization $organization): void
     {
-        if ($organization->getObjectFolder() === null) {
+        if ($organization->getObjectFolder() === null || ($this->hasObjectFolder)($organization)) {
             $rootObjectFolder = (new DataObject\Listing())
                 ->addConditionParam('o_key = ?', 'Customers')
                 ->addConditionParam('o_path = ?', '/')
@@ -48,10 +53,12 @@ final class BuildOrganizationObjectFolderIfNotExists
                 $assetResourceFolder->save();
             }
 
-            if ($organizationAssetResourceFolder instanceof DataObject) {
-                $organization->setObjectFolder($organizationAssetResourceFolder->getPath().$organizationAssetResourceFolder->getKey());
+            if ($organizationAssetResourceFolder instanceof DataObject || !($this->hasObjectFolder)($organization)) {
+                if ($organizationAssetResourceFolder !== false && $organizationAssetResourceFolder !== null) {
+                    $organization->setObjectFolder($organizationAssetResourceFolder->getPath().$organizationAssetResourceFolder->getKey());
 
-                $organization->save();
+                    $organization->save();
+                }
             }
         }
     }

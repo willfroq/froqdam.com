@@ -25,6 +25,7 @@
     "smalot/pdfparser": "*",
     "symfony/dotenv": "*",
     "symfony/error-handler": "^5.4",
+    "symfony/mailer": "*",
     "symfony/monolog-bundle": "^3.8",
     "symfony/webpack-encore-bundle": "^1.16",
     "thenetworg/oauth2-azure": "^2.2",

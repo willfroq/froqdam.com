@@ -59,11 +59,11 @@ final class BuildProductContentsFromPayload
         $productContentsFieldCollection = new Fieldcollection();
         $productContentsFieldCollection->setItems($fieldCollectionItems);
 
-        if ($isNetContent) {
+        if ($isNetContent && $product->getNetContents() === null) {
             $product->setNetContents($productContentsFieldCollection);
         }
 
-        if (!$isNetContent) {
+        if (!$isNetContent && $product->getNetUnitContents() === null) {
             $product->setNetUnitContents($productContentsFieldCollection);
         }
     }

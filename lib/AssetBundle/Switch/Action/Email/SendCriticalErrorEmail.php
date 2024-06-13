@@ -21,9 +21,9 @@ final class SendCriticalErrorEmail
      */
     public function __invoke(string $filename): void
     {
-        $fromEmail = 'w.delrosario@froq.nl';
-        $toEmail = 'jj.jonk@froq.nl';
-        $toUsername = 'Jaap-Jan Jonk';
+        $fromEmail = $_ENV['SWITCH_UPLOAD_FROM_MAIL'];
+        $toEmail = $_ENV['SWITCH_UPLOAD_TO_MAIL'];
+        $toUsername = $_ENV['SWITCH_UPLOAD_TO_USERNAME'];
 
         $email = (new TemplatedEmail())
             ->to(new Address(address: $toEmail, name: $toUsername))

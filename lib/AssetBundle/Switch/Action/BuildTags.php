@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Switch\Action;
 
 use Exception;
+use Froq\AssetBundle\Switch\Action\RelatedObject\CreateTagFolder;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\TagFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
 use Froq\AssetBundle\Utility\IsPathExists;
+use Froq\PortalBundle\Repository\TagRepository;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Tag;
@@ -19,6 +21,8 @@ final class BuildTags
     public function __construct(
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
         private readonly IsPathExists $isPathExists,
+        private readonly CreateTagFolder $createTagFolder,
+        private readonly TagRepository $tagRepository,
     ) {
     }
 
@@ -42,7 +46,7 @@ final class BuildTags
             ->current();
 
         if (!($parentTagFolder instanceof DataObject)) {
-            return [];
+            $parentTagFolder = ($this->createTagFolder)($organization, $rootTagFolder);
         }
 
         $tagData = (array) json_decode($switchUploadRequest->tagData, true);
@@ -51,12 +55,16 @@ final class BuildTags
             return [];
         }
 
-        $tagPath = $rootTagFolder.AssetResourceOrganizationFolderNames::Tags->name.'/';
+        $tagPath = $rootTagFolder.AssetResourceOrganizationFolderNames::Tags->readable().'/';
 
         $newTags = [];
 
         foreach ($tagData as $tagDatum) {
             if (!isset($tagDatum['code'])) {
+                continue;
+            }
+
+            if ($this->tagRepository->isTagExists($organization, (string) $tagDatum['code'])) {
                 continue;
             }
 

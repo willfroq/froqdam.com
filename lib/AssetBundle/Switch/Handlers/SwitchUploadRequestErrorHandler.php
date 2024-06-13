@@ -12,6 +12,7 @@ use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\DataObject\AssetType;
 use Pimcore\Model\DataObject\Organization;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 final class SwitchUploadRequestErrorHandler
 {
@@ -19,7 +20,9 @@ final class SwitchUploadRequestErrorHandler
     {
     }
 
-    /** @param array<int, string> $actions */
+    /** @param array<int, string> $actions
+     * @throws TransportExceptionInterface
+     */
     public function __invoke(
         SwitchUploadRequest $switchUploadRequest,
         ?Organization &$organization,

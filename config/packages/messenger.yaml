@@ -12,9 +12,9 @@ framework:
                 retry_strategy:
                     delay: 500
             switch_upload_failed: 'doctrine://default?queue_name=switch_upload_failed'
-            async: 'doctrine://default'
+            switch_upload_mailer: 'doctrine://default?queue_name=switch_upload_mailer'
 
         routing:
             Froq\AssetBundle\Message\GenerateAssetThumbnailsMessage: generate_asset_thumbnail
             Froq\AssetBundle\Switch\Message\UploadFromSwitch: switch_upload
-            Symfony\Component\Mailer\Messenger\SendEmailMessage: async
+            Symfony\Component\Mailer\Messenger\SendEmailMessage: switch_upload_mailer

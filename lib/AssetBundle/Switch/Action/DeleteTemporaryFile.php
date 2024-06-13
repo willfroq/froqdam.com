@@ -10,6 +10,7 @@ use Pimcore\Log\ApplicationLogger;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 final class DeleteTemporaryFile
 {
@@ -21,7 +22,8 @@ final class DeleteTemporaryFile
     }
 
     /**
-     * @throws Exception
+     * @throws Exception|TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     public function __invoke(string $filePath): void
     {
