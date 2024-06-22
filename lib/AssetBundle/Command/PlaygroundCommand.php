@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Command;
 
 use Pimcore\Console\AbstractCommand;
-use Pimcore\Model\DataObject\AssetResource;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
