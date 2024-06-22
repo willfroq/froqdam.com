@@ -6,6 +6,7 @@ namespace Froq\AssetBundle\Switch\Action;
 
 use Exception;
 use Froq\AssetBundle\Switch\Action\Email\SendCriticalErrorEmail;
+use Froq\AssetBundle\Utility\CleanupUploadsDirectory;
 use Pimcore\Log\ApplicationLogger;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
@@ -17,7 +18,8 @@ final class DeleteTemporaryFile
     public function __construct(
         private readonly ApplicationLogger $applicationLogger,
         private readonly Filesystem $filesystem,
-        private readonly SendCriticalErrorEmail $sendCriticalErrorEmail
+        private readonly SendCriticalErrorEmail $sendCriticalErrorEmail,
+        private readonly CleanupUploadsDirectory $cleanupUploadsDirectory,
     ) {
     }
 
@@ -31,6 +33,8 @@ final class DeleteTemporaryFile
             if ($this->filesystem->exists($filePath)) {
                 $this->filesystem->remove($filePath);
             }
+
+            ($this->cleanupUploadsDirectory)($filePath);
         } catch (IOExceptionInterface $exception) {
             $this->applicationLogger->error(message: $exception->getMessage(), context: ['component' => 'upload']);
 

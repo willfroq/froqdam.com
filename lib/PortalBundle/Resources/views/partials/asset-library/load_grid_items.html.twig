@@ -1,0 +1,66 @@
+{% set columns = get_asset_library_columns_for_user(user) %}
+
+{% if items is not empty %}
+    {% for assetResource in items %}
+        {% set assetResource = get_latest_asset_resource_version(assetResource) %}
+
+        {% set productEan = portal_asset_resource_product_ean(assetResource)|default('-')|raw %}
+        {% set productName = portal_asset_resource_product_name(assetResource)|default('-')|raw %}
+        {% set froqProjectNumber = portal_asset_resource_froq_project_number(assetResource)|default('-')|raw %}
+        {% set pimProjectNumber = portal_asset_resource_pim_project_number(assetResource)|default('-')|raw %}
+
+        <app-grid-item class="grid-item card" edit-popup-form-url edit-popup-submit-url>
+            <div class='img-container'>
+                <div class="image">
+                    {% include '@FroqPortalBundle/partials/asset-thumbnail-list-view.html.twig' with { 'asset': assetResource.asset } %}
+                </div>
+            </div>
+
+            <h1 class="truncate-text-title">{{ assetResource.asset ?  assetResource.asset.fileName : 'No filename' }}</h1>
+
+            <div class="card-body">
+                <ul>
+                    {% for column in columns %}
+                        {% set columnKey = column.AssetLibraryColumnProperty.data %}
+
+                        {% if columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_PRODUCT_EAN') %}
+                            <li><p><span>EAN: </span>{{ productEan }}</p></li>
+                        {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_FROQ_PROJECT_NUMBER') %}
+                            <li><p><span>Froq Project Number: </span>{{ froqProjectNumber }}</p></li>
+                        {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_PIM_PROJECT_NUMBER') %}
+                            <li><p><span>PIM Project Number: </span>{{ pimProjectNumber }}</p></li>
+                        {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_PRODUCT_NAME') %}
+                            <li><p><span>Product Name: </span>{{ productName }}</p></li>
+                        {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_ASSET_NAME') %}
+                            <li><p><span>Asset Name: </span>{{ ssetResource.name }}</p></li>
+                        {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_SKU') %}
+                            <li><p><span>SKU: </span>{{ portal_asset_resource_product_sku(assetResource)|default('-')|raw }}</p></li>
+                        {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_TYPE') %}
+                            <li><p><span>Asset Type: </span>{{ assetResource.assetType?  assetResource.assetType.name : '' }}</p></li>
+                        {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_PROJECT_NAME') %}
+                            <li><p><span>Project Name: </span>{{ portal_asset_resource_project_name(assetResource)|default('-')|raw }}</p></li>
+                        {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_ASSET_RESOURCE_CREATION_DATE') %}
+                            <li><p><span>Uploaded: </span>{{ assetResource.creationDate | date("d-m-Y") }}</p></li>
+                        {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_ASSET_CREATION_DATE') %}
+                            <li><p><span>Asset Creation Date: </span>{{ assetResource.asset ? (assetResource.asset.creationDate | date("d-m-Y")) : '' }}</p></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="card-footer">
+                <a href="{{ path('froq_portal.asset_library.detail.download.file', { 'id': assetResource.id }) }}">
+                    <div class="download-icon">{% include '@FroqPortal/icons/download-link.html.twig' %}</div>
+
+                    <div class="text">download</div>
+                </a>
+
+                <a href="{{ url('froq_portal.asset_library.detail', { 'id' : assetResource.id }) }}">
+                    <div class="view-icon">{% include '@FroqPortal/icons/open-link.html.twig' %}</div>
+
+                    <div class="text">view</div>
+                </a>
+            </div>
+        </app-grid-item>
+    {% endfor %}
+{% endif %}

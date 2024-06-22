@@ -4,29 +4,26 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Switch\Action;
 
-use Froq\AssetBundle\Switch\Action\Processor\ProcessProduct;
+use Froq\AssetBundle\Switch\Action\Processor\CreateProduct;
+use Froq\AssetBundle\Switch\Action\Processor\UpdateProduct;
 use Froq\AssetBundle\Switch\Action\RelatedObject\CreateProductFolder;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\CategoryFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\ProductFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
-use Froq\AssetBundle\Utility\IsPathExists;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
-use Pimcore\Model\DataObject\Fieldcollection;
-use Pimcore\Model\DataObject\Fieldcollection\Data\ProductAttributes;
 use Pimcore\Model\DataObject\Organization;
+use Pimcore\Model\DataObject\Product;
 
 final class BuildProductFromPayload
 {
     public function __construct(
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
-        private readonly BuildCategoryFromPayload $buildCategoryFromPayload,
-        private readonly BuildProductContentsFromPayload $buildProductContentsFromPayload,
-        private readonly IsPathExists $isPathExists,
         private readonly CreateProductFolder $createProductFolder,
-        private readonly ProcessProduct $processProduct,
+        private readonly CreateProduct $createProduct,
+        private readonly UpdateProduct $updateProduct,
     ) {
     }
 
@@ -41,12 +38,12 @@ final class BuildProductFromPayload
         SwitchUploadRequest $switchUploadRequest,
         array $assetResources,
         Organization $organization,
-        array $actions
+        array $actions,
     ): void {
         $rootProductFolder = $organization->getObjectFolder() . '/';
 
         $parentProductFolder = (new DataObject\Listing())
-            ->addConditionParam('o_key = ?', AssetResourceOrganizationFolderNames::Products->name)
+            ->addConditionParam('o_key = ?', AssetResourceOrganizationFolderNames::Products->readable())
             ->addConditionParam('o_path = ?', $rootProductFolder)
             ->current();
 
@@ -89,66 +86,46 @@ final class BuildProductFromPayload
             throw new \Exception(message: 'No container folder i.e. /Customers/org-name/Assets/filename');
         }
 
-        $product = ($this->processProduct)($organization, $productFromPayload);
-
-        if ($product->getName() === null) {
-            $product->setName($productFromPayload->productName);
+        $product = Product::getByEAN((string) $productFromPayload->productEAN)?->current(); /** @phpstan-ignore-line */
+        if ($product instanceof Product) {
+            ($this->updateProduct)(
+                $product,
+                $organization,
+                $productFromPayload,
+                $assetResources,
+                $rootProductFolder,
+                $switchUploadRequest,
+                $parentProductFolder,
+                $actions
+            );
         }
 
-        if ($product->getEAN() === null) {
-            $product->setEAN($productFromPayload->productEAN);
-        }
-
-        if ($product->getSKU() === null) {
-            $product->setSKU($productFromPayload->productSKU);
-        }
-
-        if (isset($productFromPayload->productAttributes) && is_array($productFromPayload->productAttributes)) {
-            $fieldCollectionItems = [];
-
-            foreach ($productFromPayload->productAttributes as $item) {
-                if (empty($item)) {
-                    continue;
-                }
-
-                $productAttributes = new ProductAttributes();
-
-                $productAttributes->setAttributeKey((string) array_key_first($item));
-                $productAttributes->setAttributeValue(current($item));
-
-                $fieldCollectionItems[] = $productAttributes;
+        if (!($product instanceof Product)) {
+            $product = Product::getBySKU((string) $productFromPayload->productSKU)?->current(); /** @phpstan-ignore-line */
+            if ($product instanceof Product) {
+                ($this->updateProduct)(
+                    $product,
+                    $organization,
+                    $productFromPayload,
+                    $assetResources,
+                    $rootProductFolder,
+                    $switchUploadRequest,
+                    $parentProductFolder,
+                    $actions
+                );
             }
-
-            $productAttributesFieldCollection = new Fieldcollection();
-            $productAttributesFieldCollection->setItems($fieldCollectionItems);
-
-            $product->setAttributes($productAttributesFieldCollection);
         }
 
-        if ($product->getNetContentStatement() === null) {
-            $product->setNetContentStatement($productFromPayload->productNetContentStatement);
+        if (!($product instanceof Product)) {
+            ($this->createProduct)(
+                $organization,
+                $productFromPayload,
+                $assetResources,
+                $rootProductFolder,
+                $switchUploadRequest,
+                $parentProductFolder,
+                $actions
+            );
         }
-
-        ($this->buildProductContentsFromPayload)($product, $productFromPayload);
-
-        if (isset($productFromPayload->productCategories)) {
-            $product->setCategories(($this->buildCategoryFromPayload)($productFromPayload->productCategories, $organization, $product, $switchUploadRequest, $actions));
-        }
-
-        $recentAssetResources = [...$product->getAssets(), ...$assetResources];
-
-        $assetResources = array_values(array_unique($recentAssetResources));
-
-        $productKey = (string) $productFromPayload->productName;
-        $productPath = $rootProductFolder.AssetResourceOrganizationFolderNames::Products->readable().'/';
-
-        if (!($this->isPathExists)($productKey, $productPath)) {
-            $product->setAssets($assetResources);
-            $product->setParentId((int) $parentProductFolder->getId());
-            $product->setKey($productKey);
-            $product->setPublished(true);
-        }
-
-        $product->save();
     }
 }

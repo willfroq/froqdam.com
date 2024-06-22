@@ -23,7 +23,6 @@ final class BuildSwitchUploadResponse
         private readonly CreateAsset $createAsset,
         private readonly BuildOrganizationObjectFolderIfNotExists $buildOrganizationObjectFolderIfNotExists,
         private readonly BuildOrganizationAssetFolderIfNotExists $buildOrganizationAssetFolderIfNotExists,
-        private readonly LinkAssetResourceFolder $linkAssetResourceFolder,
         private readonly SwitchUploadRequestErrorHandler $switchUploadRequestErrorHandler,
         private readonly SendCriticalErrorEmail $sendCriticalErrorEmail
     ) {
@@ -58,11 +57,9 @@ final class BuildSwitchUploadResponse
         }
 
         $filename = $switchUploadRequest->filename;
+        $customAssetFolder = (string) $switchUploadRequest->customAssetFolder;
 
-        ($this->linkAssetResourceFolder)($organization);
-
-        ($this->buildOrganizationObjectFolderIfNotExists)($organization);
-
+        ($this->buildOrganizationObjectFolderIfNotExists)($organization, $customAssetFolder);
         ($this->buildOrganizationAssetFolderIfNotExists)($organization, $filename);
 
         $assetFolderPath = $organization->getAssetFolder() . '/';

@@ -54,7 +54,7 @@ class SearchController extends AbstractController
                 'form' => $form->createView(),
                 'items' => $queryResponseDto->getObjects(),
                 'user' => $this->getUser(),
-                'itemsLayout' => $this->getItemsLayout($request),
+                'itemsLayout' => $this->getItemsLayout(),
                 'totalCount' => $queryResponseDto->getTotalCount()
             ]
         );
@@ -85,7 +85,7 @@ class SearchController extends AbstractController
                 'form' => $form->createView(),
                 'items' => $queryResponseDto->getObjects(),
                 'user' => $this->getUser(),
-                'itemsLayout' => $this->getItemsLayout($request),
+                'itemsLayout' => $this->getItemsLayout(),
                 'totalCount' => $queryResponseDto->getTotalCount()
             ]
         );
@@ -118,7 +118,7 @@ class SearchController extends AbstractController
                 'forLoadMore' => true
             ]
         );
-        $template = sprintf('@FroqPortalBundle/partials/asset-library/load_%s_items.html.twig', $this->getItemsLayout($request));
+        $template = sprintf('@FroqPortalBundle/partials/asset-library/load_%s_items.html.twig', $this->getItemsLayout());
         $html = $this->renderView($template, $templateParams);
         $responseParams = array_merge($pagination, ['html' => $html]);
 
@@ -147,7 +147,7 @@ class SearchController extends AbstractController
                 'user' => $this->getUser(),
             ]
         );
-        $template = sprintf('@FroqPortalBundle/partials/asset-library/load_%s.html.twig', $this->getItemsLayout($request));
+        $template = sprintf('@FroqPortalBundle/partials/asset-library/load_%s.html.twig', $this->getItemsLayout());
         $html = $this->renderView($template, $templateParams);
         $responseParams = array_merge($pagination, ['html' => $html]);
 
@@ -241,19 +241,11 @@ class SearchController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     *
      * @return string
      */
-    private function getItemsLayout(Request $request): string
+    private function getItemsLayout(): string
     {
-        $queryParams = $request->query->all();
-
-        if (!empty($queryParams[self::LAYOUT_PARAM]) && ($queryParams[self::LAYOUT_PARAM] === self::LAYOUT_GRID)) {
-            return self::LAYOUT_GRID;
-        }
-
-        return self::LAYOUT_LIST;
+        return self::LAYOUT_GRID;
     }
 
     /**

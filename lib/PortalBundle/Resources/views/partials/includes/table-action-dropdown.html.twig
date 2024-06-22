@@ -13,11 +13,10 @@
                 {% endif %}
 
                 <li class="list-item__actions-dropdown-list-item">
-                    {% if itemAsset %}
+                    {% if itemAsset and itemId  %}
                         {% set itemAssetLink = portal_asset_path(itemAsset) %}
                         {% if itemAssetLink %}
-                            <app-download-asset href="{{ itemAssetLink }}">Download asset
-                            </app-download-asset>
+                            <app-download-asset href="{{ path('froq_portal.asset_library.detail.download.file', {'id': itemId}) }}">Download asset</app-download-asset>
                         {% endif %}
                     {% endif %}
                 </li>

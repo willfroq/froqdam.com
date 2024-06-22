@@ -76,12 +76,31 @@ final class BuildCategoryFromPayload
             $category = Category::getByProducts($product)?->current(); /** @phpstan-ignore-line */
             if (!($category instanceof Category)) {
                 $category = new Category();
-            }
 
-            if (!($this->isPathExists)($productCategory, $rootCategoryFolder.$categoriesName.'/'.$levelLabelName.'/')) {
                 $category->setOrganization($organization);
                 $category->setLevelLabel($levelLabelName);
                 $category->setParentId((int) $categoryFolderLevelLabel->getId());
+                $category->setKey($productCategory);
+                $category->setPublished(true);
+            }
+
+            if (empty($category->getOrganization())) {
+                $category->setOrganization($organization);
+            }
+
+            if (empty($category->getLevelLabel())) {
+                $category->setLevelLabel($levelLabelName);
+            }
+
+            if (empty($category->getLevelLabel())) {
+                $category->setLevelLabel($levelLabelName);
+            }
+
+            if ($categoryFolderLevelLabel instanceof DataObject) {
+                $category->setParentId((int) $categoryFolderLevelLabel->getId());
+            }
+
+            if (!($this->isPathExists)($productCategory, $rootCategoryFolder.$categoriesName.'/'.$levelLabelName.'/')) {
                 $category->setKey($productCategory);
                 $category->setPublished(true);
 

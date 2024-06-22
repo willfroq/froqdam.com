@@ -19,7 +19,7 @@ final class CreateTemporaryFile
         private readonly string $projectDirectory,
         private readonly ApplicationLogger $applicationLogger,
         private readonly Filesystem $filesystem,
-        private readonly SendCriticalErrorEmail $sendCriticalErrorEmail
+        private readonly SendCriticalErrorEmail $sendCriticalErrorEmail,
     ) {
     }
 

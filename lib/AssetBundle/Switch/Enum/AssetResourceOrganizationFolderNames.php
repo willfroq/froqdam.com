@@ -8,7 +8,7 @@ enum AssetResourceOrganizationFolderNames: int
 {
     case Assets = 1;
     case ThreeDModelLibrary = 2;
-    case CutterGuides = 3;
+    case Cutter_Guides = 3;
     case Mockups = 4;
     case Products = 5;
     case Projects = 6;
@@ -23,7 +23,7 @@ enum AssetResourceOrganizationFolderNames: int
         return match ($this) {
             self::Assets => 'Assets',
             self::ThreeDModelLibrary => '3D_Model_Library',
-            self::CutterGuides => 'Cutter_Guides',
+            self::Cutter_Guides => 'Cutter_Guides',
             self::Mockups => 'Mockups',
             self::Products => 'Products',
             self::Projects => 'Projects',

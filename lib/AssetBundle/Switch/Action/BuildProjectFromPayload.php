@@ -36,7 +36,8 @@ final class BuildProjectFromPayload
         SwitchUploadRequest $switchUploadRequest,
         array $assetResources,
         Organization $organization,
-        array $actions
+        array $actions,
+        bool $isUpdate = false
     ): void {
         $rootProjectFolder = $organization->getObjectFolder() . '/';
 
@@ -79,55 +80,68 @@ final class BuildProjectFromPayload
 
         $projectCode = $projectFromPayload->projectCode;
 
+        $projectKey = $projectFromPayload->froqName;
+
         $project = Project::getByFroq_project_number($projectFromPayload->froqProjectNumber)?->current(); /** @phpstan-ignore-line */
         if (!($project instanceof Project)) {
             $project = new Project();
+
+            $project->setKey((string) $projectKey);
+            $project->setFroq_name($projectFromPayload->froqName);
+            $project->setName($projectFromPayload->projectName);
+            $project->setCode($projectCode);
+            $project->setPim_project_number((string) $projectFromPayload->pimProjectNumber);
+            $project->setFroq_project_number($projectFromPayload->froqProjectNumber);
+            $project->setCustomer_project_number2($projectFromPayload->customerProjectNumber);
+            $project->setDescription($projectFromPayload->description);
+            $project->setProject_type($projectFromPayload->projectType);
+            $project->setStatus($projectFromPayload->status);
+            $project->setLocation($projectFromPayload->location);
+            $project->setDeliveryType($projectFromPayload->deliveryType);
         }
 
-        $projectKey = $projectFromPayload->froqName;
-
-        if ($project->getFroq_name() === null) {
+        if (empty($project->getFroq_name())) {
             $project->setKey((string) $projectKey);
             $project->setFroq_name($projectFromPayload->froqName);
         }
 
-        if ($project->getName() === null) {
+        if (empty($project->getName())) {
             $project->setName($projectFromPayload->projectName);
         }
 
-        if ($project->getCode() === null) {
+        if (empty($project->getCode())) {
             $project->setCode($projectCode);
         }
 
-        if ($project->getPim_project_number() === null) {
+        if (empty($project->getPim_project_number())) {
             $project->setPim_project_number((string) $projectFromPayload->pimProjectNumber);
         }
 
-        if ($project->getFroq_project_number() === null) {
+        if (empty($project->getFroq_project_number())) {
             $project->setFroq_project_number($projectFromPayload->froqProjectNumber);
         }
 
-        if ($project->getCustomer_project_number2() === null) {
+        if (empty($project->getCustomer_project_number2())) {
             $project->setCustomer_project_number2($projectFromPayload->customerProjectNumber);
         }
 
-        if ($project->getDescription() === null) {
+        if (empty($project->getDescription())) {
             $project->setDescription($projectFromPayload->description);
         }
 
-        if ($project->getProject_type() === null) {
+        if (empty($project->getProject_type())) {
             $project->setProject_type($projectFromPayload->projectType);
         }
 
-        if ($project->getStatus() === null) {
+        if (empty($project->getStatus())) {
             $project->setStatus($projectFromPayload->status);
         }
 
-        if ($project->getLocation() === null) {
+        if (empty($project->getLocation())) {
             $project->setLocation($projectFromPayload->location);
         }
 
-        if ($project->getDeliveryType() === null) {
+        if (empty($project->getDeliveryType())) {
             $project->setDeliveryType($projectFromPayload->deliveryType);
         }
 

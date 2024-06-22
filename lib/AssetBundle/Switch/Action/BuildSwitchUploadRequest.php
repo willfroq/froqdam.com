@@ -27,7 +27,7 @@ final class BuildSwitchUploadRequest
     {
         /** @var UploadedFile|null $file */
         $file = $request->files->get('fileContents');
-        $customAssetFolder = null;
+        $customAssetFolder = (string) $request->request->get('customAssetFolder');
 
         $errors = [];
 
@@ -37,7 +37,7 @@ final class BuildSwitchUploadRequest
             eventName: (string) $request->request->get('eventName'),
             filename: (string) $request->request->get('filename'),
             customerCode: (string) $request->request->get('customerCode'),
-            customAssetFolder: (string) $customAssetFolder,
+            customAssetFolder: $customAssetFolder,
             assetType: (string) $request->request->get('assetType'),
             fileContents: $file,
             assetResourceMetadataFieldCollection: (string) $request->request->get('assetResourceMetadataFieldCollection'),

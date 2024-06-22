@@ -1,6 +1,5 @@
 .grid-item {
     background-color: $color-white;
-    cursor: pointer;
     padding: $spacing-m;
 
     &__details {
@@ -11,4 +10,105 @@
         height: auto;
         width: 100%;
     }
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 8px;
+    box-sizing: border-box;
+    padding: 16px;
+    margin: 10px 0;
+}
+
+.card .img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 160px;
+    overflow: hidden;
+    padding: inherit;
+}
+
+.card .img-container .image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.card h1 {
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 26px;
+    margin-bottom: 6px;
+    color: #171B3F;
+}
+
+.card .card-body {
+    list-style-type: none;
+    margin: 0;
+}
+
+.card .card-body ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.card .card-body ul > li > p > span {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 24px;
+    color: #171B3F;
+}
+
+.card.card-body ul > li > p {
+    position: relative;
+    margin: 0 0 10px;
+    word-wrap: break-word;
+    font-weight: 400;
+    font-size: 0.6rem;
+    line-height: 1.5em;
+    color: #171B3F;
+}
+
+.thumbnail-placeholder {
+    width: 160px;
+    height: 160px;
+    background-color: #ccc;
+    border-radius: 2px;
+}
+
+.card .card-footer {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.75rem;
+    padding-top: 20px
+}
+
+.card .card-footer .text {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 26px;
+    color: #009383
+}
+
+.card .card-footer .download-icon {
+    width: 22px;
+    height: 16px;
+}
+
+.card .card-footer a {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    text-decoration: none;
+}
+
+.card .card-footer .view-icon {
+    width: 22px;
+    height: 16px;
 }

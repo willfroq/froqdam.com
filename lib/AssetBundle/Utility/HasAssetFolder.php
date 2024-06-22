@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Utility;
 
 use Pimcore\Model\Asset;
+use Pimcore\Model\Asset\Folder;
 use Pimcore\Model\DataObject\Organization;
 
 final class HasAssetFolder
@@ -14,6 +15,6 @@ final class HasAssetFolder
         return (new Asset\Listing())
             ->addConditionParam('path = ?', $organization->getAssetFolder().'/')
             ->addConditionParam('filename = ?', $filename)
-            ->current() instanceof Asset;
+            ->current() instanceof Folder;
     }
 }

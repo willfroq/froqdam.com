@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Email Template</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+
+            .container {
+                width: 100%;
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #f4f4f4;
+                padding: 20px;
+                border: 1px solid #dddddd;
+            }
+
+            .header {
+                background-color: #FF0000;
+                color: #f4f4f4;
+                padding: 10px;
+                text-align: center;
+            }
+
+            .content {
+                margin: 20px 0;
+            }
+
+            .footer {
+                text-align: center;
+                padding: 10px;
+                background-color: #eeeeee;
+                color: #555555;
+                font-size: 12px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Switch File Upload Error</h1>
+            </div>
+
+            <div class="content">
+                <h2>Please re-upload {{ filename }}!</h2>
+
+                <p>Dear {{ username }},</p>
+
+                <p>The file: <b>{{ filename }}</b> uploaded at: <b>{{ date }}</b> had a server error and has to be re-uploaded from switch.</p>
+
+                <p>Please re-upload it.</p>
+
+                <p>If you have any questions, feel free to <a href={{ fromEmail }}>contact us</a>.</p>
+
+                <p>Best regards,<br>William del Rosario<br>Tech Lead</p>
+            </div>
+
+            <div class="footer">
+                <p>&copy; {{ year }} FroQ. All rights reserved.</p>
+            </div>
+        </div>
+    </body>
+</html>

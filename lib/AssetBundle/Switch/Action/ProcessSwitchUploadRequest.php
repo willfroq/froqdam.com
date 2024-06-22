@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Switch\Action;
 
-use Doctrine\DBAL\Driver\Exception;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\CategoryFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\PrinterFromPayload;
@@ -12,7 +11,6 @@ use Froq\AssetBundle\Switch\ValueObject\ProductFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\ProjectFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\SupplierFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\TagFromPayload;
-use Froq\AssetBundle\Utility\IsAssetAndAssetResourceInSync;
 use Froq\AssetBundle\Utility\IsPathExists;
 use Froq\AssetBundle\Utility\IsProjectExists;
 use Froq\AssetBundle\Utility\IsTagExists;
@@ -27,7 +25,6 @@ final class ProcessSwitchUploadRequest
         private readonly IsPathExists $isPathExists,
         private readonly IsProjectExists $isProjectExists,
         private readonly IsTagExists $isTagExists,
-        private readonly IsAssetAndAssetResourceInSync $isAssetAndAssetResourceInSync,
     ) {
     }
 
@@ -39,10 +36,6 @@ final class ProcessSwitchUploadRequest
         if (!($file instanceof UploadedFile)) {
             $errors[] = new ValidationError(propertyPath: 'fileContents', message: sprintf('FileContents %s is not a file.', $file));
         }
-
-        $assetFolder = $request->request->get('customAssetFolder');
-
-        $customAssetFolder = $assetFolder === null || $assetFolder === '' ? AssetResourceOrganizationFolderNames::Assets->name : $assetFolder;
 
         $organization = Organization::getByCode((string) $request->request->get('customerCode'))->current(); /** @phpstan-ignore-line */
         if (!($organization instanceof Organization)) {
@@ -188,14 +181,6 @@ final class ProcessSwitchUploadRequest
 
         if (($this->isPathExists)((string) $supplierKey, $supplierPath)) {
             $errors[] = new ValidationError(propertyPath: 'Supplier', message: sprintf('Supplier %s path already exists, this has to be unique.', $supplierPath.$supplierKey));
-        }
-
-        try {
-            if (!($this->isAssetAndAssetResourceInSync)($organization, (string)$request->request->get('filename'))) {
-                $errors[] = new ValidationError(propertyPath: 'Asset', message: 'Asset And AssetResource are not in sync! Please fix it!');
-            }
-        } catch (Exception|\Doctrine\DBAL\Exception $e) {
-            throw new \Exception($e->getMessage());
         }
     }
 }

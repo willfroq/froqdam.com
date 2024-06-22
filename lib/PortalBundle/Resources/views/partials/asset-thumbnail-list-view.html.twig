@@ -1,10 +1,11 @@
 {% if asset %}
     {% set imageSrc = get_asset_thumbnail_hashed_url(asset, 'portal_asset_library_item') %}
+
     {% if imageSrc %}
         <img src="{{ imageSrc }}" alt="">
     {% else %}
-        -
+        <div class="thumbnail-placeholder"></div>
     {% endif %}
 {% else %}
-    -
+    <div class="thumbnail-placeholder"></div>
 {% endif %}

@@ -6,15 +6,18 @@ namespace Froq\AssetBundle\Switch\Action;
 
 use Doctrine\DBAL\Driver\Exception;
 use Froq\AssetBundle\Switch\Action\Email\SendCriticalErrorEmail;
+use Froq\AssetBundle\Switch\Action\RelatedObject\BuildAssetResourceFolderIfNotExists;
+use Froq\AssetBundle\Switch\Action\RelatedObject\BuildShapeCode;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadResponse;
+use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\Enum\LogLevelNames;
 use Froq\AssetBundle\Switch\Handlers\OrganizationFoldersErrorHandler;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\Asset;
-use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\AssetType;
+use Pimcore\Model\DataObject\Fieldcollection;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Product;
 use Pimcore\Model\DataObject\Project;
@@ -34,6 +37,8 @@ final class CreateAsset
         private readonly OrganizationFoldersErrorHandler $organizationFoldersErrorHandler,
         private readonly ApplicationLogger $logger,
         private readonly SendCriticalErrorEmail $sendCriticalErrorEmail,
+        private readonly BuildShapeCode $buildShapeCode,
+        private readonly BuildAssetResourceFolderIfNotExists $buildAssetResourceFolderIfNotExists,
     ) {
     }
 
@@ -114,63 +119,24 @@ final class CreateAsset
 
         $assetResourceMetadataFieldCollection = ($this->buildAssetResourceMetadata)($switchUploadRequest);
 
-        $assetResourceFolderName = $switchUploadRequest->customAssetFolder;
-
         $rootAssetResourceFolder = $organization->getObjectFolder() . '/';
 
         $actions[] = sprintf('RootAssetResourceFolder %s', $rootAssetResourceFolder);
 
-        $parentAssetResourceFolder = (new DataObject\Listing())
-            ->addConditionParam('o_key = ?', $assetResourceFolderName)
-            ->addConditionParam('o_path = ?', $rootAssetResourceFolder)
-            ->current();
+        $customAssetFolder = $switchUploadRequest->customAssetFolder;
 
-        if (!($parentAssetResourceFolder instanceof DataObject)) {
-            try {
-                $asset->delete();
-                $assetFolderContainer?->delete();
-                $newAssetVersionFolder?->delete();
-            } catch (\Exception $exception) {
-                throw new \Exception(message: $exception->getMessage());
-            }
-
-            $message = sprintf('ParentAssetResourceFolder: key: %s and path: %s does not exist.', 'Assets', $rootAssetResourceFolder);
-
-            $actions[] = $message;
-            $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
-
-            $this->logger->error(
-                message: $message . implode(separator: ',', array: $actions),
-                context: ['component' => $switchUploadRequest->eventName]
-            );
-
-            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
-
-            return new SwitchUploadResponse(
-                eventName: $switchUploadRequest->eventName,
-                date: date('F j, Y H:i'),
-                logLevel: LogLevelNames::ERROR->name.": $message",
-                assetId: '',
-                assetResourceId: '',
-                relatedObjects: [],
-                actions: $actions,
-                statistics: []
-            );
-        }
+        $parentAssetResourceFolder = ($this->buildAssetResourceFolderIfNotExists)($organization, (string) $customAssetFolder);
 
         $tags = ($this->buildTags)($switchUploadRequest, $organization, $actions);
 
-        $assetFolderName = $switchUploadRequest->customAssetFolder;
-
         $parentAssetResource = AssetResource::create();
         $parentAssetResource->setPublished(true);
-        $parentAssetResource->setPath("$rootAssetResourceFolder/$assetFolderName/$filename/");
+        $parentAssetResource->setPath("$rootAssetResourceFolder/$customAssetFolder/$filename/");
         $parentAssetResource->setName($switchUploadRequest->filename);
-        $parentAssetResource->setParentId((int)$parentAssetResourceFolder->getId());
+        $parentAssetResource->setParentId((int) $parentAssetResourceFolder->getId());
         $parentAssetResource->setAssetType($assetType);
         $parentAssetResource->setAssetVersion(0);
         $parentAssetResource->setKey($switchUploadRequest->filename);
-        $parentAssetResource->setTags($tags);
 
         $parentAssetResource->save();
 
@@ -220,6 +186,7 @@ final class CreateAsset
         $assetResourceVersionOne->setAssetVersion(1);
         $assetResourceVersionOne->setMetadata($assetResourceMetadataFieldCollection);
         $assetResourceVersionOne->setKey('1');
+        $assetResourceVersionOne->setTags($tags);
 
         $assetResourceVersionOne->save();
 
@@ -257,6 +224,10 @@ final class CreateAsset
                 actions: $actions,
                 statistics: []
             );
+        }
+
+        if ($assetResourceMetadataFieldCollection instanceof Fieldcollection && AssetResourceOrganizationFolderNames::Packshots->readable() === $customAssetFolder) {
+            ($this->buildShapeCode)($assetResourceMetadataFieldCollection, $parentAssetResource);
         }
 
         $existingAssetResources = $organization->getAssetResources();
