@@ -139,67 +139,53 @@ final class UpdateAsset
             $parentAssetResource->setPublished(true);
             $parentAssetResource->setPath($rootAssetResourceFolder);
             $parentAssetResource->setKey($filename);
+            $parentAssetResource->setName($filename);
             $parentAssetResource->setAssetVersion(0);
             $parentAssetResource->setParent(($this->buildAssetResourceFolderIfNotExists)($organization, (string) $customAssetFolder));
+
+            $parentAssetResource->save();
         }
 
         $tags = ($this->buildTags)($switchUploadRequest, $organization, $actions);
 
-        $parentAssetResource->save();
-
         $latestAssetResourceVersion = AssetResource::getById($this->assetResourceRepository->fetchDeepestChildId((int) $parentAssetResource->getId()));
         $newAssetResourceVersionCount = (int) $latestAssetResourceVersion?->getAssetVersion() + 1;
 
-        if (!($latestAssetResourceVersion instanceof AssetResource)) {
-            try {
-                $asset->delete();
-                $newAssetVersionFolder->delete();
-                $latestAssetResourceVersion?->delete(); /** @phpstan-ignore-line */
-            } catch (\Exception $exception) {
-                throw new \Exception(message: $exception->getMessage());
-            }
+        if ($latestAssetResourceVersion instanceof AssetResource) {
+            $newAssetResourceLatestVersion = AssetResource::create();
+            $newAssetResourceLatestVersion->setPublished(true);
+            $newAssetResourceLatestVersion->setPath($latestAssetResourceVersion->getPath().'/');
+            $newAssetResourceLatestVersion->setName($filename);
+            $newAssetResourceLatestVersion->setParentId((int) $parentAssetResource->getId());
+            $newAssetResourceLatestVersion->setAsset($asset);
+            $newAssetResourceLatestVersion->setAssetType($assetType);
+            $newAssetResourceLatestVersion->setMetadata($assetResourceMetadataFieldCollection);
+            $newAssetResourceLatestVersion->setAssetVersion($newAssetResourceVersionCount);
+            $newAssetResourceLatestVersion->setKey((string) $newAssetResourceVersionCount);
+            $newAssetResourceLatestVersion->setTags($tags);
 
-            $message = sprintf('LatestAssetResourceVersion %s does not exist.', $latestAssetResourceVersion);
+            $newAssetResourceLatestVersion->save();
 
-            $actions[] = $message;
-            $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
-
-            $this->logger->error(
-                message: $message . implode(separator: ',', array: $actions),
-                context: ['component' => $switchUploadRequest->eventName]
-            );
-
-            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
-
-            return new SwitchUploadResponse(
-                eventName: $switchUploadRequest->eventName,
-                date: date('F j, Y H:i'),
-                logLevel: LogLevelNames::ERROR->name.": $message",
-                assetId: '',
-                assetResourceId: '',
-                relatedObjects: [],
-                actions: $actions,
-                statistics: []
-            );
+            $actions[] = sprintf('New AssetResourceLatestVersion with ID %d is created in %s', $newAssetResourceLatestVersion->getId(), $newAssetResourceLatestVersion->getPath());
         }
 
-        $latestAssetResourceVersion->save();
+        if (!($latestAssetResourceVersion instanceof AssetResource)) {
+            $newAssetResourceLatestVersion = AssetResource::create();
+            $newAssetResourceLatestVersion->setPublished(true);
+            $newAssetResourceLatestVersion->setPath($parentAssetResource->getPath().$parentAssetResource->getKey().'/');
+            $newAssetResourceLatestVersion->setName($switchUploadRequest->filename);
+            $newAssetResourceLatestVersion->setParentId((int) $parentAssetResource->getId());
+            $newAssetResourceLatestVersion->setAsset($asset);
+            $newAssetResourceLatestVersion->setAssetType($assetType);
+            $newAssetResourceLatestVersion->setAssetVersion(1);
+            $newAssetResourceLatestVersion->setMetadata($assetResourceMetadataFieldCollection);
+            $newAssetResourceLatestVersion->setKey('1');
+            $newAssetResourceLatestVersion->setTags($tags);
 
-        $newAssetResourceLatestVersion = AssetResource::create();
-        $newAssetResourceLatestVersion->setPublished(true);
-        $newAssetResourceLatestVersion->setPath($latestAssetResourceVersion->getPath().'/');
-        $newAssetResourceLatestVersion->setName($filename);
-        $newAssetResourceLatestVersion->setParentId((int) $parentAssetResource->getId());
-        $newAssetResourceLatestVersion->setAsset($asset);
-        $newAssetResourceLatestVersion->setAssetType($assetType);
-        $newAssetResourceLatestVersion->setMetadata($assetResourceMetadataFieldCollection);
-        $newAssetResourceLatestVersion->setAssetVersion($newAssetResourceVersionCount);
-        $newAssetResourceLatestVersion->setKey((string) $newAssetResourceVersionCount);
-        $newAssetResourceLatestVersion->setTags($tags);
+            $newAssetResourceLatestVersion->save();
 
-        $newAssetResourceLatestVersion->save();
-
-        $actions[] = sprintf('New AssetResourceLatestVersion with ID %d is created in %s', $newAssetResourceLatestVersion->getId(), $newAssetResourceLatestVersion->getPath());
+            $actions[] = sprintf('New AssetResourceLatestVersion with ID %d is created in %s', $newAssetResourceLatestVersion->getId(), $newAssetResourceLatestVersion->getPath());
+        }
 
         if (!($newAssetResourceLatestVersion instanceof AssetResource)) {
             try {
@@ -240,7 +226,7 @@ final class UpdateAsset
 
         $existingAssetResources = $organization->getAssetResources();
 
-        $assetResources = array_values(array_unique([...$existingAssetResources, $newAssetResourceLatestVersion, $parentAssetResource]));
+        $assetResources = array_values(array_unique([...$existingAssetResources, $parentAssetResource]));
 
         $organization->setAssetResources($assetResources);
 
