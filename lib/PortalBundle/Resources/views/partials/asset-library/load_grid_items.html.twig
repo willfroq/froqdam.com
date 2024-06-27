@@ -30,7 +30,7 @@
                         {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_PIM_PROJECT_NUMBER') %}
                             <li><p><span>PIM Project Number: </span>{{ pimProjectNumber }}</p></li>
                         {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_PRODUCT_NAME') %}
-                            <li><p><span>Product Name: </span>{{ productName }}</p></li>
+                            <li><p><span>Product Name: </span>{{ productName|default('-')|raw }}</p></li>
                         {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_ASSET_NAME') %}
                             <li><p><span>Asset Name: </span>{{ ssetResource.name }}</p></li>
                         {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_SKU') %}
