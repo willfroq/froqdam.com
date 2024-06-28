@@ -74,16 +74,6 @@ final class ProcessSwitchUploadRequest
             $errors[] = new ValidationError(propertyPath: 'Product', message: sprintf('Product %s path already exists, this has to be unique.', $productPath.$productKey));
         }
 
-        $categoryPath = $rootAssetResourceFolder.AssetResourceOrganizationFolderNames::Categories->readable().'/';
-
-        foreach ($product->productCategories?->toArray() ?? [] as $levelLabelName => $categoryName) {
-            $categoryLevelLabelName = ucfirst($levelLabelName).'s';
-
-            if (($this->isPathExists)((string) $categoryName, $categoryPath.$categoryLevelLabelName.'/')) {
-                $errors[] = new ValidationError(propertyPath: 'Category', message: sprintf('Category %s path already exists, this has to be unique.', $categoryPath.$categoryLevelLabelName.'/'.$categoryName));
-            }
-        }
-
         $tagData = (array) json_decode((string) $request->request->get('tagData'), true);
         $tagPath = $rootAssetResourceFolder.AssetResourceOrganizationFolderNames::Tags->name.'/';
 

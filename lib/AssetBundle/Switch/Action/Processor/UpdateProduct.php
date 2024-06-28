@@ -8,6 +8,7 @@ use Froq\AssetBundle\Switch\Action\BuildCategoryFromPayload;
 use Froq\AssetBundle\Switch\Action\BuildProductContentsFromPayload;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
+use Froq\AssetBundle\Switch\ValueObject\CategoryFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\ProductFromPayload;
 use Froq\AssetBundle\Utility\IsPathExists;
 use Pimcore\Model\DataObject;
@@ -82,8 +83,14 @@ final class UpdateProduct
 
         ($this->buildProductContentsFromPayload)($product, $productFromPayload, true);
 
-        if (isset($productFromPayload->productCategories)) {
-            $product->setCategories(($this->buildCategoryFromPayload)($productFromPayload->productCategories, $organization, $product, $switchUploadRequest, $actions));
+        $categoryPath = $organization->getObjectFolder().'/'.AssetResourceOrganizationFolderNames::Categories->readable().'/';
+
+        foreach ($productFromPayload->productCategories?->toArray() ?? [] as $levelLabelName => $categoryName) {
+            $categoryLevelLabelName = ucfirst($levelLabelName).'s';
+
+            if (!($this->isPathExists)((string) $categoryName, $categoryPath.$categoryLevelLabelName.'/') && $productFromPayload->productCategories instanceof CategoryFromPayload) {
+                $product->setCategories(($this->buildCategoryFromPayload)($productFromPayload->productCategories, $organization, $product, $switchUploadRequest, $actions));
+            }
         }
 
         $recentAssetResources = [...$product->getAssets(), ...$assetResources];
@@ -96,8 +103,11 @@ final class UpdateProduct
         if (!($this->isPathExists)($productKey, $productPath)) {
             $product->setAssets($assetResources);
             $product->setParentId((int) $parentProductFolder->getId());
-            $product->setKey($productKey);
             $product->setPublished(true);
+
+            if (empty($product->getKey())) {
+                $product->setKey($productKey);
+            }
         }
 
         $product->save();

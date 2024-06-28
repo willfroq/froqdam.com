@@ -8,6 +8,7 @@ use Froq\AssetBundle\Switch\Action\BuildCategoryFromPayload;
 use Froq\AssetBundle\Switch\Action\BuildProductContentsFromPayload;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
+use Froq\AssetBundle\Switch\ValueObject\CategoryFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\ProductFromPayload;
 use Froq\AssetBundle\Utility\IsPathExists;
 use Pimcore\Model\DataObject;
@@ -48,9 +49,21 @@ final class CreateProduct
     ): void {
         $product = new Product();
 
-        $product->setName($productFromPayload->productName);
-        $product->setEAN($productFromPayload->productEAN);
-        $product->setSKU($productFromPayload->productSKU);
+        if (empty($product->getName())) {
+            $product->setName($productFromPayload->productName);
+        }
+
+        if (empty($product->getEAN())) {
+            $product->setEAN($productFromPayload->productEAN);
+        }
+
+        if (empty($product->getSKU())) {
+            $product->setSKU($productFromPayload->productSKU);
+        }
+
+        if (empty($product->getKey())) {
+            $product->setKey((string) $productFromPayload->productName);
+        }
 
         if (isset($productFromPayload->productAttributes) && is_array($productFromPayload->productAttributes)) {
             $fieldCollectionItems = [];
@@ -78,8 +91,14 @@ final class CreateProduct
 
         ($this->buildProductContentsFromPayload)($product, $productFromPayload, false);
 
-        if (isset($productFromPayload->productCategories)) {
-            $product->setCategories(($this->buildCategoryFromPayload)($productFromPayload->productCategories, $organization, $product, $switchUploadRequest, $actions));
+        $categoryPath = $organization->getObjectFolder().'/'.AssetResourceOrganizationFolderNames::Categories->readable().'/';
+
+        foreach ($productFromPayload->productCategories?->toArray() ?? [] as $levelLabelName => $categoryName) {
+            $categoryLevelLabelName = ucfirst($levelLabelName).'s';
+
+            if (!($this->isPathExists)((string) $categoryName, $categoryPath.$categoryLevelLabelName.'/') && $productFromPayload->productCategories instanceof CategoryFromPayload) {
+                $product->setCategories(($this->buildCategoryFromPayload)($productFromPayload->productCategories, $organization, $product, $switchUploadRequest, $actions));
+            }
         }
 
         $recentAssetResources = [...$product->getAssets(), ...$assetResources];
@@ -92,7 +111,6 @@ final class CreateProduct
         if (!($this->isPathExists)($productKey, $productPath)) {
             $product->setAssets($assetResources);
             $product->setParentId((int) $parentProductFolder->getId());
-            $product->setKey($productKey);
             $product->setPublished(true);
         }
 

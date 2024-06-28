@@ -98,26 +98,14 @@ final class BuildProductFromPayload
                 $parentProductFolder,
                 $actions
             );
+
+            return;
         }
 
-        if (!($product instanceof Product)) {
-            $product = Product::getBySKU((string) $productFromPayload->productSKU)?->current(); /** @phpstan-ignore-line */
-            if ($product instanceof Product) {
-                ($this->updateProduct)(
-                    $product,
-                    $organization,
-                    $productFromPayload,
-                    $assetResources,
-                    $rootProductFolder,
-                    $switchUploadRequest,
-                    $parentProductFolder,
-                    $actions
-                );
-            }
-        }
-
-        if (!($product instanceof Product)) {
-            ($this->createProduct)(
+        $product = Product::getBySKU((string) $productFromPayload->productSKU)?->current(); /** @phpstan-ignore-line */
+        if ($product instanceof Product) {
+            ($this->updateProduct)(
+                $product,
                 $organization,
                 $productFromPayload,
                 $assetResources,
@@ -126,6 +114,18 @@ final class BuildProductFromPayload
                 $parentProductFolder,
                 $actions
             );
+
+            return;
         }
+
+        ($this->createProduct)(
+            $organization,
+            $productFromPayload,
+            $assetResources,
+            $rootProductFolder,
+            $switchUploadRequest,
+            $parentProductFolder,
+            $actions
+        );
     }
 }
