@@ -11,6 +11,7 @@ use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\ProjectFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
 use Froq\AssetBundle\Utility\IsPathExists;
+use Froq\AssetBundle\Utility\IsProjectExists;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Organization;
@@ -22,6 +23,7 @@ final class BuildProjectFromPayload
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
         private readonly IsPathExists $isPathExists,
         private readonly CreateProjectFolder $createProjectFolder,
+        private readonly IsProjectExists $isProjectExists,
     ) {
     }
 
@@ -77,6 +79,41 @@ final class BuildProjectFromPayload
             location: $projectData['location'] ?? null,
             deliveryType: $projectData['deliveryType'] ?? null,
         );
+
+        $projectPath = $rootProjectFolder.AssetResourceOrganizationFolderNames::Projects->readable().'/';
+        $projectKey = $projectFromPayload->froqName;
+
+        if (($this->isPathExists)((string) $projectKey, $projectPath)) {
+            return;
+        }
+
+        if (($this->isProjectExists)('Code', (string) $projectFromPayload->projectCode)) {
+            return;
+        }
+
+        if (($this->isProjectExists)('pim_project_number', (string) $projectFromPayload->pimProjectNumber)) {
+            return;
+        }
+
+        if (($this->isProjectExists)('froq_project_number', (string) $projectFromPayload->froqProjectNumber)) {
+            return;
+        }
+
+        if (!isset($projectFromPayload->froqProjectNumber)) {
+            return;
+        }
+
+        if (!isset($projectFromPayload->froqName)) {
+            return;
+        }
+
+        if (!isset($projectFromPayload->projectName)) {
+            return;
+        }
+
+        if (!isset($projectFromPayload->projectCode)) {
+            return;
+        }
 
         $projectCode = $projectFromPayload->projectCode;
 

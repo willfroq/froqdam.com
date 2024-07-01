@@ -12,7 +12,6 @@ use Froq\AssetBundle\Switch\ValueObject\ProjectFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\SupplierFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\TagFromPayload;
 use Froq\AssetBundle\Utility\IsPathExists;
-use Froq\AssetBundle\Utility\IsProjectExists;
 use Froq\AssetBundle\Utility\IsTagExists;
 use Froq\PortalBundle\Api\ValueObject\ValidationError;
 use Pimcore\Model\DataObject\Organization;
@@ -23,7 +22,6 @@ final class ProcessSwitchUploadRequest
 {
     public function __construct(
         private readonly IsPathExists $isPathExists,
-        private readonly IsProjectExists $isProjectExists,
         private readonly IsTagExists $isTagExists,
     ) {
     }
@@ -103,41 +101,6 @@ final class ProcessSwitchUploadRequest
             location: $projectData['location'] ?? null,
             deliveryType: $projectData['deliveryType'] ?? null,
         );
-
-        $projectPath = $rootAssetResourceFolder.AssetResourceOrganizationFolderNames::Projects->name.'/';
-        $projectKey = $project->froqName;
-
-        if (($this->isPathExists)((string) $projectKey, $projectPath)) {
-            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s path already exists, this has to be unique.', $projectPath.$projectKey));
-        }
-
-        if (($this->isProjectExists)('Code', (string) $project->projectCode)) {
-            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s already exists, this has to be unique.', $projectKey));
-        }
-
-        if (($this->isProjectExists)('pim_project_number', (string) $project->pimProjectNumber)) {
-            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s already exists, this has to be unique.', $projectKey));
-        }
-
-        if (($this->isProjectExists)('froq_project_number', (string) $project->froqProjectNumber)) {
-            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s already exists, this has to be unique.', $projectKey));
-        }
-
-        if (!isset($project->froqProjectNumber)) {
-            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s has no froqProjectNumber.', $projectKey));
-        }
-
-        if (!isset($project->froqName)) {
-            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s has no froqName.', $projectKey));
-        }
-
-        if (!isset($project->projectName)) {
-            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s has no projectName.', $projectKey));
-        }
-
-        if (!isset($project->projectCode)) {
-            $errors[] = new ValidationError(propertyPath: 'Project', message: sprintf('Project %s has no projectCode.', $projectKey));
-        }
 
         $printerData = (array) json_decode((string) $request->request->get('printerData'), true);
         $printer = new PrinterFromPayload(
