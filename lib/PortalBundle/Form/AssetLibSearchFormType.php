@@ -16,7 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AssetLibSearchFormType extends AbstractType
 {
-    public const DEFAULT_PAGE_SIZE = 10;
+    public const DEFAULT_PAGE_SIZE = 12;
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
