@@ -10,7 +10,7 @@
         <div class="toolbar__column-left">
             <h3>Asset library</h3>
         </div>
-        <div class="toolbar__column-right">
+        <div class="toolbar__column-right toolbar__column-right-responsive">
             {{ form_row(form.query) }}
             <app-results-counter class="results-counter">
                 <div>
@@ -26,8 +26,8 @@
             {{ form_row(form.sort_by) }}
         </div>
     </div>
-    <div class="main-content flex">
-        <aside class="mr-l">
+    <div class="main-content flex gap-5">
+        <aside class="responsive">
             <app-filter-options class="filter-options"
                                 clear-all-link-text="Clear"
                                 url="{{ url('froq_portal.asset_library.search.fetch_form_and_results') }}">

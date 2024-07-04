@@ -34,12 +34,12 @@ class AssetThumbnailController extends AbstractController
 
         $asset = Asset::getById($assetID);
         if (!$asset) {
-            return $this->render('@FroqPortal/partials/thumbnail-placeholder.html.twig');
+            throw $this->createNotFoundException('Asset not found');
         }
 
         $thumbnailConfig = Asset\Image\Thumbnail\Config::getByName($thumbnailName);
         if (!$thumbnailConfig) {
-            return $this->render('@FroqPortal/partials/thumbnail-placeholder.html.twig');
+            throw $this->createNotFoundException('Thumbnail config not found');
         }
 
         if ($asset instanceof Asset\Image) {
@@ -52,20 +52,14 @@ class AssetThumbnailController extends AbstractController
 
         $stream = $thumbnail->getStream();
         if (!$stream) {
-            return $this->render('@FroqPortal/partials/thumbnail-placeholder.html.twig');
+            throw $this->createNotFoundException('Thumbnail not found');
         }
 
-        $response = new StreamedResponse(function () use ($stream) {
+        return new StreamedResponse(function () use ($stream) {
             fpassthru($stream);
         }, 200, [
             'Content-Type' => $thumbnail->getMimeType(),
             'Access-Control-Allow-Origin', '*',
         ]);
-
-        if (!str_starts_with(haystack: (string) $response->headers->get('Content-Type'), needle: 'image/')) {
-            return $this->render('@FroqPortal/partials/thumbnail-placeholder.html.twig');
-        }
-
-        return $response;
     }
 }

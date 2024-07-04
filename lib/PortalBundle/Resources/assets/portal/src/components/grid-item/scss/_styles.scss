@@ -1,6 +1,7 @@
 .grid-item {
     background-color: $color-white;
     padding: $spacing-m;
+    width: 100%;
 
     &__details {
         @include reset-list-styles;
@@ -12,6 +13,54 @@
     }
 }
 
+.truncate-text-title {
+    overflow: hidden;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+
+    &:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+
+    &::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: black transparent transparent transparent;
+    }
+}
+
+.title-wrap {
+    text-wrap: nowrap;
+    max-width: 250px;
+}
+
 .card {
     display: flex;
     flex-direction: column;
@@ -19,22 +68,47 @@
     border-radius: 8px;
     box-sizing: border-box;
     padding: 16px;
-    margin: 10px 0;
+    word-wrap: break-word;
+
+    &-link {
+        text-decoration: none;
+        color: #0C0F12;
+    }
+
+    &-hover {
+        transition: background-color 0.3s ease-in-out;
+
+        &:hover {
+            background-color: $link-hover-bg-color;
+            outline: 1px solid $color-primary;
+        }
+    }
 }
 
 .card .img-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 160px;
+    max-height: 250px;
+    min-height: 250px;
+    width: 100%;
     overflow: hidden;
-    padding: inherit;
+    border-radius: 5px;
+    align-self: center;
+    text-align-last: center;
+    position: relative;
+    background-color: rgb(226, 226, 226);
+
+    img.image {
+        max-width: 350px;
+        position: absolute;
+        inset: 0;
+        margin: auto;
+    }
 }
 
-.card .img-container .image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
+.thumbnail-placeholder {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    align-self: center;
 }
 
 .card h1 {
@@ -66,27 +140,17 @@
 
 .card.card-body ul > li > p {
     position: relative;
-    margin: 0 0 10px;
     word-wrap: break-word;
     font-weight: 400;
     font-size: 0.6rem;
     line-height: 1.5em;
-    color: #171B3F;
-}
-
-.thumbnail-placeholder {
-    width: 160px;
-    height: 160px;
-    background-color: #ccc;
-    border-radius: 2px;
 }
 
 .card .card-footer {
     position: relative;
     display: flex;
     flex-wrap: wrap;
-    gap: 0 0.75rem;
-    padding-top: 20px
+    gap: $spacing-l;
 }
 
 .card .card-footer .text {
@@ -101,14 +165,25 @@
     height: 16px;
 }
 
+.download-icon {
+    width: 22px;
+    height: 16px;
+}
+
 .card .card-footer a {
-    position: relative;
     display: flex;
-    flex-wrap: wrap;
     text-decoration: none;
 }
 
+.hidden {
+    display: none;
+}
+
 .card .card-footer .view-icon {
+    width: 22px;
+    height: 16px;
+}
+.view-icon {
     width: 22px;
     height: 16px;
 }

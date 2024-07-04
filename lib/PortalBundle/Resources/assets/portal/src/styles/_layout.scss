@@ -22,10 +22,21 @@ main {
         > aside {
             overflow: auto;
             width: 18%;
+
+            &.responsive {
+                display: none;
+                @media (min-width: $screen-lg) {
+                    display: block !important;
+                }
+            }
         }
 
         > section {
-            width: 82%;
+            width: 100%;
+
+            @media (min-width: $screen-lg) {
+                width: 82%;
+            }
 
             .content {
                 overflow: auto;
@@ -38,19 +49,25 @@ main {
         align-items: center;
         display: flex;
         height: 96px;
+        gap: $spacing-xl;
 
         &__column {
             &-left {
                 margin-right: $spacing-l;
-                width: 18.5%;
             }
 
             &-right {
-                display: inline-flex;
-                width: 85%;
-
+                flex-grow: 1;
                 > *:last-child {
                     margin-right: 0;
+                }
+
+                &-responsive {
+                    display: none;
+
+                    @media (min-width: $screen-md) {
+                        display: inline-flex !important;
+                    }
                 }
             }
         }

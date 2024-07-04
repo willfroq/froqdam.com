@@ -1,22 +1,23 @@
 {% set columns = get_asset_library_columns_for_user(user) %}
 
-<app-static-grid url="{{ url('froq_portal.asset_library.search.load_more') }}"
-                 class="grid-container"
-                 can-load-next-page-on-start="{{ (next_page is defined and next_page > 1) ? 'true' : 'false' }}"
->
-    <div class="grid" data-role="grid">
-        {% include '@FroqPortalBundle/partials/asset-library/load_grid_items.html.twig' %}
-    </div>
+<div class="">
+    <app-static-grid url="{{ url('froq_portal.asset_library.search.load_more') }}"
+                     class="grid-container box-border p-1"
+                     can-load-next-page-on-start="{{ (next_page is defined and next_page > 1) ? 'true' : 'false' }}">
+        <div class="grid grid-search-responsive box-border" data-role="grid">
+            {% include '@FroqPortalBundle/partials/asset-library/load_grid_items.html.twig' %}
+        </div>
 
-    <app-results-counter class="results-counter results-counter-bottom">
-        <div>
-            <span>Result</span>
-        </div>
-        <div>
-            <strong>
-                <span data-role="results_counter_text">{{ totalCount ?? '0' }}</span>
-                <span>assets</span>
-            </strong>
-        </div>
-    </app-results-counter>
-</app-static-grid>
+        <app-results-counter class="results-counter results-counter-bottom">
+            <div>
+                <span>Result</span>
+            </div>
+            <div>
+                <strong>
+                    <span data-role="results_counter_text">{{ totalCount ?? '0' }}</span>
+                    <span>assets</span>
+                </strong>
+            </div>
+        </app-results-counter>
+    </app-static-grid>
+</div>

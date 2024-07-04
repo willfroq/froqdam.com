@@ -3,10 +3,25 @@ $layout__max-width: 3840px;
 
 $spacing-xs: 4px;
 $spacing-s: 8px;
-$spacing-m: 16px;
-$spacing-l: 15px;
-$spacing-xl: 15px;
+$spacing-m: 12px;
+$spacing-l: 16px;
+$spacing-xl: 24px;
 $spacing-xxl: 32px;
-$spacing-xxxl: 40px;
+$spacing-xxxl: 48px;
 
 $layout-columns: 12;
+
+//Viewports
+$screen-xs: '360px';
+$screen-sm: '480px';
+$screen-md: '768px';
+$screen-lg: '976px';
+$screen-xl: '1440px';
+$screen-2xl: '1880px';
+
+$gray: #808080;
+
+$link-bg-color: #e0e0e0;
+$link-hover-bg-color: #F7F7F7;
+
+$color-primary:#009383;
