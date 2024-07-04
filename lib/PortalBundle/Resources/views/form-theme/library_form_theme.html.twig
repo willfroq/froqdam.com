@@ -27,25 +27,28 @@
                 <!-- Remove the following input after options search is enabled again -->
                 <input type="hidden" data-role="filter_option_search_field"/>
             </div>
-            <ul class="filter-option-multi-select__checkboxes-list"
-                data-role="filter_option_checkboxes_list">
-                {% for child in form %}
-                    {% set id = 'filter_option_' ~ form.vars.name ~ '_checkbox_' ~ (loop.index - 1) %}
-                    <li {% if child.vars.checked %}class="filter-option-multi-select__checkboxes-list-item--active"{% endif %}>
-                        <input class="input-checkbox"
-                               name="{{ child.vars.full_name }}"
-                               data-role="filter_option_multi_select_checkbox"
-                               value="{{ (child.vars.value) }}"
-                               id="{{ id }}"
-                               type="checkbox"
-                            {% if child.vars.checked %} checked {% endif %}/>
-                        <label for="{{ id }}">
-                            <span>{{ child.vars.value }}</span>
-                            <span>({{ child.vars.attr['data-doc-count'] }})</span>
-                        </label>
-                    </li>
-                {% endfor %}
-            </ul>
+            <app-filter-search>
+                <input id="filter-search" value="" name="filter-search" class="input-text text-sm" aria-label="search" type="text" placeholder="Search {{ form.vars.label }}">
+                <ul class="filter-option-multi-select__checkboxes-list"
+                    data-role="filter_option_checkboxes_list">
+                    {% for child in form %}
+                        {% set id = 'filter_option_' ~ form.vars.name ~ '_checkbox_' ~ (loop.index - 1) %}
+                        <li {% if child.vars.checked %}class="filter-option-multi-select__checkboxes-list-item--active"{% endif %}>
+                            <input class="input-checkbox"
+                                   name="{{ child.vars.full_name }}"
+                                   data-role="filter_option_multi_select_checkbox"
+                                   value="{{ (child.vars.value) }}"
+                                   id="{{ id }}"
+                                   type="checkbox"
+                                {% if child.vars.checked %} checked {% endif %}/>
+                            <label for="{{ id }}">
+                                <span>{{ child.vars.value }}</span>
+                                <span>({{ child.vars.attr['data-doc-count'] }})</span>
+                            </label>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </app-filter-search>
         </div>
     </app-filter-option-multi-select>
 {% endblock %}
