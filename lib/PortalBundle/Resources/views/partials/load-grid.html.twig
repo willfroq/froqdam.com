@@ -1,8 +1,3 @@
-<app-grid
-    url="{{ url }}"
-    class="grid-container"
-    grid-columns="4">
-    <div class="grid" data-role="grid">
-        {% include '@FroqPortalBundle/partials/asset-library/load_grid_items.html.twig' %}
-    </div>
+<app-grid url="{{ url }}" class="grid-container" grid-columns="4">
+    {% include '@FroqPortalBundle/partials/asset-library/load_grid_items.html.twig' %}
 </app-grid>
