@@ -1,0 +1,32 @@
+pimcore:
+    assets:
+        image:
+            thumbnails:
+                definitions:
+                    portal_asset_library_item_grid:
+                        items:
+                            -
+                                method: cover
+                                arguments:
+                                    width: 250
+                                    height: 250
+                                    positioning: null
+                                    forceResize: false
+                            -
+                                method: setBackgroundColor
+                                arguments:
+                                    color: '#FFFFFF'
+                        medias: {  }
+                        name: portal_asset_library_item_grid
+                        description: ''
+                        group: ''
+                        format: SOURCE
+                        quality: 85
+                        highResolution: 0.0
+                        preserveColor: false
+                        preserveMetaData: false
+                        rasterizeSVG: false
+                        downloadable: false
+                        modificationDate: 1697715254
+                        creationDate: 1683124978
+                        preserveAnimation: false
