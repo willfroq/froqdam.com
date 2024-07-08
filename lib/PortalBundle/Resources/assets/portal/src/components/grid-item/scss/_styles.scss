@@ -15,6 +15,9 @@
 
 .truncate-text-title {
     overflow: hidden;
+    @media (max-width: $screen-xs) {
+        max-width: 190px;
+    }
 }
 
 .tooltip {
@@ -94,10 +97,10 @@
     align-self: center;
     text-align-last: center;
     position: relative;
-    background-color: rgb(226, 226, 226);
+    //background-color: white;
 
     img.image {
-        max-width: 350px;
+        aspect-ratio: 1/1;
         position: absolute;
         inset: 0;
         margin: auto;
