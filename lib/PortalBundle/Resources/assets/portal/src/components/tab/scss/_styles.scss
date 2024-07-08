@@ -12,8 +12,11 @@ body {
         font-weight: 600;
         height: 62px;
         justify-content: center;
-        min-width: 163px;
         padding: $spacing-m;
+
+        @media (min-width: $screen-md) {
+            min-width: 163px;
+        }
 
         &:first-of-type {
             border-left: 1px solid $color-grey-200;

@@ -1,4 +1,4 @@
-<div class="asset-detail-preview">
+<div class="asset-detail-preview__details">
     <div class="asset-detail-preview__loading-screen">
         <span>Loading...</span>
     </div>
@@ -15,7 +15,9 @@
             {% set url = get_asset_image_preview_url(item.asset, 'portal_asset_detail_preview') %}
 
             {% if url %}
-                <app-image-viewer src="{{ url }}"></app-image-viewer>
+                <div class="image_wrapper">
+                    <app-image-viewer src="{{ url }}"></app-image-viewer>
+                </div>
             {% endif %}
         {% elseif assetType == 'text' %}
             {% set content = get_asset_text_preview_content(item.asset) %}
@@ -29,7 +31,7 @@
             {% set extension = get_asset_extension(item.asset) %}
             {% if extension in ['fbx', 'glb', 'obj', 'gltf'] %}
                 <app-viewer-{{ extension }}
-                    class="viewer-{{ extension }}" {% if item.asset %} url="{{ portal_asset_path(item.asset) }}"{% endif %}>
+                        class="viewer-{{ extension }}" {% if item.asset %} url="{{ portal_asset_path(item.asset) }}"{% endif %}>
                     <canvas id="webgl"/>
                 </app-viewer-{{ extension }}>
             {% endif %}
