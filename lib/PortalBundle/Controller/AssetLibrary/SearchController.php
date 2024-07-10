@@ -44,6 +44,7 @@ class SearchController extends AbstractController
 
         /** @var FormInterface $form */
         $form = $data['form'];
+
         /** @var QueryResponseDto $queryResponseDto */
         $queryResponseDto = $data['queryResponseDto'];
         $pagination = $this->getPagination($request, $queryResponseDto);
@@ -72,6 +73,7 @@ class SearchController extends AbstractController
     {
         $data = $this->getFormAndQueryResponse($request);
         $type = $request->query->get('type');
+
         /** @var FormInterface $form */
         $form = $data['form'];
         /** @var QueryResponseDto $queryResponseDto */
@@ -105,6 +107,7 @@ class SearchController extends AbstractController
     {
         $data = $this->getFormAndQueryResponse($request);
         $type = $request->query->get('type');
+
         /** @var QueryResponseDto $queryResponseDto */
         $queryResponseDto = $data['queryResponseDto'];
 
@@ -135,6 +138,7 @@ class SearchController extends AbstractController
     {
         $data = $this->getFormAndQueryResponse($request);
         $type = $request->query->get('type');
+
         /** @var QueryResponseDto $queryResponseDto */
         $queryResponseDto = $data['queryResponseDto'];
 

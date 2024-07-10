@@ -4,11 +4,6 @@
     {% for assetResource in items %}
         {% set assetResource = get_latest_asset_resource_version(assetResource) %}
 
-        {% set productEan = portal_asset_resource_product_ean(assetResource)|default('-')|raw %}
-        {% set productName = portal_asset_resource_product_name(assetResource)|default('-')|raw %}
-        {% set froqProjectNumber = portal_asset_resource_froq_project_number(assetResource)|default('-')|raw %}
-        {% set pimProjectNumber = portal_asset_resource_pim_project_number(assetResource)|default('-')|raw %}
-
         <app-grid-item class="grid-item card col-span-1 box-border flex flex-col justify-between card-hover" edit-popup-form-url edit-popup-submit-url>
             <a class="card-link" href="{{ url('froq_portal.asset_library.detail', { 'id' : assetResource.id }) }}">
                 <div class='img-container'>
@@ -28,13 +23,13 @@
                             {% set columnKey = column.AssetLibraryColumnProperty.data %}
 
                             {% if columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_PRODUCT_EAN') %}
-                                <li><p class="m-0 wrap-text"><span>EAN: </span>{{ productEan }}</p></li>
+                                <li><p class="m-0 wrap-text"><span>EAN: </span>{{ portal_asset_resource_product_ean(assetResource)|default('-')|raw }}</p></li>
                             {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_FROQ_PROJECT_NUMBER') %}
-                                <li><p class="m-0 wrap-text"><span>Froq Project Number: </span>{{ froqProjectNumber }}</p></li>
+                                <li><p class="m-0 wrap-text"><span>Froq Project Number: </span>{{ portal_asset_resource_froq_project_number(assetResource)|default('-')|raw }}</p></li>
                             {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_PIM_PROJECT_NUMBER') %}
-                                <li><p class="m-0 wrap-text"><span>PIM Project Number: </span>{{ pimProjectNumber }}</p></li>
+                                <li><p class="m-0 wrap-text"><span>PIM Project Number: </span>{{ portal_asset_resource_pim_project_number(assetResource)|default('-')|raw }}</p></li>
                             {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_PRODUCT_NAME') %}
-                                <li><p class="m-0 wrap-text"><span>Product Name: </span>{{ productName }}</p></li>
+                                <li><p class="m-0 wrap-text"><span>Product Name: </span>{{ portal_asset_resource_product_name(assetResource)|default('-')|raw  }}</p></li>
                             {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_ASSET_NAME') %}
                                 <li><p class="m-0 wrap-text"><span>Asset Name: </span>{{ ssetResource.name }}</p></li>
                             {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_SKU') %}
