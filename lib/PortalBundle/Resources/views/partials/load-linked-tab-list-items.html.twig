@@ -1,6 +1,6 @@
 {% for item in pagination %}
     <app-list-item class="list-item" edit-popup-form-url="" edit-popup-submit-url="">
-        <div>
+        <div class="relative">
             {% include '@FroqPortalBundle/partials/asset-thumbnail-list-view.html.twig' with { 'asset': item.asset } %}
         </div>
         <div>

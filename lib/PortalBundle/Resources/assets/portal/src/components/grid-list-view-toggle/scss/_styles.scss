@@ -1,14 +1,15 @@
 $grid-list-view-toggle__background-color--hover: #F3F3F3;
 
-.grid-list-view-toggle {
+.layout-view-toggle {
     align-items: center;
     background-color: $color-white;
     border: 1px solid $color-grey-200;
     border-radius: 50px;
+    gap: 4px;
     display: flex;
     justify-content: space-between;
     transition: background-color 250ms ease;
-    width: 86px;
+    padding: 1px 5px 1px 5px;
 
     &:hover {
         background-color: $grid-list-view-toggle__background-color--hover;
@@ -20,47 +21,19 @@ $grid-list-view-toggle__background-color--hover: #F3F3F3;
         border: none;
         border-radius: 50px;
         cursor: pointer;
+        color: $color-primary;
         display: inline-flex;
-        height: 40px;
         justify-content: center;
         transition: background-color 250ms ease;
-        width: 40px;
+        padding: 4px;
 
-        &:before {
-            background-repeat: no-repeat;
-            background-size: contain;
-            content: '';
-            display: inline-block;
-            height: 18px;
-            width: 18px;
-        }
-
-        &[data-role="grid_view_toggle"] {
-            &:before {
-                background-image: url('#{$baseUrl}/media/icons/svg/grid.svg');
-            }
-        }
-
-        &[data-role="list_view_toggle"] {
-            &:before {
-                background-image: url('#{$baseUrl}/media/icons/svg/list.svg');
-            }
+        &:hover {
+            outline: 1px solid $color-grey-200;
         }
 
         &--active {
-            background-color: $color-pim;
-
-            &[data-role="grid_view_toggle"] {
-                &:before {
-                    background-image: url('#{$baseUrl}/media/icons/svg/grid-active.svg');
-                }
-            }
-
-            &[data-role="list_view_toggle"] {
-                &:before {
-                    background-image: url('#{$baseUrl}/media/icons/svg/list-active.svg');
-                }
-            }
+            color: $color-white;
+            background-color: $color-primary;
         }
     }
 }

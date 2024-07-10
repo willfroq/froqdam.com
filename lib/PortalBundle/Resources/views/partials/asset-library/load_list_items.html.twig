@@ -13,7 +13,7 @@
                 {% set froqProjectNumber = portal_asset_resource_froq_project_number(assetResource)|default('-')|raw %}
                 {% set pimProjectNumber = portal_asset_resource_pim_project_number(assetResource)|default('-')|raw %}
 
-                <div>
+                <div class="relative">
                     {% if columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_THUMBNAIL') %}
                         {% include '@FroqPortalBundle/partials/asset-thumbnail-list-view.html.twig' with { 'asset': assetResource.asset } %}
                     {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_FILE_NAME') %}

@@ -24,6 +24,15 @@
                 </div>
             </app-results-counter>
             {{ form_row(form.sort_by) }}
+
+            <app-layout-view-toggle class="layout-view-toggle" itemsLayout="{{ itemsLayout }}">
+                <button data-role="grid_view_toggle" id="gridViewButton" class="layout-view-toggle__button">
+                    {% include '@FroqPortal/icons/grid-icon.html.twig' %}
+                </button>
+                <button data-role="list_view_toggle" id="listViewButton" class="layout-view-toggle__button">
+                    {% include '@FroqPortal/icons/list-icon.html.twig' %}
+                </button>
+            </app-layout-view-toggle>
         </div>
     </div>
     <div class="main-content flex gap-5">

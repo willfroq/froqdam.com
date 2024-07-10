@@ -21,7 +21,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/search', name: 'froq_portal.asset_library.')]
 class SearchController extends AbstractController
 {
-    public const LAYOUT_PARAM = 'items-layout';
     public const LAYOUT_LIST = 'list';
     public const LAYOUT_GRID = 'grid';
 
@@ -41,6 +40,7 @@ class SearchController extends AbstractController
     public function searchAction(Request $request): Response
     {
         $data = $this->getFormAndQueryResponse($request);
+        $type = $request->query->get('type');
 
         /** @var FormInterface $form */
         $form = $data['form'];
@@ -54,7 +54,7 @@ class SearchController extends AbstractController
                 'form' => $form->createView(),
                 'items' => $queryResponseDto->getObjects(),
                 'user' => $this->getUser(),
-                'itemsLayout' => $this->getItemsLayout(),
+                'itemsLayout' => $this->getItemsLayout($type ?? null),
                 'totalCount' => $queryResponseDto->getTotalCount()
             ]
         );
@@ -71,7 +71,7 @@ class SearchController extends AbstractController
     public function fetchFormAndResults(Request $request): Response
     {
         $data = $this->getFormAndQueryResponse($request);
-
+        $type = $request->query->get('type');
         /** @var FormInterface $form */
         $form = $data['form'];
         /** @var QueryResponseDto $queryResponseDto */
@@ -85,7 +85,7 @@ class SearchController extends AbstractController
                 'form' => $form->createView(),
                 'items' => $queryResponseDto->getObjects(),
                 'user' => $this->getUser(),
-                'itemsLayout' => $this->getItemsLayout(),
+                'itemsLayout' => $this->getItemsLayout($type ?? null),
                 'totalCount' => $queryResponseDto->getTotalCount()
             ]
         );
@@ -104,7 +104,7 @@ class SearchController extends AbstractController
     public function loadMoreAction(Request $request): Response
     {
         $data = $this->getFormAndQueryResponse($request);
-
+        $type = $request->query->get('type');
         /** @var QueryResponseDto $queryResponseDto */
         $queryResponseDto = $data['queryResponseDto'];
 
@@ -118,7 +118,7 @@ class SearchController extends AbstractController
                 'forLoadMore' => true
             ]
         );
-        $template = sprintf('@FroqPortalBundle/partials/asset-library/load_%s_items.html.twig', $this->getItemsLayout());
+        $template = sprintf('@FroqPortalBundle/partials/asset-library/load_%s_items.html.twig', $this->getItemsLayout($type ?? null));
         $html = $this->renderView($template, $templateParams);
         $responseParams = array_merge($pagination, ['html' => $html]);
 
@@ -134,7 +134,7 @@ class SearchController extends AbstractController
     public function loadItemsLayoutAction(Request $request): Response
     {
         $data = $this->getFormAndQueryResponse($request);
-
+        $type = $request->query->get('type');
         /** @var QueryResponseDto $queryResponseDto */
         $queryResponseDto = $data['queryResponseDto'];
 
@@ -147,7 +147,7 @@ class SearchController extends AbstractController
                 'user' => $this->getUser(),
             ]
         );
-        $template = sprintf('@FroqPortalBundle/partials/asset-library/load_%s.html.twig', $this->getItemsLayout());
+        $template = sprintf('@FroqPortalBundle/partials/asset-library/load_%s.html.twig', $this->getItemsLayout($type ?? null));
         $html = $this->renderView($template, $templateParams);
         $responseParams = array_merge($pagination, ['html' => $html]);
 
@@ -241,10 +241,15 @@ class SearchController extends AbstractController
     }
 
     /**
+     * @param string|null $type
      * @return string
      */
-    private function getItemsLayout(): string
+    private function getItemsLayout(?string $type = null): string
     {
+        if ($type === self::LAYOUT_LIST) {
+            return self::LAYOUT_LIST;
+        }
+
         return self::LAYOUT_GRID;
     }
 
