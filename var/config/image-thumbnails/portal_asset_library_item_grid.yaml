@@ -6,7 +6,7 @@ pimcore:
                     portal_asset_library_item_grid:
                         items:
                             -
-                                method: cover
+                                method: contain
                                 arguments:
                                     width: 250
                                     height: 250
