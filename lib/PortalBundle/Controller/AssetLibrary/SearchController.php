@@ -246,6 +246,7 @@ class SearchController extends AbstractController
 
     /**
      * @param string|null $type
+     *
      * @return string
      */
     private function getItemsLayout(?string $type = null): string

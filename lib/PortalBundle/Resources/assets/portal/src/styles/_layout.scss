@@ -23,6 +23,10 @@ main {
             overflow: auto;
             width: 18%;
 
+            @media (max-width: $screen-2lg) {
+                width: 30%;
+            }
+
             &.responsive {
                 display: none;
                 @media (min-width: $screen-lg) {
@@ -32,15 +36,22 @@ main {
         }
 
         > section {
-            width: 100%;
-
-            @media (min-width: $screen-lg) {
+            @media (min-width: $screen-2lg) {
                 width: 82%;
+            }
+
+            @media (max-width: $screen-2lg) and (max-width: $screen-lg){
+                width: 70%;
+            }
+
+            @media (max-width: $screen-lg) {
+                width: 100%;
             }
 
             .content {
                 overflow: auto;
                 position: relative;
+                height: 100%;
             }
         }
     }
@@ -84,9 +95,9 @@ main {
 
 .search-results__loading-screen {
     align-items: center;
+    display: flex;
     background-color: rgba(255, 255, 255, 0.7);
     color: $color-grey-900;
-    display: none;
     font-size: 18px;
     font-weight: bold;
     height: 100%;
@@ -94,8 +105,17 @@ main {
     position: absolute;
     width: 100%;
     z-index: 10;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
 
-    &--visible {
-        display: flex !important;
-    }
+.search-results__loading-screen--visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.content:has(.search-results__loading-screen--visible) .grid-container,
+.content:has(.search-results__loading-screen--visible) .list-container {
+    filter: blur(2px);
 }

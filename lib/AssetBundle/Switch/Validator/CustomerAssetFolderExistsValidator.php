@@ -16,7 +16,7 @@ final class CustomerAssetFolderExistsValidator extends ConstraintValidator
 
         $folderNames = array_column(array: AssetResourceOrganizationFolderNames::cases(), column_key: 'name');
 
-        $isValidFolderName = in_array(needle: $value, haystack: [...$folderNames, '3D_Model_Library', null]);
+        $isValidFolderName = in_array(needle: $value, haystack: [...$folderNames, '3D_Model_Library']);
 
         if (!$isValidFolderName) {
             $this->context->buildViolation($constraint->message, ['$customerAssetFolder' => $value])

@@ -31,7 +31,7 @@
             {% set extension = get_asset_extension(item.asset) %}
             {% if extension in ['fbx', 'glb', 'obj', 'gltf'] %}
                 <app-viewer-{{ extension }}
-                        class="viewer-{{ extension }}" {% if item.asset %} url="{{ portal_asset_path(item.asset) }}"{% endif %}>
+                    class="viewer-{{ extension }}" {% if item.asset %} url="{{ portal_asset_path(item.asset) }}"{% endif %}>
                     <canvas id="webgl"/>
                 </app-viewer-{{ extension }}>
             {% endif %}

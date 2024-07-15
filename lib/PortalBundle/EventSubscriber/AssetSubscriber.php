@@ -40,7 +40,7 @@ class AssetSubscriber implements EventSubscriberInterface
         $asset = $event->getAsset();
 
         if ($asset instanceof Asset) {
-            $this->messageBus->dispatch(new GenerateAssetThumbnailsMessage((int) $asset->getId(), ['portal_asset_detail_preview', 'portal_asset_library_item']));
+            $this->messageBus->dispatch(new GenerateAssetThumbnailsMessage((int) $asset->getId(), ['portal_asset_detail_preview', 'portal_asset_library_item', 'portal_asset_library_item_grid']));
         }
     }
 }

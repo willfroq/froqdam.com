@@ -1,7 +1,7 @@
 .grid {
     display: grid;
     grid-gap: 16px;
-    width: 100%;
+    grid-auto-flow: row;
 
     &-search-responsive {
 
@@ -26,16 +26,17 @@
             grid-template-columns: repeat(5, 1fr);
         }
 
-        //more screen size can be supported.
-        //should change fetch size to 6*3 to order for scroll load to work
-        //@media (min-width: $screen-4xl) {
-        //    grid-template-columns: repeat(6, 1fr);
-        //}
+        @media (min-width: $screen-4xl) {
+            grid-template-columns: repeat(6, 1fr);
+        }
 
-        //should change fetch size to 7*3 in order for scroll load to work
-        //@media (min-width: $screen-5xl) {
-        //    grid-template-columns: repeat(7, 1fr);
-        //}
+        @media (min-width: $screen-5xl) {
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+        @media (min-width: $screen-6xl) {
+            grid-template-columns: repeat(8, 1fr);
+        }
     }
 }
 

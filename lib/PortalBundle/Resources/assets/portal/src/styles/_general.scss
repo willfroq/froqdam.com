@@ -118,6 +118,7 @@ button {
     &:before {
         background-image: url("#{$baseUrl}/media/icons/svg/loading.svg");
         content: "";
+        fill: white;
         display: inline-block;
         height: 16px;
         margin-right: $spacing-s;

@@ -27,7 +27,7 @@ final class BuildSwitchUploadRequest
     {
         /** @var UploadedFile|null $file */
         $file = $request->files->get('fileContents');
-        $customAssetFolder = empty($request->request->get('customAssetFolder')) ? 'Assets' : (string) $request->request->get('customAssetFolder');
+        $customAssetFolder = (string) $request->request->get('customAssetFolder');
 
         $errors = [];
 

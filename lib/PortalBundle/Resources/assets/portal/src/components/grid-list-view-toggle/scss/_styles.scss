@@ -11,6 +11,10 @@ $grid-list-view-toggle__background-color--hover: #F3F3F3;
     transition: background-color 250ms ease;
     padding: 1px 5px 1px 5px;
 
+    &.loading {
+        opacity: 0.5;
+    }
+
     &:hover {
         background-color: $grid-list-view-toggle__background-color--hover;
     }
@@ -35,5 +39,9 @@ $grid-list-view-toggle__background-color--hover: #F3F3F3;
             color: $color-white;
             background-color: $color-primary;
         }
+    }
+
+    .button-loading {
+        background-color: $color-grey-300;
     }
 }

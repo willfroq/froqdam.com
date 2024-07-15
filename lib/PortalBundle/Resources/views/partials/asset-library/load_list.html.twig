@@ -1,7 +1,8 @@
 {% set columns = get_asset_library_columns_for_user(user) %}
 
-<app-static-list url="{{ url('froq_portal.asset_library.search.load_more') }}" class="list-container"
-                 can-load-next-page-on-start="{{ (next_page is defined and next_page > 1) ? 'true' : 'false' }}">
+<app-static-list url="{{ url('froq_portal.asset_library.search.load_more') }}"
+                 class="list-container"
+                 next-page="{{ next_page }}">
     <div class="list" data-role="list">
         <div class="list-header" data-role="list_header">
             {% for column in columns %}
@@ -28,4 +29,9 @@
             </strong>
         </div>
     </app-results-counter>
+    {% if next_page %}
+        <div class="justify-center flex">
+            <span id="view-more" class="view-more-button">View more</span>
+        </div>
+    {% endif %}
 </app-static-list>
