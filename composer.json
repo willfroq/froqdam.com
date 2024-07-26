@@ -25,6 +25,7 @@
     "smalot/pdfparser": "*",
     "symfony/dotenv": "*",
     "symfony/error-handler": "^5.4",
+    "symfony/ux-twig-component": "^2.18",
     "symfony/mailer": "*",
     "symfony/monolog-bundle": "^3.8",
     "symfony/webpack-encore-bundle": "^1.16",
