@@ -20,4 +20,6 @@ interface AssetLibraryExtensionInterface
     public function getAvailableColumnLabel(string $columnId, User $user): ?string;
 
     public function isFilterAvailableForUser(User $user, string $filterID): bool;
+
+    public function isAdmin(User $user): bool;
 }

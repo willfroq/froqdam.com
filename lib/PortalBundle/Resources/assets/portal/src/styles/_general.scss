@@ -50,6 +50,7 @@ button {
 
     &__details {
         position: relative;
+        height: calc(100dvh - 75px);
         @media (max-width: $screen-md) {
             grid-column: span 7;
         }

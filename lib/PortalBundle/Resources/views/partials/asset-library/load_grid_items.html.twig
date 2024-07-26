@@ -4,7 +4,7 @@
     {% for assetResource in items %}
         {% set assetResource = get_latest_asset_resource_version(assetResource) %}
 
-        <app-grid-item class="grid-item card col-span-1 box-border flex flex-col justify-between card-hover" edit-popup-form-url edit-popup-submit-url>
+        <app-grid-item class="grid-item card col-span-1 box-border flex flex-col justify-between card-hover">
             <a class="card-link" href="{{ url('froq_portal.asset_library.detail', { 'id' : assetResource.id }) }}">
                 <div class='img-container'>
                     {% for column in columns %}

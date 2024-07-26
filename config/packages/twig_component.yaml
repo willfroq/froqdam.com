@@ -1,0 +1,5 @@
+twig_component:
+    anonymous_template_directory: '%kernel.project_dir%/lib/PortalBundle/Resources/views/components/'
+    defaults:
+        # Namespace & directory for components
+        '%kernel.project_dir%\lib\PortalBundle\Twig\Components\': '%kernel.project_dir%/lib/PortalBundle/Resources/views/components/'

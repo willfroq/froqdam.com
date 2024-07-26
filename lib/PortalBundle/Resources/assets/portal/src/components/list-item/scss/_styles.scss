@@ -90,6 +90,11 @@
         vertical-align: middle;
         word-break: break-word;
 
+        .thumbnail-placeholder {
+            font-size: 8px;
+            padding: 6px 21px;
+        }
+
         img {
             height: 80px;
             width: 80px;

@@ -29,5 +29,10 @@
     &.loading {
         pointer-events: none;
         opacity: 0.5;
+
+        .view-more-button {
+            cursor: pointer;
+            color: #1d60c4;
+        }
     }
 }

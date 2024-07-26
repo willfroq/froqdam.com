@@ -1,0 +1,24 @@
+framework:
+    messenger:
+        default_bus: command.bus
+        buses:
+            command.bus:
+                middleware:
+                    - Froq\AssetBundle\Messenger\AuditMiddleware
+        transports:
+            generate_asset_thumbnail:
+                dsn: 'in-memory://'
+                options:
+                    queue_name: generate_asset_thumbnail
+            switch_upload:
+                dsn: 'in-memory://'
+                options:
+                    queue_name: switch_upload
+            switch_upload_mailer:
+                dsn: 'in-memory://'
+                options:
+                    queue_name: switch_upload_mailer
+            youwe_es_indexing:
+                dsn: 'in-memory://'
+                options:
+                    queue_name: youwe_es_indexing

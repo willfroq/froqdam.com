@@ -83,14 +83,8 @@ final class UpdateProduct
 
         ($this->buildProductContentsFromPayload)($product, $productFromPayload, true);
 
-        $categoryPath = $organization->getObjectFolder().'/'.AssetResourceOrganizationFolderNames::Categories->readable().'/';
-
-        foreach ($productFromPayload->productCategories?->toArray() ?? [] as $levelLabelName => $categoryName) {
-            $categoryLevelLabelName = ucfirst($levelLabelName).'s';
-
-            if (!($this->isPathExists)((string) $categoryName, $categoryPath.$categoryLevelLabelName.'/') && $productFromPayload->productCategories instanceof CategoryFromPayload) {
-                $product->setCategories(($this->buildCategoryFromPayload)($productFromPayload->productCategories, $organization, $product, $switchUploadRequest, $actions));
-            }
+        if ($productFromPayload->productCategories instanceof CategoryFromPayload) {
+            $product->setCategories(($this->buildCategoryFromPayload)($productFromPayload->productCategories, $organization, $product, $switchUploadRequest, $actions));
         }
 
         $recentAssetResources = [...$product->getAssets(), ...$assetResources];

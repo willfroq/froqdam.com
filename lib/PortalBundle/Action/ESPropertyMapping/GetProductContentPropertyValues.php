@@ -50,6 +50,6 @@ final class GetProductContentPropertyValues
             }
         }
 
-        return array_unique($values);
+        return array_values(array_unique($values));
     }
 }

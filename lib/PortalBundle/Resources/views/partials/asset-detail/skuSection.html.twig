@@ -41,7 +41,7 @@
                         {% if settings.skuSectionItems.data.product_ean.enabled %}
                             <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'skuSectionItems', 'product_ean') }}</dt>
                             <dd>
-                                {% if product.sku and is_asset_library_keyword_filter_available_for_user(user, 'product_ean' ) %}
+                                {% if product.ean and is_asset_library_keyword_filter_available_for_user(user, 'product_ean' ) %}
                                     <a href="{{ url('froq_portal.asset_library.search', {'filters': {'product_ean': [product.ean | lower ]}}) | raw }}">
                                         {{ product.ean }}
                                     </a>

@@ -1,0 +1,36 @@
+<div class="pagination">
+    {% if currentPage > 1 %}
+        <a href="{{ path('froq_dashboard.messenger', { 'page': currentPage - 1 }) }}">Previous</a>
+    {% endif %}
+
+    {% set range = 2 %}
+    {% set displayPages = [] %}
+
+    {% for i in 1..2 %}
+        {% set displayPages = displayPages|merge([i]) %}
+    {% endfor %}
+
+    {% for i in (currentPage - range)..(currentPage + range) %}
+        {% if i > 2 and i < totalPages - 1 %}
+            {% set displayPages = displayPages|merge([i]) %}
+        {% endif %}
+    {% endfor %}
+
+    {% for i in (totalPages - 1)..totalPages %}
+        {% set displayPages = displayPages|merge([i]) %}
+    {% endfor %}
+
+    {% set displayPages = displayPages|sort %}
+
+    {% for i in 1..totalPages %}
+        {% if i in displayPages %}
+            <a href="{{ path('froq_dashboard.messenger', { 'page': i }) }}" class="{{ i == currentPage ? 'active' : '' }}">{{ i }}</a>
+        {% elseif i == 2 or (i > 2 and i < totalPages - 1 and (i not in displayPages and (i - 1) in displayPages)) %}
+            <span>...</span>
+        {% endif %}
+    {% endfor %}
+
+    {% if currentPage < totalPages %}
+        <a href="{{ path('froq_dashboard.messenger', { 'page': currentPage + 1 }) }}">Next</a>
+    {% endif %}
+</div>

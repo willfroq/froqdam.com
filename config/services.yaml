@@ -27,3 +27,5 @@ when@test:
             public: true
 
         Froq\PortalBundle\Contract\AssetResourceRepositoryInterface: '@Froq\PortalBundle\Repository\AssetResourceRepository'
+        Froq\PortalBundle\Contract\AssetLibraryExtensionInterface: '@Froq\PortalBundle\Twig\AssetLibraryExtension'
+        Froq\PortalBundle\Contract\PortalDetailExtensionInterface: '@Froq\PortalBundle\Twig\PortalDetailExtension'

@@ -9,6 +9,7 @@ use Froq\AssetBundle\Switch\Action\Processor\UpdateProduct;
 use Froq\AssetBundle\Switch\Action\RelatedObject\CreateProductFolder;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
+use Froq\AssetBundle\Switch\Handlers\SwitchUploadCriticalErrorHandler;
 use Froq\AssetBundle\Switch\ValueObject\CategoryFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\ProductFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
@@ -16,6 +17,7 @@ use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Product;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 final class BuildProductFromPayload
 {
@@ -24,16 +26,16 @@ final class BuildProductFromPayload
         private readonly CreateProductFolder $createProductFolder,
         private readonly CreateProduct $createProduct,
         private readonly UpdateProduct $updateProduct,
+        private readonly SwitchUploadCriticalErrorHandler $switchUploadCriticalErrorHandler,
     ) {
     }
 
     /**
-     * @throws \Doctrine\DBAL\Exception
-     * @throws \Exception
-     *
      * @param array<int, string> $actions
      * @param array<int, AssetResource> $assetResources
-     */
+     *
+     * @throws TransportExceptionInterface
+     * @throws \Exception*/
     public function __invoke(
         SwitchUploadRequest $switchUploadRequest,
         array $assetResources,
@@ -83,6 +85,8 @@ final class BuildProductFromPayload
         $parentAssetResource = current($assetResources);
 
         if (!($parentAssetResource instanceof AssetResource)) {
+            ($this->switchUploadCriticalErrorHandler)($switchUploadRequest);
+
             throw new \Exception(message: 'No container folder i.e. /Customers/org-name/Assets/filename');
         }
 

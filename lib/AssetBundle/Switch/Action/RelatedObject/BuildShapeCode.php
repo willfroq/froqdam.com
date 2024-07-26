@@ -33,7 +33,7 @@ final class BuildShapeCode
             }
 
             $modelLibraryAssetResources = (new AssetResource\Listing())
-                ->addConditionParam('o_key LIKE ?', ["$value%"])
+                ->addConditionParam('o_key LIKE ?', ["%$value%"])
                 ->addConditionParam('o_path = ?', '/Customers/FroQ/3D_Model_Library/')
                 ->addConditionParam('o_published = ?', true)
                 ->load();

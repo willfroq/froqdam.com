@@ -53,7 +53,7 @@ security:
                 check_path: froq_portal.auth.login_check
                 csrf_token_generator: security.csrf.token_manager
                 default_target_path: '%default_portal_dashboard_path%'
-                always_use_default_target_path: true
+                always_use_default_target_path: false
             logout:
                 path: froq_portal.auth.logout
                 invalidate_session: false
@@ -82,11 +82,6 @@ security:
         - { path: ^/portal/connect/azure/check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/portal, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/switch, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/pimtoday, roles: IS_AUTHENTICATED_FULLY }
-
-    access_decision_manager:
-        strategy: unanimous
-        allow_if_all_abstain: false
 
     role_hierarchy:
         # Pimcore admin  // DO NOT CHANGE!

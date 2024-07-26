@@ -5,25 +5,26 @@ framework:
             pimcore.cache.pool:
                 public: true
                 tags: true
-                default_lifetime: 15768000 # 6 months
+                default_lifetime: 259200 # 3 days
                 adapter: pimcore.cache.adapter.redis_tag_aware
-        default_redis_provider: "redis://127.0.0.1:6379"
+        default_redis_provider: "redis://##redis_hostname##:##redis_port##/##redis_database##"
 
 doctrine:
     dbal:
         connections:
             default:
-                host: '%env(FROQ_DB_HOST)%'
-                port: '%env(FROQ_DB_PORT)%'
-                dbname: '%env(FROQ_DB_NAME)%'
-                user: '%env(FROQ_DB_USER)%'
-                password: '%env(FROQ_DB_PWD)%'
-                charset: 'utf8mb4'
+                driver: pdo_mysql
+                host: ##mysql_hostname##
+                port: ##mysql_port##
+                dbname: ##mysql_database##
+                user: ##mysql_user##
+                password: ##mysql_password##
+                charset: UTF8MB4
                 mapping_types:
                     enum: string
                     bit: boolean
-                server_version: '%env(FROQ_DB_VERSION)%'
+                server_version: mariadb-10.6.7
 
 youwe_pimcore_elasticsearch:
     es_hosts:
-        - 'http://localhost:9200'
+        - '##elasticsearch_protocol##://##elasticsearch_hostname##:##elasticsearch_port##'

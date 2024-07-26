@@ -11,6 +11,7 @@ use Froq\PortalBundle\Manager\ES\AssetLibrary\AssetLibMappingManager;
 use Froq\PortalBundle\Manager\UserSettings\AssetLibrary\ColumnConfigurationManager;
 use Froq\PortalBundle\Manager\UserSettings\AssetLibrary\FilterConfigurationManager;
 use Froq\PortalBundle\Manager\UserSettings\AssetLibrary\SortConfigurationManager;
+use Froq\PortalBundle\Security\IsAdmin;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject\Data\BlockElement;
@@ -20,13 +21,15 @@ use Twig\TwigFunction;
 
 class AssetLibraryExtension extends AbstractExtension implements AssetLibraryExtensionInterface
 {
-    public function __construct(protected AssetLibMappingManager $libMappingManager,
+    public function __construct(
+        protected AssetLibMappingManager $libMappingManager,
         protected ColumnConfigurationManager $columnConfigManager,
         protected SortConfigurationManager $sortConfigManager,
         protected FilterConfigurationManager $filterConfigManager,
         protected AssetLibMappingManager $assetLibMappingManager,
-        protected ApplicationLogger $logger)
-    {
+        protected ApplicationLogger $logger,
+        protected IsAdmin $isAdmin,
+    ) {
     }
 
     public function getFunctions(): array
@@ -43,6 +46,7 @@ class AssetLibraryExtension extends AbstractExtension implements AssetLibraryExt
             new TwigFunction('get_asset_resource_metadata_value_by_key', [AssetResourceFieldCollectionsManager::class, 'getMetadataValueByKey']),
             new TwigFunction('get_sku_attribute_value_by_key', [AssetResourceFieldCollectionsManager::class, 'getSkuAttributeValueByKey']),
             new TwigFunction('is_asset_library_keyword_filter_available_for_user', [$this, 'isFilterAvailableForUser']),
+            new TwigFunction('is_admin', [$this, 'isAdmin']),
         ];
     }
 
@@ -98,5 +102,10 @@ class AssetLibraryExtension extends AbstractExtension implements AssetLibraryExt
     public function isFilterAvailableForUser(User $user, string $filterID): bool
     {
         return $this->assetLibMappingManager->isKeywordFilterAvailableForUser($user, $filterID);
+    }
+
+    public function isAdmin(User $user): bool
+    {
+        return ($this->isAdmin)($user);
     }
 }

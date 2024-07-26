@@ -104,7 +104,7 @@ class MixExtension extends AbstractExtension
                 );
             }
 
-            $manifest = json_decode(file_get_contents($manifestPath) === false ? '' : file_get_contents($manifestPath), true);
+            $manifest = json_decode((string) file_get_contents($manifestPath), true);
         }
 
         return $manifest;

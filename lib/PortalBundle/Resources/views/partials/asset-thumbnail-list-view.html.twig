@@ -1,10 +1,7 @@
 {% if asset %}
     {% set imageSrc = get_asset_thumbnail_hashed_url(asset, 'portal_asset_library_item') %}
+
     {% if imageSrc %}
         <img class="image" src="{{ imageSrc }}" alt="" />
-    {% else %}
-        <div class="thumbnail-placeholder">Image not found</div>
     {% endif %}
-{% else %}
-    <div class="thumbnail-placeholder">Image not found</div>
 {% endif %}

@@ -3,18 +3,39 @@ framework:
         default_bus: command.bus
         buses:
             command.bus:
-        failure_transport: switch_upload_failed
+                middleware:
+                    - Froq\AssetBundle\Messenger\AuditMiddleware
         transports:
             generate_asset_thumbnail:
                 dsn: 'doctrine://default?queue_name=generate_asset_thumbnail'
+                retry_strategy:
+                    max_retries: 2
+                    delay: 1000
+                    multiplier: 2
+                    max_delay: 20000
+                failure_transport: generate_asset_thumbnail_failed
             switch_upload:
                 dsn: 'doctrine://default?queue_name=switch_upload'
                 retry_strategy:
                     delay: 500
+                failure_transport: switch_upload_failed
+            switch_upload_mailer:
+                dsn: 'doctrine://default?queue_name=switch_upload_mailer'
+                failure_transport: switch_upload_mailer_failed
+            youwe_es_indexing:
+                dsn: 'doctrine://default?queue_name=youwe_es_indexing'
+                retry_strategy:
+                    max_retries: 2
+                    delay: 1000
+                failure_transport: youwe_es_indexing_failed
+            generate_asset_thumbnail_failed: 'doctrine://default?queue_name=generate_asset_thumbnail_failed'
             switch_upload_failed: 'doctrine://default?queue_name=switch_upload_failed'
-            switch_upload_mailer: 'doctrine://default?queue_name=switch_upload_mailer'
+            switch_upload_mailer_failed: 'doctrine://default?queue_name=switch_upload_mailer_failed'
+            youwe_es_indexing_failed: 'doctrine://default?queue_name=youwe_es_indexing_failed'
 
         routing:
             Froq\AssetBundle\Message\GenerateAssetThumbnailsMessage: generate_asset_thumbnail
             Froq\AssetBundle\Switch\Message\UploadFromSwitch: switch_upload
             Symfony\Component\Mailer\Messenger\SendEmailMessage: switch_upload_mailer
+            Youwe\PimcoreElasticsearchBundle\Message\DeleteElementMessage: youwe_es_indexing
+            Youwe\PimcoreElasticsearchBundle\Message\UpdateElementMessage: youwe_es_indexing

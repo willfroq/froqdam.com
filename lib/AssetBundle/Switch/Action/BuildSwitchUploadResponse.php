@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Switch\Action;
 
 use Exception;
-use Froq\AssetBundle\Switch\Action\Email\SendCriticalErrorEmail;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadResponse;
+use Froq\AssetBundle\Switch\Handlers\SwitchUploadCriticalErrorHandler;
 use Froq\AssetBundle\Switch\Handlers\SwitchUploadRequestErrorHandler;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Asset\Folder;
@@ -24,7 +24,7 @@ final class BuildSwitchUploadResponse
         private readonly BuildOrganizationObjectFolderIfNotExists $buildOrganizationObjectFolderIfNotExists,
         private readonly BuildOrganizationAssetFolderIfNotExists $buildOrganizationAssetFolderIfNotExists,
         private readonly SwitchUploadRequestErrorHandler $switchUploadRequestErrorHandler,
-        private readonly SendCriticalErrorEmail $sendCriticalErrorEmail
+        private readonly SwitchUploadCriticalErrorHandler $switchUploadCriticalErrorHandler,
     ) {
     }
 
@@ -51,7 +51,7 @@ final class BuildSwitchUploadResponse
             !($organization instanceof Organization) ||
             !($assetType instanceof AssetType)
         ) {
-            ($this->sendCriticalErrorEmail)($switchUploadRequest->filename);
+            ($this->switchUploadCriticalErrorHandler)($switchUploadRequest);
 
             return $errorResponse;
         }

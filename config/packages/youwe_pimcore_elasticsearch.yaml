@@ -9,7 +9,8 @@ youwe_pimcore_elasticsearch:
                 service: 'Froq\PortalBundle\Manager\ES\AssetLibrary\AssetResourceSupportStrategy'
                 published: true
             index_settings:
-                number_of_shards: 2
+                number_of_shards: 5
+                number_of_replicas: 0
                 analysis:
                     normalizer:
                         keyword_norm:
@@ -131,14 +132,14 @@ youwe_pimcore_elasticsearch:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'PrintingWorkflow'
                             from_latest_version: true
-                    epson_material:
+                    epsonmaterial:
                         definition:
                             type: keyword
                             normalizer: 'keyword_norm'
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
-                            field_collection_key: 'EpsonMaterial'
+                            field_collection_key: 'epsonmaterial'
                             from_latest_version: true
                     substrate_material:
                         definition:

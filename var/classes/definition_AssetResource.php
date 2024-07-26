@@ -9,6 +9,8 @@
  * - Asset [manyToOneRelation]
  * - validFrom [date]
  * - validUntil [date]
+ * - fileCreateDate [datetime]
+ * - fileModifyDate [datetime]
  * - AssetType [manyToOneRelation]
  * - UploadName [input]
  * - AssetVersion [numeric]
@@ -28,9 +30,9 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'name' => 'AssetResource',
    'description' => '',
    'creationDate' => 0,
-   'modificationDate' => 1702999139,
+   'modificationDate' => 1721917858,
    'userOwner' => 2,
-   'userModification' => 2,
+   'userModification' => 14,
    'parentClass' => '',
    'implementsInterfaces' => '',
    'listingParentClass' => '',
@@ -237,6 +239,84 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'labelAlign' => 'left',
               )),
               3 => 
+              Pimcore\Model\DataObject\ClassDefinition\Layout\Fieldcontainer::__set_state(array(
+                 'name' => 'Field Container',
+                 'type' => NULL,
+                 'region' => NULL,
+                 'title' => NULL,
+                 'width' => '',
+                 'height' => '',
+                 'collapsible' => false,
+                 'collapsed' => false,
+                 'bodyStyle' => '',
+                 'datatype' => 'layout',
+                 'permissions' => NULL,
+                 'children' => 
+                array (
+                  0 => 
+                  Pimcore\Model\DataObject\ClassDefinition\Data\Datetime::__set_state(array(
+                     'name' => 'fileCreateDate',
+                     'title' => 'File Create Date',
+                     'tooltip' => '',
+                     'mandatory' => false,
+                     'noteditable' => false,
+                     'index' => false,
+                     'locked' => false,
+                     'style' => '',
+                     'permissions' => NULL,
+                     'datatype' => 'data',
+                     'fieldtype' => 'datetime',
+                     'relationType' => false,
+                     'invisible' => false,
+                     'visibleGridView' => false,
+                     'visibleSearch' => false,
+                     'blockedVarsForExport' => 
+                    array (
+                    ),
+                     'queryColumnType' => 'bigint(20)',
+                     'columnType' => 'bigint(20)',
+                     'defaultValue' => NULL,
+                     'useCurrentDate' => false,
+                     'defaultValueGenerator' => '',
+                  )),
+                  1 => 
+                  Pimcore\Model\DataObject\ClassDefinition\Data\Datetime::__set_state(array(
+                     'name' => 'fileModifyDate',
+                     'title' => 'File Modify Date',
+                     'tooltip' => '',
+                     'mandatory' => false,
+                     'noteditable' => false,
+                     'index' => false,
+                     'locked' => false,
+                     'style' => '',
+                     'permissions' => NULL,
+                     'datatype' => 'data',
+                     'fieldtype' => 'datetime',
+                     'relationType' => false,
+                     'invisible' => false,
+                     'visibleGridView' => false,
+                     'visibleSearch' => false,
+                     'blockedVarsForExport' => 
+                    array (
+                    ),
+                     'queryColumnType' => 'bigint(20)',
+                     'columnType' => 'bigint(20)',
+                     'defaultValue' => NULL,
+                     'useCurrentDate' => false,
+                     'defaultValueGenerator' => '',
+                  )),
+                ),
+                 'locked' => false,
+                 'blockedVarsForExport' => 
+                array (
+                ),
+                 'fieldtype' => 'fieldcontainer',
+                 'layout' => 'hbox',
+                 'fieldLabel' => '',
+                 'labelWidth' => 0,
+                 'labelAlign' => 'left',
+              )),
+              4 => 
               Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
                  'name' => 'AssetType',
                  'title' => 'Asset Type',
@@ -276,7 +356,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 array (
                 ),
               )),
-              4 => 
+              5 => 
               Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                  'name' => 'UploadName',
                  'title' => 'Upload Name',
@@ -307,7 +387,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'showCharCount' => false,
                  'defaultValueGenerator' => '',
               )),
-              5 => 
+              6 => 
               Pimcore\Model\DataObject\ClassDefinition\Data\Numeric::__set_state(array(
                  'name' => 'AssetVersion',
                  'title' => 'Asset Version',
@@ -338,7 +418,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'decimalPrecision' => NULL,
                  'defaultValueGenerator' => '',
               )),
-              6 => 
+              7 => 
               Pimcore\Model\DataObject\ClassDefinition\Data\CalculatedValue::__set_state(array(
                  'name' => 'highestVersionNumber',
                  'title' => 'Highest Version Number',
@@ -364,6 +444,32 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'calculatorExpression' => '',
                  'calculatorClass' => 'Froq\\AssetBundle\\PimcoreAdminProvider\\HighestVersionCalculator',
                  'columnLength' => 190,
+              )),
+              8 => 
+              Pimcore\Model\DataObject\ClassDefinition\Layout\Fieldcontainer::__set_state(array(
+                 'name' => 'Field Container',
+                 'type' => NULL,
+                 'region' => NULL,
+                 'title' => NULL,
+                 'width' => '',
+                 'height' => '',
+                 'collapsible' => false,
+                 'collapsed' => false,
+                 'bodyStyle' => '',
+                 'datatype' => 'layout',
+                 'permissions' => NULL,
+                 'children' => 
+                array (
+                ),
+                 'locked' => false,
+                 'blockedVarsForExport' => 
+                array (
+                ),
+                 'fieldtype' => 'fieldcontainer',
+                 'layout' => 'hbox',
+                 'fieldLabel' => '',
+                 'labelWidth' => 0,
+                 'labelAlign' => 'left',
               )),
             ),
              'locked' => false,
@@ -753,219 +859,6 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'enableGridLocking' => false,
    'deletedDataComponents' => 
   array (
-    0 => 
-    Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
-       'name' => 'Printer',
-       'title' => 'Printer',
-       'tooltip' => '',
-       'mandatory' => false,
-       'noteditable' => false,
-       'index' => false,
-       'locked' => false,
-       'style' => '',
-       'permissions' => NULL,
-       'datatype' => 'data',
-       'fieldtype' => 'manyToOneRelation',
-       'relationType' => true,
-       'invisible' => false,
-       'visibleGridView' => false,
-       'visibleSearch' => false,
-       'blockedVarsForExport' => 
-      array (
-      ),
-       'classes' => 
-      array (
-      ),
-       'pathFormatterClass' => '',
-       'width' => '',
-       'assetUploadPath' => '',
-       'queryColumnType' => 
-      array (
-        'id' => 'int(11)',
-        'type' => 'enum(\'document\',\'asset\',\'object\')',
-      ),
-       'objectsAllowed' => false,
-       'assetsAllowed' => false,
-       'assetTypes' => 
-      array (
-      ),
-       'documentsAllowed' => false,
-       'documentTypes' => 
-      array (
-      ),
-    )),
-    1 => 
-    Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
-       'name' => 'PrintingProcess',
-       'title' => 'Printing Process',
-       'tooltip' => '',
-       'mandatory' => false,
-       'noteditable' => false,
-       'index' => false,
-       'locked' => false,
-       'style' => '',
-       'permissions' => NULL,
-       'datatype' => 'data',
-       'fieldtype' => 'input',
-       'relationType' => false,
-       'invisible' => false,
-       'visibleGridView' => false,
-       'visibleSearch' => false,
-       'blockedVarsForExport' => 
-      array (
-      ),
-       'width' => '',
-       'defaultValue' => NULL,
-       'queryColumnType' => 'varchar',
-       'columnType' => 'varchar',
-       'columnLength' => 190,
-       'regex' => '',
-       'regexFlags' => 
-      array (
-      ),
-       'unique' => false,
-       'showCharCount' => false,
-       'defaultValueGenerator' => '',
-    )),
-    2 => 
-    Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
-       'name' => 'PrintingWorkflow',
-       'title' => 'Printing Workflow',
-       'tooltip' => '',
-       'mandatory' => false,
-       'noteditable' => false,
-       'index' => false,
-       'locked' => false,
-       'style' => '',
-       'permissions' => NULL,
-       'datatype' => 'data',
-       'fieldtype' => 'input',
-       'relationType' => false,
-       'invisible' => false,
-       'visibleGridView' => false,
-       'visibleSearch' => false,
-       'blockedVarsForExport' => 
-      array (
-      ),
-       'width' => '',
-       'defaultValue' => NULL,
-       'queryColumnType' => 'varchar',
-       'columnType' => 'varchar',
-       'columnLength' => 190,
-       'regex' => '',
-       'regexFlags' => 
-      array (
-      ),
-       'unique' => false,
-       'showCharCount' => false,
-       'defaultValueGenerator' => '',
-    )),
-    3 => 
-    Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyObjectRelation::__set_state(array(
-       'name' => 'PrintingInks',
-       'title' => 'Printing Inks',
-       'tooltip' => '',
-       'mandatory' => false,
-       'noteditable' => false,
-       'index' => false,
-       'locked' => false,
-       'style' => '',
-       'permissions' => NULL,
-       'datatype' => 'data',
-       'fieldtype' => 'manyToManyObjectRelation',
-       'relationType' => true,
-       'invisible' => false,
-       'visibleGridView' => false,
-       'visibleSearch' => false,
-       'blockedVarsForExport' => 
-      array (
-      ),
-       'classes' => 
-      array (
-        0 => 
-        array (
-          'classes' => 'PrintingInk',
-        ),
-      ),
-       'pathFormatterClass' => '',
-       'width' => '',
-       'height' => '',
-       'maxItems' => NULL,
-       'queryColumnType' => 'text',
-       'visibleFields' => 'key,id,fullpath',
-       'allowToCreateNewObject' => false,
-       'optimizedAdminLoading' => false,
-       'enableTextSelection' => false,
-       'visibleFieldDefinitions' => 
-      array (
-      ),
-    )),
-    4 => 
-    Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
-       'name' => 'EpsonMaterial',
-       'title' => 'Epson Material',
-       'tooltip' => '',
-       'mandatory' => false,
-       'noteditable' => false,
-       'index' => false,
-       'locked' => false,
-       'style' => '',
-       'permissions' => NULL,
-       'datatype' => 'data',
-       'fieldtype' => 'input',
-       'relationType' => false,
-       'invisible' => false,
-       'visibleGridView' => false,
-       'visibleSearch' => false,
-       'blockedVarsForExport' => 
-      array (
-      ),
-       'width' => '',
-       'defaultValue' => NULL,
-       'queryColumnType' => 'varchar',
-       'columnType' => 'varchar',
-       'columnLength' => 190,
-       'regex' => '',
-       'regexFlags' => 
-      array (
-      ),
-       'unique' => false,
-       'showCharCount' => false,
-       'defaultValueGenerator' => '',
-    )),
-    5 => 
-    Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
-       'name' => 'SubstrateMaterial',
-       'title' => 'Substrate Material',
-       'tooltip' => '',
-       'mandatory' => false,
-       'noteditable' => false,
-       'index' => false,
-       'locked' => false,
-       'style' => '',
-       'permissions' => NULL,
-       'datatype' => 'data',
-       'fieldtype' => 'input',
-       'relationType' => false,
-       'invisible' => false,
-       'visibleGridView' => false,
-       'visibleSearch' => false,
-       'blockedVarsForExport' => 
-      array (
-      ),
-       'width' => '',
-       'defaultValue' => NULL,
-       'queryColumnType' => 'varchar',
-       'columnType' => 'varchar',
-       'columnLength' => 190,
-       'regex' => '',
-       'regexFlags' => 
-      array (
-      ),
-       'unique' => false,
-       'showCharCount' => false,
-       'defaultValueGenerator' => '',
-    )),
   ),
    'blockedVarsForExport' => 
   array (

@@ -4,6 +4,7 @@ services:
         autoconfigure: true
         bind:
             'string $projectDirectory': '%kernel.project_dir%'
+            'Psr\Log\LoggerInterface $messengerAuditLogger': '@monolog.logger.messenger_audit'
 
     Froq\AssetBundle\:
         resource: '../../*'

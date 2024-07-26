@@ -1,16 +1,12 @@
 #### SYMFONY OVERRIDES
 framework:
     cache:
-        prefix_seed: '%kernel.environment%.pimcore.client-name'
+        prefix_seed: '%kernel.environment%.pimcore.froq'
     session:
         enabled: true
         cookie_secure: true
         cookie_samesite: lax
-        cookie_lifetime: 15768000
-
-youwe_pimcore_elasticsearch:
-    es_hosts:
-        - 'http://127.0.0.1:9200'
+        cookie_lifetime: 259200
 
 when@test:
     framework:

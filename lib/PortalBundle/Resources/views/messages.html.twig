@@ -1,0 +1,63 @@
+{% extends '@FroqPortalBundle/portal-layout.html.twig' %}
+
+{% block title %} Messenger Queues {% endblock %}
+
+{% block body %}
+<main class="pt-m pb-xs pl-xl pr-xl">
+    <div class="main-content flex gap-5">
+        <section>
+            <div class="content" id="content">
+                <div class="search-results__loading-screen">
+                    <span>Loading...</span>
+                </div>
+
+                <app-static-list class="list-container">
+                    <div class="list" data-role="list">
+                        <div class="list-header" data-role="list_header">
+                            <div><strong>Message Id</strong></div>
+                            <div><strong>Queue Name</strong></div>
+                            <div><strong>Message Class</strong></div>
+                            <div><strong>Created At</strong></div>
+                            <div><strong>Available At</strong></div>
+                        </div>
+
+                        {% if messageItems is not empty %}
+                            {% for messageItem in messageItems %}
+                                <app-list-item class="list-item">
+                                    {% for columnName in ['Message Id', 'Queue Name', 'Message Class', 'Created At', 'Available At'] %}
+                                        <div class="relative">
+                                            {% if columnName == 'Message Id' %}
+                                                {{ messageItem.messageId }}
+                                            {% elseif columnName == 'Queue Name' %}
+                                                {{ messageItem.queueName }}
+                                            {% elseif columnName == 'Message Class' %}
+                                                {{ messageItem.messageClass }}
+                                            {% elseif columnName == 'Created At' %}
+                                                {{ messageItem.createdAt|date("F j, Y H:i") }}
+                                            {% elseif columnName == 'Available At' %}
+                                                {{ messageItem.availableAt|date("F j, Y H:i") }}
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </app-list-item>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if messageItems is empty %}
+                            <div class="">
+                                No Message Queues Found
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {% if messageItems is not empty %}
+                        {% include '@FroqPortal/partials/paginator.html.twig' with { currentPage, totalPages } %}
+                    {% endif %}
+                </app-static-list>
+            </div>
+        </section>
+    </div>
+</main>
+{% endblock body %}
+
+

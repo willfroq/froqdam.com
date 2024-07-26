@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Froq\PortalBundle\Twig;
 
+use Carbon\Carbon;
+use Froq\AssetBundle\Action\GetFileDateFromEmbeddedMetadata;
 use Froq\PortalBundle\Contract\PortalDetailExtensionInterface;
 use Froq\PortalBundle\Helper\AssetResourceCategoryHelper;
 use Froq\PortalBundle\Helper\AssetResourceHierarchyHelper;
 use Froq\PortalBundle\Helper\StrHelper;
 use Froq\PortalBundle\Manager\UserSettings\AssetDetail\AssetDetailSettingsManager;
+use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Data\QuantityValue;
@@ -17,12 +20,15 @@ use Pimcore\Model\DataObject\Product;
 use Pimcore\Model\DataObject\Project;
 use Pimcore\Model\DataObject\ProjectRole;
 use Pimcore\Model\DataObject\User;
-use Throwable;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class PortalDetailExtension extends AbstractExtension implements PortalDetailExtensionInterface
 {
+    public function __construct(private readonly GetFileDateFromEmbeddedMetadata $getFileDateFromEmbeddedMetadata)
+    {
+    }
+
     public function getFunctions(): array
     {
         return [
@@ -256,31 +262,60 @@ class PortalDetailExtension extends AbstractExtension implements PortalDetailExt
         return (string) $assetResource->getAsset()?->getCreationDate();
     }
 
-    public function portalAssetResourceFileDateCreated(AssetResource $assetResource): string
+    /**
+     * @throws \Exception
+     */
+    public function portalAssetResourceFileDateCreated(AssetResource $assetResource): ?string
     {
-        return $this->getStatForFile($assetResource->getAsset()?->getLocalFile(), 'ctime') ?? '';
-    }
+        $createDate = $assetResource->getFileCreateDate()?->format('Y-m-d');
 
-    public function portalAssetResourceFileDateModified(AssetResource $assetResource): string
-    {
-        return $this->getStatForFile($assetResource->getAsset()?->getLocalFile(), 'mtime') ?? '';
-    }
+        if (!empty($createDate)) {
+            return $createDate;
+        }
 
-    private function getStatForFile(?string $filepath, string $key): ?string
-    {
-        if (!$filepath) {
+        $asset = $assetResource->getAsset();
+
+        if (!($asset instanceof Asset)) {
             return null;
         }
 
-        try {
-            $stat = stat($filepath);
-        } catch (Throwable) {
-            $stat = [];
+        $fileDateCreateDate = (($this->getFileDateFromEmbeddedMetadata)($asset))?->createDate;
+
+        if (empty($assetResource->getFileCreateDate())) {
+            $assetResource->setFileCreateDate(new Carbon(time: $fileDateCreateDate));
+
+            $assetResource->save();
         }
 
-        $result = $stat[$key] ?? null;
+        return $fileDateCreateDate;
+    }
 
-        return (string) $result;
+    /**
+     * @throws \Exception
+     */
+    public function portalAssetResourceFileDateModified(AssetResource $assetResource): ?string
+    {
+        $modifyDate = $assetResource->getFileModifyDate()?->format('Y-m-d');
+
+        if (!empty($modifyDate)) {
+            return $modifyDate;
+        }
+
+        $asset = $assetResource->getAsset();
+
+        if (!($asset instanceof Asset)) {
+            return null;
+        }
+
+        $fileDateModifyDate = (($this->getFileDateFromEmbeddedMetadata)($asset))?->modifyDate;
+
+        if (empty($assetResource->getFileModifyDate())) {
+            $assetResource->setFileModifyDate(new Carbon(time: $fileDateModifyDate));
+
+            $assetResource->save();
+        }
+
+        return $fileDateModifyDate;
     }
 
     /**

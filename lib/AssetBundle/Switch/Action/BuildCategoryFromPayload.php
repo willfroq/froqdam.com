@@ -10,7 +10,6 @@ use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\Enum\CategoryNames;
 use Froq\AssetBundle\Switch\ValueObject\CategoryFromPayload;
-use Froq\AssetBundle\Utility\IsPathExists;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Category;
 use Pimcore\Model\DataObject\Organization;
@@ -19,7 +18,6 @@ use Pimcore\Model\DataObject\Product;
 final class BuildCategoryFromPayload
 {
     public function __construct(
-        private readonly IsPathExists $isPathExists,
         private readonly CreateCategoryFolder $createCategoryFolder,
         private readonly CreateCategoryFolderLevelLabel $createCategoryFolderLevelLabel,
     ) {
@@ -73,7 +71,11 @@ final class BuildCategoryFromPayload
                 $categoryFolderLevelLabel = ($this->createCategoryFolderLevelLabel)($organization, $parentCategoryFolder, $levelLabelName);
             }
 
-            $category = Category::getByProducts($product)?->current(); /** @phpstan-ignore-line */
+            $category = (new Category\Listing())
+                ->addConditionParam('o_key = ?', $productCategory)
+                ->addConditionParam('o_path = ?', $rootCategoryFolder . "$categoriesName/$levelLabelName/")
+                ->current();
+
             if (!($category instanceof Category)) {
                 $category = new Category();
 
@@ -92,23 +94,20 @@ final class BuildCategoryFromPayload
                 $category->setLevelLabel($levelLabelName);
             }
 
-            if (empty($category->getLevelLabel())) {
-                $category->setLevelLabel($levelLabelName);
+            if (empty($category->getKey())) {
+                $category->setKey($productCategory);
             }
 
             if ($categoryFolderLevelLabel instanceof DataObject) {
                 $category->setParentId((int) $categoryFolderLevelLabel->getId());
             }
 
-            if (!($this->isPathExists)($productCategory, $rootCategoryFolder.$categoriesName.'/'.$levelLabelName.'/')) {
-                $category->setKey($productCategory);
-                $category->setPublished(true);
+            $category->setPublished(true);
 
-                $category->save();
+            $category->save();
 
-                if ($category instanceof Category) {
-                    $categories[] = $category;
-                }
+            if ($category instanceof Category) {
+                $categories[] = $category;
             }
         }
 

@@ -1,0 +1,23 @@
+<header>
+    <app-user-dropdown class="user-dropdown"
+                       fullname="{{ user }}"
+                       style="float: right">
+        <div class="user-dropdown__head" role="button" data-role="user_dropdown_selector">
+                <span class="user-dropdown__initials" data-role="user_dropdown_initials">
+                    <!-- JS Content Placeholder -->
+                </span>
+            <span class="user-dropdown__full-name" data-role="user_dropdown_full_name">
+                    <!-- JS Content Placeholder -->
+                </span>
+        </div>
+        <div class="user-dropdown__body">
+            <ul>
+                <li>
+                    <a href="{{ path('froq_portal.auth.logout') }}">
+                        <span>Log out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </app-user-dropdown>
+</header>

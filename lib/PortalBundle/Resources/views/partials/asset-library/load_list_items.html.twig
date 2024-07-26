@@ -4,7 +4,7 @@
     {% for assetResource in items %}
         {% set assetResource = get_latest_asset_resource_version(assetResource) %}
 
-        <app-list-item class="list-item" edit-popup-form-url="" edit-popup-submit-url="">
+        <app-list-item class="list-item">
             {% for column in columns %}
                 {% set columnKey = column.AssetLibraryColumnProperty.data %}
                 {% set columnLabel = get_available_column_label(columnKey, user) %}

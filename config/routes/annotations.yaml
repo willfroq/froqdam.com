@@ -31,3 +31,9 @@ froq_portal_pimtoday:
     type:     annotation
     prefix:   /pimtoday
     trailing_slash_on_root: false
+
+froq_dashboard:
+    resource: '@FroqPortalBundle/Controller/Dashboard'
+    type:     annotation
+    prefix:   /portal/dashboard
+    trailing_slash_on_root: false

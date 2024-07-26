@@ -7,7 +7,6 @@ doctrine:
                 dbname: '%env(FROQ_DB_NAME)%'
                 user: '%env(FROQ_DB_USER)%'
                 password: '%env(FROQ_DB_PWD)%'
-                charset: 'utf8mb4'
                 mapping_types:
                     enum: string
                     bit: boolean
