@@ -1,5 +1,5 @@
 monolog:
-    channels: [messenger_audit, elastica]
+    channels: [messenger_audit]
     handlers:
         elastica:
             type: stream

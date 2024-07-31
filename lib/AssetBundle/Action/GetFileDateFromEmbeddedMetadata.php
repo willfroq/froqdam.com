@@ -4,21 +4,28 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Action;
 
+use Froq\AssetBundle\Model\DataObject\AssetDocument;
 use Froq\AssetBundle\ValueObject\FileDate;
 use Pimcore\Model\Asset;
 
 final class GetFileDateFromEmbeddedMetadata
 {
+    /**
+     * @throws \Exception
+     */
     public function __invoke(Asset $asset): ?FileDate
     {
-        $metadataCreateDate = isset($asset->getEmbeddedMetaData(force: true)['CreateDate']) ? $asset->getEmbeddedMetaData(force: true)['CreateDate'] : ''; /** @phpstan-ignore-line */
-        $metadataModifyDate = isset($asset->getEmbeddedMetaData(force: true)['ModifyDate']) ? $asset->getEmbeddedMetaData(force: true)['ModifyDate'] : ''; /** @phpstan-ignore-line */
-        $exifCreateDate = isset($asset->getEXIFData()['FileDateTime']) ? $asset->getEXIFData()['FileDateTime'] : ''; /** @phpstan-ignore-line */
-        $exifModifyDate = isset($asset->getEXIFData()['FileDateTime']) ? $asset->getEXIFData()['FileDateTime'] : ''; /** @phpstan-ignore-line */
-        $xmpCreateDate = isset($asset->getXMPData()['CreateDate']) ? $asset->getXMPData()['CreateDate'] : ''; /** @phpstan-ignore-line */
-        $xmpModifyDate = isset($asset->getXMPData()['ModifyDate']) ? $asset->getXMPData()['ModifyDate'] : ''; /** @phpstan-ignore-line */
-        $iptcCreateDate = isset($asset->getIPTCData()['CreateDate']) ? $asset->getIPTCData()['CreateDate'] : ''; /** @phpstan-ignore-line */
-        $iptcModifyDate = isset($asset->getIPTCData()['ModifyDate']) ? $asset->getIPTCData()['ModifyDate'] : ''; /** @phpstan-ignore-line */
+        /** @var AssetDocument $assetDocument */
+        $assetDocument = $asset;
+
+        $metadataCreateDate = isset($assetDocument->getEmbeddedMetaData(force: true)['CreateDate']) ? $assetDocument->getEmbeddedMetaData(force: true)['CreateDate'] : '';
+        $metadataModifyDate = isset($assetDocument->getEmbeddedMetaData(force: true)['ModifyDate']) ? $assetDocument->getEmbeddedMetaData(force: true)['ModifyDate'] : '';
+        $exifCreateDate = isset($assetDocument->getEXIFData()['FileDateTime']) ? $assetDocument->getEXIFData()['FileDateTime'] : '';
+        $exifModifyDate = isset($assetDocument->getEXIFData()['FileDateTime']) ? $assetDocument->getEXIFData()['FileDateTime'] : '';
+        $xmpCreateDate = isset($assetDocument->getXMPData()['CreateDate']) ? $assetDocument->getXMPData()['CreateDate'] : '';
+        $xmpModifyDate = isset($assetDocument->getXMPData()['ModifyDate']) ? $assetDocument->getXMPData()['ModifyDate'] : '';
+        $iptcCreateDate = isset($assetDocument->getIPTCData()['CreateDate']) ? $assetDocument->getIPTCData()['CreateDate'] : '';
+        $iptcModifyDate = isset($assetDocument->getIPTCData()['ModifyDate']) ? $assetDocument->getIPTCData()['ModifyDate'] : '';
 
         return match (true) {
             !empty($metadataCreateDate) && !empty($metadataModifyDate)  => new FileDate(createDate: $metadataCreateDate, modifyDate: $metadataModifyDate),
