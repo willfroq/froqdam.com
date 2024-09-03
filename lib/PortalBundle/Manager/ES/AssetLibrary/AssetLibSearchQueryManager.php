@@ -6,9 +6,7 @@ namespace Froq\PortalBundle\Manager\ES\AssetLibrary;
 
 use Elastica\Query;
 use Elastica\Query\BoolQuery;
-use Elastica\Query\Nested as NestedQuery;
 use Elastica\Query\QueryString;
-use Elastica\Query\Wildcard;
 use Froq\PortalBundle\DTO\FormData\LibraryFormDto;
 use Froq\PortalBundle\ESPropertyMapping\MappingTypes;
 use Froq\PortalBundle\Utility\IsLuceneQuery;
@@ -66,85 +64,38 @@ class AssetLibSearchQueryManager
      *
      * @return BoolQuery
      */
-    public function applySearchMode(BoolQuery $boolQuery, User $user, ?LibraryFormDto $formDto = null): BoolQuery
+    public function applySearch(BoolQuery $boolQuery, User $user, ?LibraryFormDto $formDto = null): BoolQuery
     {
         $searchTerm = (string) $formDto?->getQuery();
 
-        if (($this->isLuceneQuery)($searchTerm) && !empty($searchTerm)) {
-            $queryString = new QueryString();
-            $queryString->setQuery($searchTerm);
-
-            $wordBoolQuery = new BoolQuery();
-            $wordBoolQuery->addShould($queryString);
-
-            $wordBoolQuery->setMinimumShouldMatch(1);
-            $boolQuery->addMust($wordBoolQuery);
-
+        if (!$searchTerm) {
             return $boolQuery;
         }
 
-        if ($searchTerm) {
-            return $this->addMultiWordSearchConditions($boolQuery, $user, $searchTerm);
-        }
-
-        return $this->matchAllResults($boolQuery);
-    }
-
-    /**
-     * @param BoolQuery $boolQuery
-     * @param User $user
-     * @param string $searchString
-     *
-     * @return BoolQuery
-     */
-    private function addMultiWordSearchConditions(BoolQuery $boolQuery, User $user, string $searchString): BoolQuery
-    {
-        $words = (array)preg_split('/\s+/', $searchString);
-
-        foreach ($words as $word) {
-            $value = sprintf('*%s*', $word);
+        foreach ($this->mappingManager->getFiltersMapping($user) as $data) {
+            $fieldType = $data['type'] ?? '';
 
             $wordBoolQuery = new BoolQuery();
 
-            foreach ($this->mappingManager->getFiltersMapping($user) as $fieldId => $data) {
-                $fieldType = $data['type'];
+            if ($fieldType === MappingTypes::MAPPING_TYPE_KEYWORD || $fieldType === MappingTypes::MAPPING_TYPE_TEXT) {
+                if (($this->isLuceneQuery)($searchTerm)) {
+                    $queryString = new QueryString();
 
-                if ($fieldType === MappingTypes::MAPPING_TYPE_KEYWORD) {
-                    $wildCardQuery = new Wildcard((string)$fieldId, $value);
-                    $wordBoolQuery->addShould($wildCardQuery);
-                } elseif ($fieldType === MappingTypes::MAPPING_TYPE_TEXT) {
-                    $queryStringQuery = new QueryString($searchString);
-                    $queryStringQuery->setDefaultField((string) $fieldId);
-                    $wordBoolQuery->addShould($queryStringQuery);
-                } elseif ($fieldType === MappingTypes::MAPPING_TYPE_NESTED) {
-                    $fieldProperties = $data['properties'];
-                    foreach ($fieldProperties as $propertyKey => $propertyData) {
-                        if ($propertyData['type'] === MappingTypes::MAPPING_TYPE_KEYWORD) {
-                            $field = sprintf('%s.%s', $fieldId, $propertyKey);
-                            $nestedQuery = new NestedQuery();
-                            $nestedQuery->setPath((string) $fieldId);
-                            $nestedWildcardQuery = new Wildcard($field, $value);
-                            $nestedQuery->setQuery($nestedWildcardQuery);
-                            $wordBoolQuery->addShould($nestedQuery);
-                        }
-                    }
+                    $queryString->setQuery($searchTerm);
+                    $wordBoolQuery->addShould($queryString);
                 }
-            }
 
-            $wordBoolQuery->setMinimumShouldMatch(1);
-            $boolQuery->addMust($wordBoolQuery);
+                if (!($this->isLuceneQuery)($searchTerm)) {
+                    $queryString = new QueryString("\"$searchTerm\"");
+
+                    $wordBoolQuery->addShould($queryString);
+                }
+
+                $wordBoolQuery->setMinimumShouldMatch(1);
+                $boolQuery->addMust($wordBoolQuery);
+            }
         }
 
         return $boolQuery;
-    }
-
-    /**
-     * @param BoolQuery $boolQuery
-     *
-     * @return BoolQuery
-     */
-    private function matchAllResults(BoolQuery $boolQuery): BoolQuery
-    {
-        return $boolQuery->addMust(new Query\MatchAll());
     }
 }

@@ -63,6 +63,7 @@ class AssetLibFormManager
                 case 'input':
                     $filterDto = new InputFilterDto();
                     $filterDto->setText($filterValues['text'] ?? null);
+                    $filterDto->setField((string) $filterKey);
                     break;
                 case 'keyword':
                     $filterDto = new MultiselectCheckboxFilterDto();

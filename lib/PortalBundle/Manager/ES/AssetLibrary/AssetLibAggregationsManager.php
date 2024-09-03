@@ -7,6 +7,7 @@ namespace Froq\PortalBundle\Manager\ES\AssetLibrary;
 use Elastica\Aggregation\Nested as NestedAggregation;
 use Elastica\Aggregation\Terms as TermsAggregation;
 use Elastica\Query;
+use Froq\PortalBundle\Enum\Elasticsearch\Aggregation;
 use Froq\PortalBundle\ESPropertyMapping\MappingTypes;
 use Pimcore\Model\DataObject\User;
 
@@ -40,7 +41,7 @@ class AssetLibAggregationsManager
     {
         $termsAggregation = new TermsAggregation($fieldId);
         $termsAggregation->setField($fieldId);
-        $termsAggregation->setSize(50);
+        $termsAggregation->setSize(Aggregation::SizeLimit->readable());
         $termsAggregation->setOrder('_term', 'asc');
         $query->addAggregation($termsAggregation);
     }
@@ -54,7 +55,7 @@ class AssetLibAggregationsManager
             if ($propertyData['type'] === MappingTypes::MAPPING_TYPE_KEYWORD) {
                 $nestedAggregation = new NestedAggregation($fieldId, $fieldId);
                 $termsAggregation = new TermsAggregation((string) $propertyKey);
-                $termsAggregation->setSize(50);
+                $termsAggregation->setSize(Aggregation::SizeLimit->readable());
                 $termsAggregation->setField(sprintf('%s.%s', $fieldId, $propertyKey));
                 $termsAggregation->setOrder('_term', 'asc');
                 $nestedAggregation->addAggregation($termsAggregation);

@@ -44,7 +44,7 @@ class AssetLibQueryBuilderManager
 
                 $this->searchQueryManager->buildQuerySource($query, $user, $formDto);
 
-                $this->searchQueryManager->applySearchMode($boolQuery, $user, $formDto);
+                $this->searchQueryManager->applySearch($boolQuery, $user, $formDto);
 
                 $this->filterManager->filter($boolQuery, $user, $formDto);
 
