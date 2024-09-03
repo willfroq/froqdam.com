@@ -1,7 +1,7 @@
 #### SYMFONY OVERRIDES
 framework:
     cache:
-        prefix_seed: '%kernel.environment%.pimcore.client-name'
+        prefix_seed: '%kernel.environment%.pimcore.froq'
     session:
         enabled: true
         cookie_secure: true

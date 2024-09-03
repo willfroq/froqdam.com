@@ -22,7 +22,7 @@ final class BuildMessengerCollection
      */
     public function __invoke(int $currentPage, string $queueName): MessageCollection
     {
-        $limit = 10;
+        $limit = 12;
 
         $messages = $this->messengerRepository->getMessages($currentPage, $limit, $queueName);
         $totalMessages = $this->messengerRepository->countAll();
@@ -42,6 +42,11 @@ final class BuildMessengerCollection
             );
         }
 
-        return new MessageCollection(totalPages: (int) $totalPages, currentPage: $currentPage, messageItems: $messageItems);
+        return new MessageCollection(
+            totalPages: (int) $totalPages,
+            currentPage: $currentPage,
+            currentQueueName: $queueName,
+            messageItems: $messageItems,
+        );
     }
 }

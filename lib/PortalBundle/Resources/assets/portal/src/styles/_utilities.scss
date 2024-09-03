@@ -2,6 +2,23 @@
     display: flex;
 }
 
+.h-full {
+    height: 100%;
+}
+
+.h-dvh {
+    height: calc(100dvh - 215px);
+}
+
+.overflow-auto {
+    overflow: auto;
+}
+
+
+.grow {
+    flex-grow: 1;
+}
+
 .justify-between {
     justify-content: space-between;
 }
@@ -140,6 +157,23 @@
         align-items: flex-start;
     }
 }
+.align-self {
+    &-center {
+        align-self: center;
+    }
+
+    &-end {
+        align-self: flex-end;
+    }
+
+    &-start {
+        align-self: flex-start;
+    }
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
 
 .justify-content {
     &-center {
@@ -169,6 +203,10 @@
 
 .font-normal {
     font-weight: 400;
+}
+
+.bg-white {
+    background-color: #FFFFFF;
 }
 
 .font-medium {

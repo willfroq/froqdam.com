@@ -6,7 +6,7 @@ namespace Froq\PortalBundle\DTO\FormData;
 
 class InputFilterDto
 {
-    private ?string $text =null;
+    private ?string $text = null;
 
     /**
      * @return string|null

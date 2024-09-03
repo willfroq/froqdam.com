@@ -220,7 +220,9 @@ final class UpdateAsset
             );
         }
 
-        if ($assetResourceMetadataFieldCollection instanceof Fieldcollection && AssetResourceOrganizationFolderNames::Packshots->readable() === $customAssetFolder) {
+        if ((AssetResourceOrganizationFolderNames::Packshots->readable() === $customAssetFolder ||
+                AssetResourceOrganizationFolderNames::Assets->readable() === $customAssetFolder)
+            && $assetResourceMetadataFieldCollection instanceof Fieldcollection) {
             ($this->buildShapeCode)($assetResourceMetadataFieldCollection, $parentAssetResource);
         }
 

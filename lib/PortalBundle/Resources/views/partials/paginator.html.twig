@@ -1,6 +1,9 @@
-<div class="pagination">
+<div class="pagination flex gap-3 align-self-center flex-wrap">
     {% if currentPage > 1 %}
-        <a href="{{ path('froq_dashboard.messenger', { 'page': currentPage - 1 }) }}">Previous</a>
+        <a class="no-underline pagination__button pagination__button--prev"
+           href="{{ path('froq_dashboard.messenger', { 'page': currentPage - 1 }) }}">
+            Previous
+        </a>
     {% endif %}
 
     {% set range = 2 %}
@@ -24,13 +27,19 @@
 
     {% for i in 1..totalPages %}
         {% if i in displayPages %}
-            <a href="{{ path('froq_dashboard.messenger', { 'page': i }) }}" class="{{ i == currentPage ? 'active' : '' }}">{{ i }}</a>
+            <a href="{{ path('froq_dashboard.messenger', { 'page': i }) }}"
+               class="no-underline pagination__pages-button {{ i == currentPage ? 'pagination__pages-button--active bg-primary' : '' }}">
+                {{ i }}
+            </a>
         {% elseif i == 2 or (i > 2 and i < totalPages - 1 and (i not in displayPages and (i - 1) in displayPages)) %}
-            <span>...</span>
+            <span class="pagination__pages-break">...</span>
         {% endif %}
     {% endfor %}
 
     {% if currentPage < totalPages %}
-        <a href="{{ path('froq_dashboard.messenger', { 'page': currentPage + 1 }) }}">Next</a>
+        <a class="no-underline pagination__button pagination__button--next"
+           href="{{ path('froq_dashboard.messenger', { 'page': currentPage + 1 }) }}">
+            Next
+        </a>
     {% endif %}
 </div>

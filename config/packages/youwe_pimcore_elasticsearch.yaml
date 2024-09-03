@@ -82,6 +82,13 @@ youwe_pimcore_elasticsearch:
                         mapper_config:
                             nested_field: 'Asset.fileName'
                             from_latest_version: true
+                    file_name_text:
+                        definition:
+                            type: text
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
+                        mapper_config:
+                            nested_field: 'Asset.fileName'
+                            from_latest_version: true
                     file_size:
                         definition:
                             type: integer
@@ -213,10 +220,26 @@ youwe_pimcore_elasticsearch:
                             nested_categories: 'Products.Categories'
                             level_label:
                                 - 'Campaign'
+                    product_category_campaign_text:
+                        definition:
+                            type: text
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
+                        mapper_config:
+                            nested_categories: 'Products.Categories'
+                            level_label:
+                                - 'Campaign'
                     product_category_market:
                         definition:
                             type: keyword
                             normalizer: 'keyword_norm'
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
+                        mapper_config:
+                            nested_categories: 'Products.Categories'
+                            level_label:
+                                - 'Market'
+                    product_category_market_text:
+                        definition:
+                            type: text
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
                         mapper_config:
                             nested_categories: 'Products.Categories'
@@ -231,7 +254,21 @@ youwe_pimcore_elasticsearch:
                             nested_categories: 'Products.Categories'
                             level_label:
                                 - 'Platform'
+                    product_category_platform_text:
+                        definition:
+                            type: text
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
+                        mapper_config:
+                            nested_categories: 'Products.Categories'
+                            level_label:
+                                - 'Platform'
                     product_ean:
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
+                        mapper_config:
+                            nested_field: 'Products.ean'
+                    product_ean_text:
+                        definition:
+                            type: text
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Products.ean'
@@ -242,10 +279,22 @@ youwe_pimcore_elasticsearch:
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Products.sku'
+                    product_sku_text:
+                        definition:
+                            type: text
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
+                        mapper_config:
+                            nested_field: 'Products.sku'
                     product_name:
                         definition:
                             type: keyword
                             normalizer: 'keyword_norm'
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
+                        mapper_config:
+                            nested_field: 'Products.name'
+                    product_name_text:
+                        definition:
+                            type: text
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Products.name'
@@ -350,6 +399,12 @@ youwe_pimcore_elasticsearch:
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Projects.Name'
+                    project_name_text:
+                        definition:
+                            type: text
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
+                        mapper_config:
+                            nested_field: 'Projects.Name'
                     project_froq_name:
                         definition:
                             type: keyword
@@ -430,6 +485,14 @@ youwe_pimcore_elasticsearch:
                         definition:
                             type: keyword
                             normalizer: 'keyword_norm'
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
+                        mapper_config:
+                            nested_fc_field: 'Metadata'
+                            field_collection_key: 'shapecode'
+                            from_latest_version: true
+                    shapecode_text:
+                        definition:
+                            type: text
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'

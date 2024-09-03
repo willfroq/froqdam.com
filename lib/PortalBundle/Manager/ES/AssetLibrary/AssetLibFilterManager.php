@@ -13,6 +13,7 @@ use Froq\PortalBundle\DTO\FormData\InputFilterDto;
 use Froq\PortalBundle\DTO\FormData\LibraryFormDto;
 use Froq\PortalBundle\DTO\FormData\MultiselectCheckboxFilterDto;
 use Froq\PortalBundle\DTO\FormData\NumberRangeFilterDto;
+use Froq\PortalBundle\DTO\FormData\TextFilterDto;
 use Froq\PortalBundle\Repository\UserRepository;
 use Pimcore\Model\DataObject\User;
 
@@ -98,6 +99,10 @@ class AssetLibFilterManager
                     $queryStringQuery->setDefaultField((string) $key);
                     $boolQuery->addFilter($queryStringQuery);
                 }
+            } elseif ($filterDto instanceof TextFilterDto) {
+                $queryStringQuery = new QueryString($filterDto->searchTerm);
+                $queryStringQuery->setDefaultField($filterDto->field);
+                $boolQuery->addFilter($queryStringQuery);
             } else {
                 throw new \InvalidArgumentException('Unsupported Filter DTO: ' . get_class($filterDto));
             }

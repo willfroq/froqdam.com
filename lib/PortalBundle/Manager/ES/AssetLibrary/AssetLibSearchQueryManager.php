@@ -7,15 +7,16 @@ namespace Froq\PortalBundle\Manager\ES\AssetLibrary;
 use Elastica\Query;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\Nested as NestedQuery;
-use Elastica\Query\Wildcard;
 use Elastica\Query\QueryString;
+use Elastica\Query\Wildcard;
 use Froq\PortalBundle\DTO\FormData\LibraryFormDto;
 use Froq\PortalBundle\ESPropertyMapping\MappingTypes;
+use Froq\PortalBundle\Utility\IsLuceneQuery;
 use Pimcore\Model\DataObject\User;
 
 class AssetLibSearchQueryManager
 {
-    public function __construct(private readonly AssetLibMappingManager $mappingManager)
+    public function __construct(private readonly AssetLibMappingManager $mappingManager, private readonly IsLuceneQuery $isLuceneQuery)
     {
     }
 
@@ -51,7 +52,7 @@ class AssetLibSearchQueryManager
 
         if ($source) {
             $query
-                ->setSource($source)/** @phpstan-ignore-line */
+                ->setSource($source)                /** @phpstan-ignore-line */
                 ->setStoredFields([]);
         }
 
@@ -67,8 +68,23 @@ class AssetLibSearchQueryManager
      */
     public function applySearchMode(BoolQuery $boolQuery, User $user, ?LibraryFormDto $formDto = null): BoolQuery
     {
-        if ($formDto?->getQuery()) {
-            return $this->addMultiWordSearchConditions($boolQuery, $user, $formDto->getQuery());
+        $searchTerm = (string) $formDto?->getQuery();
+
+        if (($this->isLuceneQuery)($searchTerm) && !empty($searchTerm)) {
+            $queryString = new QueryString();
+            $queryString->setQuery($searchTerm);
+
+            $wordBoolQuery = new BoolQuery();
+            $wordBoolQuery->addShould($queryString);
+
+            $wordBoolQuery->setMinimumShouldMatch(1);
+            $boolQuery->addMust($wordBoolQuery);
+
+            return $boolQuery;
+        }
+
+        if ($searchTerm) {
+            return $this->addMultiWordSearchConditions($boolQuery, $user, $searchTerm);
         }
 
         return $this->matchAllResults($boolQuery);
@@ -97,7 +113,7 @@ class AssetLibSearchQueryManager
                     $wildCardQuery = new Wildcard((string)$fieldId, $value);
                     $wordBoolQuery->addShould($wildCardQuery);
                 } elseif ($fieldType === MappingTypes::MAPPING_TYPE_TEXT) {
-                    $queryStringQuery = new QueryString($value);
+                    $queryStringQuery = new QueryString($searchString);
                     $queryStringQuery->setDefaultField((string) $fieldId);
                     $wordBoolQuery->addShould($queryStringQuery);
                 } elseif ($fieldType === MappingTypes::MAPPING_TYPE_NESTED) {

@@ -11,6 +11,7 @@ use Froq\PortalBundle\DTO\FormData\InputFilterDto;
 use Froq\PortalBundle\DTO\FormData\LibraryFormDto;
 use Froq\PortalBundle\DTO\FormData\MultiselectCheckboxFilterDto;
 use Froq\PortalBundle\DTO\FormData\NumberRangeFilterDto;
+use Froq\PortalBundle\DTO\FormData\TextFilterDto;
 use Froq\PortalBundle\DTO\QueryResponseDto;
 use Froq\PortalBundle\ESPropertyMapping\MappingTypes;
 use Pimcore\Model\DataObject\User;
@@ -53,6 +54,12 @@ class AssetLibFormManager
             $type = $this->getFilterTypeByKey($user, (string) $filterKey);
 
             switch ($type) {
+                case 'text':
+                    $filterDto = new TextFilterDto(
+                        field: (string) $filterKey,
+                        searchTerm: (string) $filterValues,
+                    );
+                    break;
                 case 'input':
                     $filterDto = new InputFilterDto();
                     $filterDto->setText($filterValues['text'] ?? null);
