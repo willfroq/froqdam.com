@@ -1,0 +1,66 @@
+--- models/Search/Backend/Data.php.org
++++ models/Search/Backend/Data.php
+@@ -473,17 +473,19 @@
+
+             if ($element instanceof Asset\Document && \Pimcore\Document::isAvailable()) {
+                 if (\Pimcore\Document::isFileTypeSupported($element->getFilename())) {
+-                    try {
+-                        $contentText = $element->getText();
+-                        if ($contentText) {
+-                            $contentText = Encoding::toUTF8($contentText);
+-                            $contentText = str_replace(["\r\n", "\r", "\n", "\t", "\f"], ' ', $contentText);
+-                            $contentText = preg_replace('/[ ]+/', ' ', $contentText);
+-                            $this->data .= ' ' . $contentText;
+-                        }
+-                    } catch (\Exception $e) {
+-                        Logger::error((string) $e);
+-                    }
++                    // Disabled because the temporary storage $element->getText() is filling up production storage, as the temporary
++                    // files are only deleted after the search backend reindex is completed.
++//                    try {
++//                        $contentText = $element->getText();
++//                        if ($contentText) {
++//                            $contentText = Encoding::toUTF8($contentText);
++//                            $contentText = str_replace(["\r\n", "\r", "\n", "\t", "\f"], ' ', $contentText);
++//                            $contentText = preg_replace('/[ ]+/', ' ', $contentText);
++//                            $this->data .= ' ' . $contentText;
++//                        }
++//                    } catch (\Exception $e) {
++//                        Logger::error((string) $e);
++//                    }
+                 }
+             } elseif ($element instanceof Asset\Text) {
+                 try {
+@@ -497,18 +499,20 @@
+                     Logger::error((string) $e);
+                 }
+             } elseif ($element instanceof Asset\Image) {
+-                try {
+-                    $metaData = array_merge($element->getEXIFData(), $element->getIPTCData());
+-                    foreach ($metaData as $key => $value) {
+-                        if (is_array($value)) {
+-                            $this->data .= ' ' . $key . ' : ' . implode(' - ', $value);
+-                        } else {
+-                            $this->data .= ' ' . $key . ' : ' . $value;
+-                        }
+-                    }
+-                } catch (\Exception $e) {
+-                    Logger::error((string) $e);
+-                }
++                // Disabled because the temporary storage from $element->getEXIFData() and $element->getIPTCData() is filling up production storage,
++                // as the temporary files are only deleted after the search backend reindex is completed.
++//                try {
++//                    $metaData = array_merge($element->getEXIFData(), $element->getIPTCData());
++//                    foreach ($metaData as $key => $value) {
++//                        if (is_array($value)) {
++//                            $this->data .= ' ' . $key . ' : ' . implode(' - ', $value);
++//                        } else {
++//                            $this->data .= ' ' . $key . ' : ' . $value;
++//                        }
++//                    }
++//                } catch (\Exception $e) {
++//                    Logger::error((string) $e);
++//                }
+             }
+
+             $this->published = true;

@@ -1,0 +1,10 @@
+{
+  "pimcore/pimcore": {
+    "Created to prevent the tmp storage issues caused by the Pimcore Search Backend Reindex. During this process, tmp files for EXIF and IPTC metadata extraction and PDF text extraction are filling up production storage.": {
+      "source": "composer-patches/pimcore/pimcore/disable_some_tmp_file_creation_on_search_backend_reindex.patch",
+      "version": [
+        "=10.6.9"
+      ]
+    }
+  }
+}
