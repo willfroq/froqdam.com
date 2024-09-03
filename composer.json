@@ -7,7 +7,8 @@
     "sort-packages": true,
     "process-timeout": 0,
     "allow-plugins": {
-      "phpstan/extension-installer": true
+      "phpstan/extension-installer": true,
+      "vaimo/composer-patches": true
     }
   },
   "require": {
@@ -20,16 +21,15 @@
     "oneup/flysystem-bundle": "^4.11.2",
     "pimcore/data-importer": "^1.6",
     "pimcore/pimcore": "^10.5",
-    "predis/predis": "*",
     "ruflin/elastica": "^7.3",
-    "smalot/pdfparser": "*",
     "symfony/dotenv": "*",
     "symfony/error-handler": "^5.4",
-    "symfony/ux-twig-component": "^2.18",
-    "symfony/mailer": "*",
+    "symfony/mailer": "^5.4",
     "symfony/monolog-bundle": "^3.8",
+    "symfony/ux-twig-component": "^2.18",
     "symfony/webpack-encore-bundle": "^1.16",
     "thenetworg/oauth2-azure": "^2.2",
+    "youwe/pimcore-composer-patches": "^1.19",
     "youwe/pimcore-elasticsearch-bundle": "^3.0",
     "youwe/pimcore-single-sign-on-bundle": "^1.3"
   },
@@ -80,6 +80,8 @@
       "Pimcore\\Composer::installAssets"
     ],
     "deployer-post-install": [
+      "@composer patch:apply --no-dev --no-scripts",
+      "@composer dump-autoload --no-dev --no-scripts --optimize",
       "Pimcore\\Composer::postInstall"
     ]
   },
@@ -88,5 +90,14 @@
       "type": "composer",
       "url": "https://youwe:open@packages.youwe.nl/"
     }
+  },
+  "extra": {
+    "patches-file": [
+      "vendor/youwe/pimcore-composer-patches/patches.json",
+      "composer-patches/patches.json"
+    ],
+    "patches-dev-file": [
+      "vendor/youwe/pimcore-composer-patches/patches-dev.json"
+    ]
   }
 }
