@@ -15,7 +15,8 @@ final class IsLuceneQuery
      * \{\S+\s+TO\s+\S+\}|  # Exclusive range queries
      * \~\d?|               # Fuzzy searches
      * \"[^\"]+\"|          # Phrase queries
-     * \(|\)                # Parentheses
+     * \(|\)|               # Parentheses
+     * \(|\)                # Matches any whitespace character (space, tab, newline, etc.)
      */
     public function __invoke(string $searchTerm): bool
     {
@@ -28,7 +29,8 @@ final class IsLuceneQuery
             \{\S+\s+TO\s+\S+\}|
             \~\d?|
             \"[^\"]+\"|
-            \(|\)
+            \(|\)|
+            \s
         /x';
 
         return preg_match($pattern, $searchTerm) === 1;
