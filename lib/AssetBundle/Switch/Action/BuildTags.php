@@ -10,7 +10,6 @@ use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\TagFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
-use Froq\AssetBundle\Utility\IsPathExists;
 use Froq\PortalBundle\Repository\TagRepository;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Organization;
@@ -20,7 +19,6 @@ final class BuildTags
 {
     public function __construct(
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
-        private readonly IsPathExists $isPathExists,
         private readonly CreateTagFolder $createTagFolder,
         private readonly TagRepository $tagRepository,
     ) {
@@ -57,6 +55,10 @@ final class BuildTags
 
         $tagPath = $rootTagFolder.AssetResourceOrganizationFolderNames::Tags->readable().'/';
 
+        $existingTags = (new Tag\Listing())
+            ->addConditionParam('o_path = ?', $tagPath)
+            ->load();
+
         $newTags = [];
 
         foreach ($tagData as $tagDatum) {
@@ -64,13 +66,25 @@ final class BuildTags
                 continue;
             }
 
-            if ($this->tagRepository->isTagExists($organization, (string) $tagDatum['code'])) {
-                continue;
-            }
+            $tag = null;
 
             $tagFromPayload = new TagFromPayload(code: $tagDatum['code'], name: $tagDatum['name'] ?? null);
 
-            if (!($this->isPathExists)((string) $tagFromPayload->code, $tagPath)) {
+            if ($this->tagRepository->isPayloadTagCodeExistsInExistingTags($existingTags, (string) $tagFromPayload->code)) {
+                $tag = $this->tagRepository->getTagFromExistingTags($existingTags, (string) $tagFromPayload->code);
+
+                if ($tag instanceof Tag) {
+                    $tag->setCode($tagFromPayload->code);
+                    $tag->setName($tagFromPayload->name);
+                    $tag->setParentId((int) $parentTagFolder->getId());
+                    $tag->setKey((string) $tagFromPayload->code);
+                    $tag->setPublished(true);
+
+                    $tag->save();
+                }
+            }
+
+            if (!$this->tagRepository->isPayloadTagCodeExistsInExistingTags($existingTags, (string) $tagFromPayload->code)) {
                 $tag = new Tag();
 
                 $tag->setCode($tagFromPayload->code);
@@ -80,11 +94,15 @@ final class BuildTags
                 $tag->setPublished(true);
 
                 $tag->save();
-
-                $newTags[] = $tag;
             }
+
+            if (!($tag instanceof Tag)) {
+                continue;
+            }
+
+            $newTags[] = $tag;
         }
 
-        return $newTags;
+        return array_values(array_filter(array_unique($newTags)));
     }
 }
