@@ -99,6 +99,7 @@ class AssetLibFilterManager
                 if (($this->isLuceneQuery)($searchTerm)) {
                     $queryStringQuery = new QueryString($searchTerm);
 
+                    $queryStringQuery->setDefaultOperator('AND');
                     $queryStringQuery->setDefaultField($field);
                     $boolQuery->addFilter($queryStringQuery);
                 }

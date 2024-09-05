@@ -81,6 +81,7 @@ class AssetLibSearchQueryManager
                 if (($this->isLuceneQuery)($searchTerm)) {
                     $queryString = new QueryString();
 
+                    $queryString->setDefaultOperator('AND');
                     $queryString->setQuery($searchTerm);
                     $wordBoolQuery->addShould($queryString);
                 }
