@@ -10,8 +10,7 @@ use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\ProjectFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
-use Froq\AssetBundle\Utility\IsPathExists;
-use Froq\AssetBundle\Utility\IsProjectExists;
+use Froq\PortalBundle\Repository\ProjectRepository;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Organization;
@@ -21,9 +20,8 @@ final class BuildProjectFromPayload
 {
     public function __construct(
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
-        private readonly IsPathExists $isPathExists,
         private readonly CreateProjectFolder $createProjectFolder,
-        private readonly IsProjectExists $isProjectExists,
+        private readonly ProjectRepository $projectRepository,
     ) {
     }
 
@@ -54,79 +52,102 @@ final class BuildProjectFromPayload
 
         $projectData = (array) json_decode($switchUploadRequest->projectData, true);
 
-        if (!isset($projectData['projectCode'])) {
+        if (empty($projectData) || ($this->allPropsEmptyOrNull)($projectData)) {
             return;
         }
-
-        if (!isset($projectData['froqName'])) {
-            return;
-        }
-
-        if (($this->allPropsEmptyOrNull)($projectData)) {
-            return;
-        }
-
-        $projectFromPayload = new ProjectFromPayload(
-            projectCode: $projectData['projectCode'] ?? null,
-            projectName: $projectData['projectName'] ?? null,
-            pimProjectNumber: $projectData['pimProjectNumber'] ?? null,
-            froqProjectNumber: $projectData['froqProjectNumber'] ?? null,
-            customerProjectNumber: $projectData['customerProjectNumber'] ?? null,
-            froqName: $projectData['froqName'] ?? null,
-            description: $projectData['description'] ?? null,
-            projectType: $projectData['projectType'] ?? null,
-            status: $projectData['status'] ?? null,
-            location: $projectData['location'] ?? null,
-            deliveryType: $projectData['deliveryType'] ?? null,
-        );
 
         $projectPath = $rootProjectFolder.AssetResourceOrganizationFolderNames::Projects->readable().'/';
-        $projectKey = $projectFromPayload->froqName;
 
-        if (($this->isPathExists)((string) $projectKey, $projectPath)) {
-            return;
+        $existingProjects = (new Project\Listing())
+            ->addConditionParam('o_path = ?', $projectPath)
+            ->load();
+
+        $project = null;
+
+        $projectFromPayload = new ProjectFromPayload(
+            projectCode: $projectData['projectCode'] ?? '',
+            projectName: $projectData['projectName'] ?? '',
+            pimProjectNumber: $projectData['pimProjectNumber'] ?? '',
+            froqProjectNumber: $projectData['froqProjectNumber'] ?? '',
+            customerProjectNumber: $projectData['customerProjectNumber'] ?? '',
+            froqName: $projectData['froqName'] ?? '',
+            description: $projectData['description'] ?? '',
+            projectType: $projectData['projectType'] ?? '',
+            status: $projectData['status'] ?? '',
+            location: $projectData['location'] ?? '',
+            deliveryType: $projectData['deliveryType'] ?? '',
+        );
+
+        if ($this->projectRepository->isPayloadProjectCodeExistsInExistingProjects(
+            $existingProjects,
+            (string)$projectFromPayload->projectCode,
+            (string)$projectFromPayload->froqProjectNumber
+        )) {
+            $project = $this->projectRepository->getProjectFromExistingProjects(
+                $existingProjects,
+                (string) $projectFromPayload->projectCode,
+                (string) $projectFromPayload->froqProjectNumber
+            );
+
+            if ($project instanceof Project) {
+                if (empty($project->getFroq_name())) {
+                    $project->setKey((string) $projectFromPayload->froqName);
+                    $project->setFroq_name($projectFromPayload->froqName);
+                }
+
+                if (empty($project->getName())) {
+                    $project->setName($projectFromPayload->projectName);
+                }
+
+                if (empty($project->getCode())) {
+                    $project->setCode($projectFromPayload->projectCode);
+                }
+
+                if (empty($project->getPim_project_number())) {
+                    $project->setPim_project_number((string) $projectFromPayload->pimProjectNumber);
+                }
+
+                if (empty($project->getFroq_project_number())) {
+                    $project->setFroq_project_number($projectFromPayload->froqProjectNumber);
+                }
+
+                if (empty($project->getCustomer_project_number2())) {
+                    $project->setCustomer_project_number2($projectFromPayload->customerProjectNumber);
+                }
+
+                if (empty($project->getDescription())) {
+                    $project->setDescription($projectFromPayload->description);
+                }
+
+                if (empty($project->getProject_type())) {
+                    $project->setProject_type($projectFromPayload->projectType);
+                }
+
+                if (empty($project->getStatus())) {
+                    $project->setStatus($projectFromPayload->status);
+                }
+
+                if (empty($project->getLocation())) {
+                    $project->setLocation($projectFromPayload->location);
+                }
+
+                if (empty($project->getDeliveryType())) {
+                    $project->setDeliveryType($projectFromPayload->deliveryType);
+                }
+            }
         }
 
-        if (($this->isProjectExists)('Code', (string) $projectFromPayload->projectCode)) {
-            return;
-        }
-
-        if (($this->isProjectExists)('pim_project_number', (string) $projectFromPayload->pimProjectNumber)) {
-            return;
-        }
-
-        if (($this->isProjectExists)('froq_project_number', (string) $projectFromPayload->froqProjectNumber)) {
-            return;
-        }
-
-        if (!isset($projectFromPayload->froqProjectNumber)) {
-            return;
-        }
-
-        if (!isset($projectFromPayload->froqName)) {
-            return;
-        }
-
-        if (!isset($projectFromPayload->projectName)) {
-            return;
-        }
-
-        if (!isset($projectFromPayload->projectCode)) {
-            return;
-        }
-
-        $projectCode = $projectFromPayload->projectCode;
-
-        $projectKey = $projectFromPayload->froqName;
-
-        $project = Project::getByFroq_project_number($projectFromPayload->froqProjectNumber)?->current(); /** @phpstan-ignore-line */
-        if (!($project instanceof Project)) {
+        if (!$this->projectRepository->isPayloadProjectCodeExistsInExistingProjects(
+            $existingProjects,
+            (string)$projectFromPayload->projectCode,
+            (string)$projectFromPayload->froqProjectNumber
+        )) {
             $project = new Project();
 
-            $project->setKey((string) $projectKey);
+            $project->setKey((string) $projectFromPayload->froqName);
             $project->setFroq_name($projectFromPayload->froqName);
             $project->setName($projectFromPayload->projectName);
-            $project->setCode($projectCode);
+            $project->setCode($projectFromPayload->projectCode);
             $project->setPim_project_number((string) $projectFromPayload->pimProjectNumber);
             $project->setFroq_project_number($projectFromPayload->froqProjectNumber);
             $project->setCustomer_project_number2($projectFromPayload->customerProjectNumber);
@@ -137,65 +158,20 @@ final class BuildProjectFromPayload
             $project->setDeliveryType($projectFromPayload->deliveryType);
         }
 
-        if (empty($project->getFroq_name())) {
-            $project->setKey((string) $projectKey);
-            $project->setFroq_name($projectFromPayload->froqName);
-        }
-
-        if (empty($project->getName())) {
-            $project->setName($projectFromPayload->projectName);
-        }
-
-        if (empty($project->getCode())) {
-            $project->setCode($projectCode);
-        }
-
-        if (empty($project->getPim_project_number())) {
-            $project->setPim_project_number((string) $projectFromPayload->pimProjectNumber);
-        }
-
-        if (empty($project->getFroq_project_number())) {
-            $project->setFroq_project_number($projectFromPayload->froqProjectNumber);
-        }
-
-        if (empty($project->getCustomer_project_number2())) {
-            $project->setCustomer_project_number2($projectFromPayload->customerProjectNumber);
-        }
-
-        if (empty($project->getDescription())) {
-            $project->setDescription($projectFromPayload->description);
-        }
-
-        if (empty($project->getProject_type())) {
-            $project->setProject_type($projectFromPayload->projectType);
-        }
-
-        if (empty($project->getStatus())) {
-            $project->setStatus($projectFromPayload->status);
-        }
-
-        if (empty($project->getLocation())) {
-            $project->setLocation($projectFromPayload->location);
-        }
-
-        if (empty($project->getDeliveryType())) {
-            $project->setDeliveryType($projectFromPayload->deliveryType);
+        if (!($project instanceof Project)) {
+            return;
         }
 
         // TODO Contacts, startDate, EndDate, ProjectFields, SuppliedMaterial
 
-        $assetResources = array_values(array_unique([...$project->getAssets(), ...$assetResources]));
+        $assetResources = array_values(array_filter(array_unique([...$project->getAssets(), ...$assetResources])));
 
-        $projectPath = $rootProjectFolder.AssetResourceOrganizationFolderNames::Projects->readable().'/';
+        $project->setAssets($assetResources);
+        $project->setPublished(true);
+        $project->setCustomer($organization);
 
-        if (!($this->isPathExists)((string) $projectKey, $projectPath)) {
-            $project->setAssets($assetResources);
-            $project->setPublished(true);
-            $project->setCustomer($organization);
+        $project->setParentId((int) $parentProjectFolder->getId());
 
-            $project->setParentId((int) $parentProjectFolder->getId());
-
-            $project->save();
-        }
+        $project->save();
     }
 }

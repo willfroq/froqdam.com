@@ -54,10 +54,10 @@ final class BuildPrinterFromPayload
         }
 
         $printerFromPayload = new PrinterFromPayload(
-            printingProcess: $printerData['printingProcess'] ?? null,
-            printingWorkflow: $printerData['printingWorkflow'] ?? null,
-            epsonMaterial: $printerData['epsonMaterial'] ?? null,
-            substrateMaterial: $printerData['substrateMaterial'] ?? null,
+            printingProcess: $printerData['printingProcess'] ?? '',
+            printingWorkflow: $printerData['printingWorkflow'] ?? '',
+            epsonMaterial: $printerData['epsonMaterial'] ?? '',
+            substrateMaterial: $printerData['substrateMaterial'] ?? '',
         );
 
         $printerKey = $printerFromPayload->printingProcess;

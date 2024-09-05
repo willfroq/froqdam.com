@@ -21,7 +21,7 @@ final class CreatePrinterFolder
             ->current();
 
         if (!($containerFolder instanceof DataObject\Folder)) {
-            throw new \Exception(message: 'No container folder i.e. /Customers/org-name');
+            throw new \Exception(message: 'CreatePrinterFolder: No container folder i.e. /Customers/org-name');
         }
 
         $parentPrinterFolder = new DataObject\Folder();

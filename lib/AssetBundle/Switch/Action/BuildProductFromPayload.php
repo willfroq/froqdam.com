@@ -66,19 +66,19 @@ final class BuildProductFromPayload
         $categories = $productData['productCategories'] ?? null;
 
         $productFromPayload = new ProductFromPayload(
-            productName: $productData['productName'] ?? null,
-            productEAN: $productData['productEAN'] ?? null,
-            productSKU: $productData['productSKU'] ?? null,
-            productAttributes: $productData['productAttributes'] ?? null,
-            productNetContentStatement: $productData['productNetContentStatement'] ?? null,
-            productNetContents: $productData['productNetContents'] ?? null,
-            productNetUnitContents: $productData['productNetUnitContents'] ?? null,
+            productName: $productData['productName'] ?? '',
+            productEAN: $productData['productEAN'] ?? '',
+            productSKU: $productData['productSKU'] ?? '',
+            productAttributes: $productData['productAttributes'] ?? [],
+            productNetContentStatement: $productData['productNetContentStatement'] ?? '',
+            productNetContents: $productData['productNetContents'] ?? [],
+            productNetUnitContents: $productData['productNetUnitContents'] ?? [],
             productCategories: new CategoryFromPayload(
-                brand: $categories['brand'] ?? null,
-                campaign: $categories['campaign'] ?? null,
-                market: $categories['market'] ?? null,
-                segment: $categories['segment'] ?? null,
-                platform: $categories['platform'] ?? null,
+                brand: $categories['brand'] ?? '',
+                campaign: $categories['campaign'] ?? '',
+                market: $categories['market'] ?? '',
+                segment: $categories['segment'] ?? '',
+                platform: $categories['platform'] ?? '',
             )
         );
 
@@ -87,7 +87,7 @@ final class BuildProductFromPayload
         if (!($parentAssetResource instanceof AssetResource)) {
             ($this->switchUploadCriticalErrorHandler)($switchUploadRequest);
 
-            throw new \Exception(message: 'No container folder i.e. /Customers/org-name/Assets/filename');
+            throw new \Exception(message: 'BuildProductFromPayload: No container folder i.e. /Customers/org-name/Assets/filename');
         }
 
         $product = Product::getByEAN((string) $productFromPayload->productEAN)?->current(); /** @phpstan-ignore-line */

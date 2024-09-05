@@ -53,14 +53,14 @@ final class BuildSupplierFromPayload
         }
 
         $supplierFromPayload = new SupplierFromPayload(
-            supplierCode: $supplierData['supplierCode'] ?? null,
-            supplierCompany: $supplierData['supplierCompany'] ?? null,
-            supplierContact: $supplierData['supplierContact'] ?? null,
-            supplierStreetName: $supplierData['supplierStreetName'] ?? null,
-            supplierStreetNumber: $supplierData['supplierStreetNumber'] ?? null,
-            supplierPostalCode: $supplierData['supplierPostalCode'] ?? null,
-            supplierPhoneNumber: $supplierData['supplierPhoneNumber'] ?? null,
-            supplierEmail: $supplierData['supplierEmail'] ?? null,
+            supplierCode: $supplierData['supplierCode'] ?? '',
+            supplierCompany: $supplierData['supplierCompany'] ?? '',
+            supplierContact: $supplierData['supplierContact'] ?? '',
+            supplierStreetName: $supplierData['supplierStreetName'] ?? '',
+            supplierStreetNumber: $supplierData['supplierStreetNumber'] ?? '',
+            supplierPostalCode: $supplierData['supplierPostalCode'] ?? '',
+            supplierPhoneNumber: $supplierData['supplierPhoneNumber'] ?? '',
+            supplierEmail: $supplierData['supplierEmail'] ?? '',
         );
 
         $supplierCode = (string) $supplierFromPayload->supplierCode;

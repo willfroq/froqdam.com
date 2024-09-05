@@ -21,7 +21,7 @@ final class CreateTagFolder
             ->current();
 
         if (!($containerFolder instanceof DataObject\Folder)) {
-            throw new \Exception(message: 'No container folder i.e. /Customers/org-name');
+            throw new \Exception(message: 'CreateTagFolder: No container folder i.e. /Customers/org-name');
         }
 
         $parentTagFolder = new DataObject\Folder();

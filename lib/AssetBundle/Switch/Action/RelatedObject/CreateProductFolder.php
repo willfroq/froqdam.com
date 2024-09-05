@@ -21,7 +21,7 @@ final class CreateProductFolder
             ->current();
 
         if (!($containerFolder instanceof DataObject\Folder)) {
-            throw new \Exception(message: 'No container folder i.e. /Customers/org-name');
+            throw new \Exception(message: 'CreateProductFolder: No container folder i.e. /Customers/org-name');
         }
 
         $parentProductFolder = new DataObject\Folder();

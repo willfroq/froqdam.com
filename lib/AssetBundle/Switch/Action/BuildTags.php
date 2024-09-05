@@ -68,7 +68,7 @@ final class BuildTags
 
             $tag = null;
 
-            $tagFromPayload = new TagFromPayload(code: $tagDatum['code'], name: $tagDatum['name'] ?? null);
+            $tagFromPayload = new TagFromPayload(code: (string) $tagDatum['code'], name: $tagDatum['name'] ?? '');
 
             if ($this->tagRepository->isPayloadTagCodeExistsInExistingTags($existingTags, (string) $tagFromPayload->code)) {
                 $tag = $this->tagRepository->getTagFromExistingTags($existingTags, (string) $tagFromPayload->code);

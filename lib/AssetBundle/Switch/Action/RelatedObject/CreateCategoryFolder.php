@@ -21,7 +21,7 @@ final class CreateCategoryFolder
             ->current();
 
         if (!($containerFolder instanceof DataObject\Folder)) {
-            throw new \Exception(message: 'No container folder i.e. /Customers/org-name');
+            throw new \Exception(message: 'CreateCategoryFolder: No container folder i.e. /Customers/org-name');
         }
 
         $parentCategoryFolder = new DataObject\Folder();
