@@ -312,49 +312,43 @@ youwe_pimcore_elasticsearch:
                         mapper_config:
                             nested_field: 'Products.netContentStatement'
                     net_contents:
-                        definition: integer
+                        definition: keyword
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetContentsMapper
                         mapper_config:
                             nested_fc_field: 'Products.netContents'
                             field_collection_key: 'net_contents'
                     net_unit_contents:
-                        definition: integer
+                        definition: keyword
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetUnitContentsMapper
                         mapper_config:
                             nested_fc_field: 'Products.netUnitContents'
                             field_collection_key: 'net_unit_contents'
                     net_contents_mlt:
-                        definition: integer
+                        definition: keyword
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetContentsMapper
                         mapper_config:
-                            nested_fc_field: 'Products.netUnitContents'
+                            nested_fc_field: 'Products.netContents'
                             field_collection_key: 'net_contents_mlt'
                     net_contents_grm:
-                        definition: integer
+                        definition: keyword
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetContentsMapper
                         mapper_config:
-                            nested_fc_field: 'Products.netUnitContents'
+                            nested_fc_field: 'Products.netContents'
                             field_collection_key: 'net_contents_grm'
                     net_contents_pcs:
-                        definition: integer
+                        definition: keyword
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetContentsMapper
                         mapper_config:
                             nested_fc_field: 'Products.netUnitContents'
                             field_collection_key: 'net_contents_pcs'
-                    net_contents_ea:
-                        definition: integer
-                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetContentsMapper
-                        mapper_config:
-                            nested_fc_field: 'Products.netUnitContents'
-                            field_collection_key: 'net_contents_ea'
                     net_unit_contents_mlt:
-                        definition: integer
+                        definition: keyword
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetUnitContentsMapper
                         mapper_config:
                             nested_fc_field: 'Products.netUnitContents'
                             field_collection_key: 'net_unit_contents_mlt'
                     net_unit_contents_grm:
-                        definition: integer
+                        definition: keyword
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetUnitContentsMapper
                         mapper_config:
                             nested_fc_field: 'Products.netUnitContents'

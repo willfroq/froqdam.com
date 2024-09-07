@@ -24,38 +24,6 @@ class PlaygroundCommand extends AbstractCommand
 {
     public function __construct()
     {
-        $heinekenCountries = $this->makeHeinekenCountries();
-
-        $heinekenFilenamesWithoutExtension = [];
-        foreach ($heinekenCountries as $heinekenCountry) {
-            $newFileName = pathinfo($heinekenCountry, PATHINFO_FILENAME);
-
-            $heinekenFilenamesWithoutExtension[] = $newFileName;
-        }
-
-        $presentInProd = [];
-        $missingInProd = [];
-
-        $pimcoreFilenames = array_values(array_filter(array_unique($this->makeKeyValueOfARIdFilename())));
-
-        foreach ($pimcoreFilenames as $pimcoreFilename) {
-            foreach ($heinekenFilenamesWithoutExtension as $heinekenFilename) {
-                if (str_starts_with(haystack: $pimcoreFilename, needle: $heinekenFilename)) {
-                    $presentInProd[] = $heinekenFilename;
-                }
-            }
-        }
-
-        foreach ($heinekenCountries as $heinekenCountry) {
-            foreach ($presentInProd as $presentFilename) {
-                if (!str_starts_with(haystack: $heinekenCountry, needle: $presentFilename)) {
-                    $missingInProd[] = $heinekenCountry;
-                }
-            }
-        }
-
-        dd(array_values(array_filter(array_unique($missingInProd))));
-
         parent::__construct();
     }
 

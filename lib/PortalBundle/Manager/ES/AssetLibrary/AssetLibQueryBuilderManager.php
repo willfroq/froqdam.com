@@ -75,7 +75,7 @@ class AssetLibQueryBuilderManager
     private function paginate(Query $query, ?LibraryFormDto $formDto = null): void
     {
         $page = $formDto?->getPage() ?: 1;
-        $size = $formDto?->getSize() ?: 12;
+        $size = $formDto?->getSize() ?: 24;
         $from = ((int) $page - 1) * (int) $size;
 
         $query

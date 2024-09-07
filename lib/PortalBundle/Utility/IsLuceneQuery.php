@@ -16,7 +16,7 @@ final class IsLuceneQuery
      * \~\d?|               # Fuzzy searches
      * \"[^\"]+\"|          # Phrase queries
      * \(|\)|               # Parentheses
-     * \(|\)                # Matches any whitespace character (space, tab, newline, etc.)
+     * \s                # Matches any whitespace character (space, tab, newline, etc.)
      */
     public function __invoke(string $searchTerm): bool
     {
