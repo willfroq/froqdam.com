@@ -89,6 +89,12 @@ class AssetLibSearchQueryManager
                 if (!($this->isLuceneQuery)($searchTerm)) {
                     $queryString = new QueryString("\"$searchTerm\"");
 
+                    if (str_contains(haystack: $searchTerm, needle: '_')) {
+                        $searchTerm = str_replace('_', '_*', $searchTerm);
+
+                        $queryString = new QueryString("$searchTerm");
+                    }
+
                     $wordBoolQuery->addShould($queryString);
                 }
 

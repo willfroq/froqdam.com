@@ -107,6 +107,12 @@ class AssetLibFilterManager
                 if (!($this->isLuceneQuery)($searchTerm)) {
                     $queryStringQuery = new QueryString("$searchTerm");
 
+                    if (str_contains(haystack: $searchTerm, needle: '_')) {
+                        $searchTerm = str_replace('_', '_*', $searchTerm);
+
+                        $queryStringQuery = new QueryString("$searchTerm");
+                    }
+
                     $queryStringQuery->setDefaultField($field);
                     $boolQuery->addFilter($queryStringQuery);
                 }
