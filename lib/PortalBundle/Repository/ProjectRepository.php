@@ -23,6 +23,12 @@ final class ProjectRepository
             }
         }
 
+        foreach ($existingProjects as $project) {
+            if ($project->getPim_project_number() === $froqProjectNumber) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -37,7 +43,13 @@ final class ProjectRepository
 
         foreach ($existingProjects as $project) {
             if ($project->getFroq_project_number() === $froqProjectNumber) {
-                return$project;
+                return $project;
+            }
+        }
+
+        foreach ($existingProjects as $project) {
+            if ($project->getPim_project_number() === $froqProjectNumber) {
+                return $project;
             }
         }
 
