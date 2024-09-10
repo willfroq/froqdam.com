@@ -90,7 +90,11 @@ class AssetLibSearchQueryManager
                     $queryString = new QueryString("\"$searchTerm\"");
 
                     if (str_contains(haystack: $searchTerm, needle: '_')) {
-                        $searchTerm = str_replace('_', '_*', $searchTerm);
+                        $searchTerm = preg_replace('/(_)(\w+)/', '_$2*', $searchTerm);
+
+                        if (str_ends_with($searchTerm, '_')) {
+                            $searchTerm .= '*';
+                        }
 
                         $queryString = new QueryString("$searchTerm");
                     }
