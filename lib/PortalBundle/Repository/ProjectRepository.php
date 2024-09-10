@@ -9,7 +9,7 @@ use Pimcore\Model\DataObject\Project;
 final class ProjectRepository
 {
     /** @param array<int, Project> $existingProjects */
-    public function isPayloadProjectCodeExistsInExistingProjects(array $existingProjects, string $projectCode, string $froqProjectNumber): bool
+    public function isPayloadProjectCodeExistsInExistingProjects(array $existingProjects, string $projectCode, string $froqProjectNumber, string $pimProjectNumber): bool
     {
         foreach ($existingProjects as $project) {
             if ($project->getCode() === $projectCode) {
@@ -24,7 +24,7 @@ final class ProjectRepository
         }
 
         foreach ($existingProjects as $project) {
-            if ($project->getPim_project_number() === $froqProjectNumber) {
+            if ($project->getPim_project_number() === $pimProjectNumber) {
                 return true;
             }
         }
@@ -33,7 +33,7 @@ final class ProjectRepository
     }
 
     /** @param array<int, Project> $existingProjects */
-    public function getProjectFromExistingProjects(array $existingProjects, string $projectCode, string $froqProjectNumber): ?Project
+    public function getProjectFromExistingProjects(array $existingProjects, string $projectCode, string $froqProjectNumber, string $pimProjectNumber): ?Project
     {
         foreach ($existingProjects as $project) {
             if ($project->getCode() === $projectCode) {
@@ -48,7 +48,7 @@ final class ProjectRepository
         }
 
         foreach ($existingProjects as $project) {
-            if ($project->getPim_project_number() === $froqProjectNumber) {
+            if ($project->getPim_project_number() === $pimProjectNumber) {
                 return $project;
             }
         }

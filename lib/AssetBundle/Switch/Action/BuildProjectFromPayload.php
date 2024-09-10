@@ -80,13 +80,15 @@ final class BuildProjectFromPayload
 
         if ($this->projectRepository->isPayloadProjectCodeExistsInExistingProjects(
             $existingProjects,
-            (string)$projectFromPayload->projectCode,
-            (string)$projectFromPayload->froqProjectNumber
+            (string) $projectFromPayload->projectCode,
+            (string) $projectFromPayload->froqProjectNumber,
+            (string) $projectFromPayload->pimProjectNumber
         )) {
             $project = $this->projectRepository->getProjectFromExistingProjects(
                 $existingProjects,
                 (string) $projectFromPayload->projectCode,
-                (string) $projectFromPayload->froqProjectNumber
+                (string) $projectFromPayload->froqProjectNumber,
+                (string) $projectFromPayload->pimProjectNumber
             );
 
             if ($project instanceof Project) {
@@ -140,7 +142,8 @@ final class BuildProjectFromPayload
         if (!$this->projectRepository->isPayloadProjectCodeExistsInExistingProjects(
             $existingProjects,
             (string)$projectFromPayload->projectCode,
-            (string)$projectFromPayload->froqProjectNumber
+            (string)$projectFromPayload->froqProjectNumber,
+            (string) $projectFromPayload->pimProjectNumber
         )) {
             $project = new Project();
 
