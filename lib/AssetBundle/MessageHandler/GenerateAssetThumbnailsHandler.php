@@ -76,7 +76,7 @@ class GenerateAssetThumbnailsHandler implements MessageHandlerInterface
             $thumbnail = $this->generateThumbnail($asset, $thumbnailName);
 
             if ($thumbnail) {
-                $thumbnail->getPath(['deferredAllowed' => false]); /** @phpstan-ignore-line */
+                $thumbnail->getPath(false);
 
                 // triggers fetching the thumbnail info and updating the asset cache table if width or height are not in the cache
                 $thumbnail->getDimensions();
