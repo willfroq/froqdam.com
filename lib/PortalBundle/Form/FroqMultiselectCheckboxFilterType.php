@@ -20,7 +20,7 @@ class FroqMultiselectCheckboxFilterType extends AbstractType
     {
         $builder->addModelTransformer(new CallbackTransformer(
             function ($dto) {
-                if(!$dto) {
+                if (!$dto) {
                     return null;
                 }
 

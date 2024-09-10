@@ -26,7 +26,7 @@ class AssetResourceRepository implements AssetResourceRepositoryInterface
             throw new NotFoundHttpException();
         }
 
-        if(!$this->authorizationChecker->isGranted('view', $assetResource)) {
+        if (!$this->authorizationChecker->isGranted('view', $assetResource)) {
             $exception = new AccessDeniedException('Access Denied.');
             $exception->setAttributes(['view']);
             $exception->setSubject($assetResource);

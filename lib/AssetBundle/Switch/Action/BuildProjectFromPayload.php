@@ -136,6 +136,18 @@ final class BuildProjectFromPayload
                 if (empty($project->getDeliveryType())) {
                     $project->setDeliveryType($projectFromPayload->deliveryType);
                 }
+
+                // TODO Contacts, startDate, EndDate, ProjectFields, SuppliedMaterial
+
+                $assetResources = array_values(array_filter(array_unique([...$project->getAssets(), ...$assetResources])));
+
+                $project->setAssets($assetResources);
+                $project->setPublished(true);
+                $project->setCustomer($organization);
+
+                $project->setParentId((int) $parentProjectFolder->getId());
+
+                $project->save();
             }
         }
 
@@ -159,22 +171,18 @@ final class BuildProjectFromPayload
             $project->setStatus($projectFromPayload->status);
             $project->setLocation($projectFromPayload->location);
             $project->setDeliveryType($projectFromPayload->deliveryType);
+
+            // TODO Contacts, startDate, EndDate, ProjectFields, SuppliedMaterial
+
+            $assetResources = array_values(array_filter(array_unique([...$project->getAssets(), ...$assetResources])));
+
+            $project->setAssets($assetResources);
+            $project->setPublished(true);
+            $project->setCustomer($organization);
+
+            $project->setParentId((int) $parentProjectFolder->getId());
+
+            $project->save();
         }
-
-        if (!($project instanceof Project)) {
-            return;
-        }
-
-        // TODO Contacts, startDate, EndDate, ProjectFields, SuppliedMaterial
-
-        $assetResources = array_values(array_filter(array_unique([...$project->getAssets(), ...$assetResources])));
-
-        $project->setAssets($assetResources);
-        $project->setPublished(true);
-        $project->setCustomer($organization);
-
-        $project->setParentId((int) $parentProjectFolder->getId());
-
-        $project->save();
     }
 }

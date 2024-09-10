@@ -93,7 +93,7 @@ class StrHelper
             }
         }
 
-        if(!is_null($trim)) {
+        if (!is_null($trim)) {
             $str = trim($str, $trim); /** @phpstan-ignore-line */ //typehints here looks wrong, remove the ignore line then run `vendor/bin/phpstan analyse lib --level=8` and please fix it.
         }
 

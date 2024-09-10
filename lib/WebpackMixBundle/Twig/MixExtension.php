@@ -62,7 +62,7 @@ class MixExtension extends AbstractExtension
 
         $versionedPath = $manifest[$assetPath];
 
-        if(file_exists($this->getPublicDir().'/hot')) {
+        if (file_exists($this->getPublicDir().'/hot')) {
             return "http://localhost:3000{$versionedPath}";
         }
 

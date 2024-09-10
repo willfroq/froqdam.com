@@ -21,7 +21,7 @@ class AssetResourceCategoryHelper
 
             $label = $category->getLevelLabel();
 
-            if(empty($label)) {
+            if (empty($label)) {
                 continue;
             }
 
