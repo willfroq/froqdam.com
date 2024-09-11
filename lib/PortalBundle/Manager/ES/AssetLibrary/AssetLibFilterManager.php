@@ -108,7 +108,7 @@ class AssetLibFilterManager
                     $queryStringQuery = new QueryString("$searchTerm");
 
                     if (str_contains(haystack: $searchTerm, needle: '_')) {
-                        $searchTerm = preg_replace('/(_)(\w+)/', '_$2*', $searchTerm);
+                        $searchTerm = (string) preg_replace('/(_)(\w+)/', '_$2*', $searchTerm);
 
                         if (str_ends_with($searchTerm, '_')) {
                             $searchTerm .= '*';
@@ -130,7 +130,19 @@ class AssetLibFilterManager
                 }
 
                 if (!($this->isLuceneQuery)($filterDto->searchTerm)) {
-                    $queryStringQuery = new QueryString("\"$filterDto->searchTerm\"");
+                    $searchTerm = $filterDto->searchTerm;
+
+                    $queryStringQuery = new QueryString("\"$searchTerm\"");
+
+                    if (str_contains(haystack: $searchTerm, needle: '_')) {
+                        $searchTerm = (string) preg_replace('/(_)(\w+)/', '_$2*', $searchTerm);
+
+                        if (str_ends_with($searchTerm, '_')) {
+                            $searchTerm .= '*';
+                        }
+
+                        $queryStringQuery = new QueryString("$searchTerm");
+                    }
 
                     $queryStringQuery->setDefaultField($filterDto->field);
                     $boolQuery->addFilter($queryStringQuery);
