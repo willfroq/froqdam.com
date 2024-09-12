@@ -12,7 +12,7 @@ final class GetPaginator
     /**
      * @return array<string, mixed>
      */
-    public function __invoke(Request $request, QueryResponseDto $queryResponseDto, int $defaultPageSize = 24): array
+    public function __invoke(Request $request, QueryResponseDto $queryResponseDto, int $defaultPageSize = 12): array
     {
         $page = $request->get('page', 1);
         $size = $request->get('size', $defaultPageSize);

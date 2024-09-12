@@ -4,3 +4,11 @@ _pimcore:
 home:
     path: /
     controller: Froq\PortalBundle\Controller\HomeController::indexAction
+
+download_page:
+    path: /download-page/
+    controller: Froq\PortalBundle\Controller\PublicPage\DownloadPublicPageController
+
+download_public_file:
+    path: /download-public-file/{id<\d+>}
+    controller: Froq\PortalBundle\Controller\PublicPage\DownloadPublicFileController

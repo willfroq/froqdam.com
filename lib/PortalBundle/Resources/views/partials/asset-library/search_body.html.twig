@@ -10,7 +10,7 @@
         <div class="toolbar__column-left">
             <h3>Asset library</h3>
         </div>
-        <div class="toolbar__column-right toolbar__column-right-responsive">
+        <div class="toolbar__column-right toolbar__column-right-responsive align-items-center">
             {{ form_row(form.query) }}
             <app-results-counter class="results-counter">
                 <div>
@@ -25,14 +25,24 @@
             </app-results-counter>
             {{ form_row(form.sort_by) }}
 
-            <app-layout-view-toggle class="layout-view-toggle" itemsLayout="{{ itemsLayout }}">
-                <button data-role="grid_view_toggle" id="gridViewButton" class="layout-view-toggle__button">
-                    {% include '@FroqPortal/icons/grid-icon.html.twig' %}
+            <div>
+                <app-layout-view-toggle class="layout-view-toggle mr-m" itemsLayout="{{ itemsLayout }}">
+                    <button data-role="grid_view_toggle" id="gridViewButton" class="layout-view-toggle__button">
+                        {% include '@FroqPortal/icons/grid-icon.html.twig' %}
+                    </button>
+                    <button data-role="list_view_toggle" id="listViewButton" class="layout-view-toggle__button">
+                        {% include '@FroqPortal/icons/list-icon.html.twig' %}
+                    </button>
+                </app-layout-view-toggle>
+            </div>
+
+            <twig:ShareModal url="{{ path('froq_basket.selected_asset_resource') }}">
+                <button id='share-button' data-role="share-button" id="gridViewButton" class="modal-share-button" >
+                    {% include '@FroqPortal/icons/share-icon.html.twig' %}
+                    Share
+                    <span class="selected-number-indicator hidden"></span>
                 </button>
-                <button data-role="list_view_toggle" id="listViewButton" class="layout-view-toggle__button">
-                    {% include '@FroqPortal/icons/list-icon.html.twig' %}
-                </button>
-            </app-layout-view-toggle>
+            </twig:ShareModal>
         </div>
     </div>
     <div class="main-content flex gap-5">

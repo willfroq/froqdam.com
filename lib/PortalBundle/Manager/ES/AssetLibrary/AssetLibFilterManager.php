@@ -13,7 +13,6 @@ use Froq\PortalBundle\DTO\FormData\InputFilterDto;
 use Froq\PortalBundle\DTO\FormData\LibraryFormDto;
 use Froq\PortalBundle\DTO\FormData\MultiselectCheckboxFilterDto;
 use Froq\PortalBundle\DTO\FormData\NumberRangeFilterDto;
-use Froq\PortalBundle\DTO\FormData\TextFilterDto;
 use Froq\PortalBundle\Repository\UserRepository;
 use Froq\PortalBundle\Utility\IsLuceneQuery;
 use Pimcore\Model\DataObject\User;
@@ -93,60 +92,15 @@ class AssetLibFilterManager
             } elseif ($filterDto instanceof MultiselectCheckboxFilterDto && $filterDto->getSelectedOptions()) {
                 $boolQuery->addFilter(new TermsQuery((string)$key, $filterDto->getSelectedOptions()));
             } elseif ($filterDto instanceof InputFilterDto && $filterDto->getText()) {
-                $searchTerm = (string) $filterDto->getText();
-                $field = (string) $key;
-
-                if (($this->isLuceneQuery)($searchTerm)) {
-                    $queryStringQuery = new QueryString($searchTerm);
-
-                    $queryStringQuery->setDefaultOperator('AND');
-                    $queryStringQuery->setDefaultField($field);
-                    $boolQuery->addFilter($queryStringQuery);
-                }
-
+                $searchTerm = (string)$filterDto->getText();
                 if (!($this->isLuceneQuery)($searchTerm)) {
-                    $queryStringQuery = new QueryString("$searchTerm");
-
-                    if (str_contains(haystack: $searchTerm, needle: '_')) {
-                        $searchTerm = (string) preg_replace('/(_)(\w+)/', '_$2*', $searchTerm);
-
-                        if (str_ends_with($searchTerm, '_')) {
-                            $searchTerm .= '*';
-                        }
-
-                        $queryStringQuery = new QueryString("$searchTerm");
-                    }
-
-                    $queryStringQuery->setDefaultField($field);
-                    $boolQuery->addFilter($queryStringQuery);
+                    $searchTerm .= '*';
                 }
 
-            } elseif ($filterDto instanceof TextFilterDto) {
-                if (($this->isLuceneQuery)($filterDto->searchTerm)) {
-                    $queryStringQuery = new QueryString($filterDto->searchTerm);
-
-                    $queryStringQuery->setDefaultField($filterDto->field);
-                    $boolQuery->addFilter($queryStringQuery);
-                }
-
-                if (!($this->isLuceneQuery)($filterDto->searchTerm)) {
-                    $searchTerm = $filterDto->searchTerm;
-
-                    $queryStringQuery = new QueryString("\"$searchTerm\"");
-
-                    if (str_contains(haystack: $searchTerm, needle: '_')) {
-                        $searchTerm = (string) preg_replace('/(_)(\w+)/', '_$2*', $searchTerm);
-
-                        if (str_ends_with($searchTerm, '_')) {
-                            $searchTerm .= '*';
-                        }
-
-                        $queryStringQuery = new QueryString("$searchTerm");
-                    }
-
-                    $queryStringQuery->setDefaultField($filterDto->field);
-                    $boolQuery->addFilter($queryStringQuery);
-                }
+                $queryStringQuery = new QueryString($searchTerm);
+                $queryStringQuery->setDefaultField((string)$key);
+                $queryStringQuery->setDefaultOperator('AND');
+                $boolQuery->addFilter($queryStringQuery);
             } else {
                 throw new \InvalidArgumentException('Unsupported Filter DTO: ' . get_class($filterDto));
             }

@@ -82,77 +82,75 @@
                                         {% if netContentUnit.getId == 'mlt' %}
                                             <div>
                                                 {% if netContentValue %}
-                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters': {'net_contents_mlt': [netContentValue~' mlt' | lower ]} }) | raw }}">
-                                                        {{ netContentValue~' '~netContentUnit.getId }}
+                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters':  [ {'net_contents_mlt': {'min': netContentValue}}, {'net_contents_mlt': {'max': netContentValue}} ] }) | raw }}">
+                                                        {{ netContentValue~' '~netContentUnit.getAbbreviation }}
                                                     </a>
                                                 {% else %}
-                                                    {{ netContentValue~' '~netContentUnit.getId|default('-') }}
-                                                {% endif %}
-                                            </div>
-                                        {% elseif netContentUnit.getId == 'clt' %}
-                                            <div>
-                                                {% if netContentValue %}
-                                                    {% set centilitreToMillilitre = netContent.getUnit.getFactor * netContentValue %}
-
-                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters': {'net_contents_mlt': [centilitreToMillilitre~' mlt' | lower ]} }) | raw }}">
-                                                        {{ centilitreToMillilitre~' '~'mlt' }}
-                                                    </a>
-                                                {% else %}
-                                                    {{ centilitreToMillilitre~' '~'mlt' }}
+                                                    {{ netContentValue~' '~netContentUnit.getAbbreviation|default('-') }}
                                                 {% endif %}
                                             </div>
                                         {% elseif netContentUnit.getId == 'ltr' %}
                                             <div>
                                                 {% if netContentValue %}
-                                                    {% set litreToMillilitre = netContent.getUnit.getFactor * netContentValue %}
+                                                    {% set litreInMillilitre = netContent.getUnit.getFactor * netContentValue %}
 
-                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters': {'net_contents_mlt': [litreToMillilitre~' mlt' | lower ]} }) | raw }}">
-                                                        {{ litreToMillilitre~' '~'mlt' }}
+                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters':  [ {'net_contents_mlt': {'min': litreInMillilitre }}, {'net_contents_mlt': {'max': litreInMillilitre}} ] }) | raw }}">
+                                                        {{ netContentValue~' '~netContentUnit.getAbbreviation }}
                                                     </a>
                                                 {% else %}
-                                                    {{ litreToMillilitre~' '~'mlt' }}
+                                                    {{ netContentValue~' '~netContentUnit.getAbbreviation|default('-') }}
                                                 {% endif %}
                                             </div>
                                         {% elseif netContentUnit.getId == 'grm' %}
                                             <div>
                                                 {% if netContentValue %}
-                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters':  {'net_contents_grm': [netContentValue~' grm' | lower ]} }) | raw }}">
-                                                        {{ netContentValue~' '~netContentUnit.getId }}
+                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters':  [ {'net_contents_grm': {'min': netContentValue}}, {'net_contents_grm': {'max': netContentValue}} ] }) | raw }}">
+                                                        {{ netContentValue~' '~netContentUnit.getAbbreviation }}
                                                     </a>
                                                 {% else %}
-                                                    {{ netContentValue~' '~netContentUnit.getId|default('-') }}
+                                                    {{ netContentValue~' '~netContentUnit.getAbbreviation|default('-') }}
                                                 {% endif %}
                                             </div>
                                         {% elseif netContentUnit.getId == 'kgm' %}
                                             <div>
                                                 {% if netContentValue %}
-                                                    {% set kilogramToGram = netContent.getUnit.getFactor * netContentValue %}
+                                                    {% set kilogramInGram = netContent.getUnit.getFactor * netContentValue %}
 
-                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters': {'net_contents_grm': [kilogramToGram~' grm' | lower ]} }) | raw }}">
-                                                        {{ kilogramToGram~' '~'grm' }}
+                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters':  [ {'net_contents_grm': {'min': kilogramInGram }}, {'net_contents_grm': {'max': kilogramInGram}} ] }) | raw }}">
+                                                        {{ netContentValue~' '~netContentUnit.getAbbreviation }}
                                                     </a>
                                                 {% else %}
-                                                    {{ kilogramToGram~' '~'grm' }}
+                                                    {{ netContentValue~' '~netContentUnit.getAbbreviation|default('-') }}
                                                 {% endif %}
                                             </div>
                                         {% elseif netContentUnit.getId == 'pcs' %}
                                             <div>
                                                 {% if netContentValue %}
-                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters': {'net_contents_pcs': [netContentValue~' pcs' | lower ]} }) | raw }}">
-                                                        {{ netContentValue~' '~netContentUnit.getId }}
+                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters':  [ {'net_contents_pcs': {'min': netContentValue}}, {'net_contents_pcs': {'max': netContentValue}} ] }) | raw }}">
+                                                        {{ netContentValue~' '~netContentUnit.getAbbreviation }}
                                                     </a>
                                                 {% else %}
-                                                    {{ netContentValue~' '~netContentUnit.getId|default('-') }}
+                                                    {{ netContentValue~' '~netContentUnit.getAbbreviation|default('-') }}
                                                 {% endif %}
                                             </div>
                                         {% elseif netContentUnit.getId == 'ea' %}
                                             <div>
                                                 {% if netContentValue %}
-                                                <a href="{{ url('froq_portal.asset_library.search', { 'filters': {'net_contents_pcs': [netContentValue~' pcs' | lower ]} }) | raw }}">
-                                                        {{ netContentValue~' '~netContentUnit.getId|default('-') }}
+                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters':  [ {'net_contents_pcs': {'min': netContentValue}}, {'net_contents_pcs': {'max': netContentValue}} ] }) | raw }}">
+                                                        {{ netContentValue~' '~netContentUnit.getAbbreviation }}
                                                     </a>
                                                 {% else %}
-                                                    {{ netContentValue~' '~netContentUnit.getId|default('-') }}
+                                                    {{ netContentValue~' '~netContentUnit.getAbbreviation|default('-') }}
+                                                {% endif %}
+                                            </div>
+                                        {% else %}
+                                            <div>
+                                                {% if netContentValue %}
+                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters':  [ {'net_contents': {'min': netContentValue}}, {'net_contents': {'max': netContentValue}} ] }) | raw }}">
+                                                        {{ netContentValue~' '~netContentUnit.getAbbreviation }}
+                                                    </a>
+                                                {% else %}
+                                                    {{ netContentValue~' '~netContentUnit.getAbbreviation|default('-') }}
                                                 {% endif %}
                                             </div>
                                         {% endif %}
@@ -176,45 +174,55 @@
                                         {% if netUnitContentUnit.getId == 'mlt' %}
                                             <div>
                                                 {% if netUnitContentValue %}
-                                                <a href="{{ url('froq_portal.asset_library.search', { 'filters': {'net_unit_contents_mlt': [netUnitContentValue~' mlt' | lower ]} }) | raw }}">
-                                                        {{ netUnitContentValue~' '~netUnitContentUnit.getId }}
+                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters':  [ {'net_unit_contents_mlt': {'min': netUnitContentValue}}, {'net_unit_contents_mlt': {'max': netUnitContentValue}} ] }) | raw }}">
+                                                        {{ netUnitContentValue~' '~netUnitContentUnit.getAbbreviation }}
                                                     </a>
                                                 {% else %}
-                                                    {{ netUnitContentValue~' '~netUnitContentUnit.getId|default('-') }}
+                                                    {{ netUnitContentValue~' '~netUnitContentUnit.getAbbreviation|default('-') }}
                                                 {% endif %}
                                             </div>
                                         {% elseif netUnitContentUnit.getId == 'ltr' %}
                                             <div>
                                                 {% if netUnitContentValue %}
-                                                    {% set litreToMillilitre = netUnitContent.getUnit.getFactor * netUnitContentValue %}
+                                                    {% set litreInMillilitre = netUnitContent.getUnit.getFactor * netUnitContentValue %}
 
-                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters': {'net_unit_contents_mlt': [litreToMillilitre~' mlt' | lower ]} }) | raw }}">
-                                                        {{ litreToMillilitre~' '~'mlt' }}
+                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters':  [ {'net_unit_contents_mlt': {'min': litreInMillilitre}}, {'net_unit_contents_mlt': {'max': litreInMillilitre}} ] }) | raw }}">
+                                                        {{ netUnitContentValue~' '~netUnitContentUnit.getAbbreviation }}
                                                     </a>
                                                 {% else %}
-                                                    {{ litreToMillilitre~' '~'mlt' }}
+                                                    {{ netUnitContentValue~' '~netUnitContentUnit.getAbbreviation|default('-') }}
                                                 {% endif %}
                                             </div>
                                         {% elseif netUnitContentUnit.getId == 'grm' %}
                                             <div>
                                                 {% if netUnitContentValue %}
-                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters': {'net_unit_contents_grm': [netUnitContentValue~' grm' | lower ]} }) | raw }}">
-                                                         {{ netUnitContentValue~' '~netUnitContentUnit.getId }}
+                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters':  [ {'net_unit_contents_grm': {'min': netUnitContentValue}}, {'net_unit_contents_grm': {'max': netUnitContentValue}} ] }) | raw }}">
+                                                        {{ netUnitContentValue~' '~netUnitContentUnit.getAbbreviation }}
                                                     </a>
                                                 {% else %}
-                                                    {{ netUnitContentValue~' '~netUnitContentUnit.getId|default('-') }}
+                                                    {{ netUnitContentValue~' '~netUnitContentUnit.getAbbreviation|default('-') }}
                                                 {% endif %}
                                             </div>
                                         {% elseif netUnitContentUnit.getId == 'kgm' %}
                                             <div>
                                                 {% if netUnitContentValue %}
-                                                    {% set kilogramToGram = netUnitContent.getUnit.getFactor * netUnitContentValue %}
+                                                    {% set kilogramInGram = netUnitContent.getUnit.getFactor * netUnitContentValue %}
 
-                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters': {'net_unit_contents_grm': [kilogramToGram~' grm' | lower ]} }) | raw }}">
-                                                         {{ kilogramToGram~' '~'grm' }}
+                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters':  [ {'net_unit_contents_grm': {'min': kilogramInGram}}, {'net_unit_contents_grm': {'max': kilogramInGram}} ] }) | raw }}">
+                                                        {{ netUnitContentValue~' '~netUnitContentUnit.getAbbreviation }}
                                                     </a>
                                                 {% else %}
-                                                    {{ kilogramToGram~' '~'grm' }}
+                                                    {{ netUnitContentValue~' '~netUnitContentUnit.getAbbreviation|default('-') }}
+                                                {% endif %}
+                                            </div>
+                                        {% else %}
+                                            <div>
+                                                {% if netUnitContentValue %}
+                                                    <a href="{{ url('froq_portal.asset_library.search', { 'filters':  [ {'net_unit_contents': {'min': netUnitContentValue}}, {'net_unit_contents': {'max': netUnitContentValue}} ] }) | raw }}">
+                                                        {{ netUnitContentValue~' '~netUnitContentUnit.getAbbreviation }}
+                                                    </a>
+                                                {% else %}
+                                                    {{ netUnitContentValue~' '~netUnitContentUnit.getAbbreviation|default('-') }}
                                                 {% endif %}
                                             </div>
                                         {% endif %}

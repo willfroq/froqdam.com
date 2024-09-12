@@ -9,44 +9,29 @@ use Pimcore\Model\DataObject\Data\QuantityValue;
 
 final class GetMetricValue
 {
-    public function __invoke(QuantityValue $quantityValue, string $metricUnit): string
+    public function __invoke(QuantityValue $quantityValue, string $metricUnit): float|int|string|null
     {
         return match ($metricUnit) {
-            MetricUnits::Millilitre->readable(),
-            MetricUnits::Grams->readable() => $this->getConvertedValueWithMetricUnit($quantityValue, $metricUnit),
+            MetricUnits::Millilitre->readable() => (
+                fn () => $quantityValue->getUnit()?->getId() === MetricUnits::Litre->readable() ?
+                    (float) $quantityValue->getUnit()->getFactor() * (float) $quantityValue->getValue()
+                    : $quantityValue->getValue()
+            )(),
 
-            MetricUnits::Pieces->readable() => $this->getPiecesEachStringValue($quantityValue),
+            MetricUnits::Grams->readable() => (
+                fn () => $quantityValue->getUnit()?->getId() === MetricUnits::Kilograms->readable() ?
+                    (float) $quantityValue->getUnit()->getFactor() * (float) $quantityValue->getValue()
+                    : $quantityValue->getValue()
+            )(),
 
-            default => ''
-        };
-    }
+            MetricUnits::Pieces->readable(), MetricUnits::Each->readable() => (
+                fn () => $quantityValue->getUnit()?->getId() === MetricUnits::Pieces->readable() ||
+                    $quantityValue->getUnit()?->getId() === MetricUnits::Each->readable() ?
+                    $quantityValue->getValue() : ''
 
-    private function getConvertedValueWithMetricUnit(QuantityValue $quantityValue, string $metricUnit): string
-    {
-        $result = $quantityValue->getUnit()?->getFactor() * (float) $quantityValue->getValue();
+            )(),
 
-        return match ($quantityValue->getUnit()?->getId()) {
-            MetricUnits::Millilitre->readable(),
-            MetricUnits::Litre->readable(),
-            MetricUnits::Centilitre->readable() =>
-                $metricUnit === MetricUnits::Millilitre->readable() ? $result.' '.MetricUnits::Millilitre->readable() : '',
-
-            MetricUnits::Grams->readable(),
-            MetricUnits::Kilograms->readable(),
-            MetricUnits::Milligrams->readable() =>
-                $metricUnit === MetricUnits::Grams->readable() ? $result.' '.MetricUnits::Grams->readable() : '',
-
-            default => ''
-        };
-    }
-
-    private function getPiecesEachStringValue(QuantityValue $quantityValue): string
-    {
-        return match ($quantityValue->getUnit()?->getId()) {
-            MetricUnits::Pieces->readable(),
-            MetricUnits::Each->readable() => $quantityValue->getValue().' '.$quantityValue->getUnit()->getId(),
-
-            default => ''
+            default => $quantityValue->getValue()
         };
     }
 }

@@ -15,12 +15,12 @@ class AssetLibQueryBuilderManager
 {
     public function __construct(
         private readonly ElasticsearchClientInterface $assetLibraryElasticsearchClient,
-        private readonly AssetLibSearchQueryManager $searchQueryManager,
-        private readonly AssetLibSortManager $sortManager,
-        private readonly AssetLibFilterManager $filterManager,
-        private readonly AssetLibAggregationsManager $aggregationsManager,
+        private readonly AssetLibSearchQueryManager   $searchQueryManager,
+        private readonly AssetLibSortManager          $sortManager,
+        private readonly AssetLibFilterManager        $filterManager,
+        private readonly AssetLibAggregationsManager  $aggregationsManager,
         private readonly AssetLibQueryResponseManager $queryResponseManager,
-        private readonly ApplicationLogger $logger)
+        private readonly ApplicationLogger            $logger)
     {
     }
 
@@ -42,9 +42,7 @@ class AssetLibQueryBuilderManager
                 $query->setQuery($boolQuery);
                 $query->setParam('track_total_hits', true);
 
-                $this->searchQueryManager->buildQuerySource($query, $user, $formDto);
-
-                $this->searchQueryManager->applySearch($boolQuery, $user, $formDto);
+                $this->searchQueryManager->applySearch($boolQuery, $formDto);
 
                 $this->filterManager->filter($boolQuery, $user, $formDto);
 
@@ -75,11 +73,11 @@ class AssetLibQueryBuilderManager
     private function paginate(Query $query, ?LibraryFormDto $formDto = null): void
     {
         $page = $formDto?->getPage() ?: 1;
-        $size = $formDto?->getSize() ?: 24;
-        $from = ((int) $page - 1) * (int) $size;
+        $size = $formDto?->getSize() ?: 12;
+        $from = ((int)$page - 1) * (int)$size;
 
         $query
-            ->setSize((int) $size)
+            ->setSize((int)$size)
             ->setFrom($from);
     }
 }

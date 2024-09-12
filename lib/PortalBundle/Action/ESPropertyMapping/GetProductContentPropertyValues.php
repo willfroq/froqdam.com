@@ -28,14 +28,8 @@ final class GetProductContentPropertyValues
             $assetResource = AssetResourceHierarchyHelper::getLatestVersion($assetResource);
         }
 
-        $parentAssetResource = $assetResource->getParent();
-
-        if (!($parentAssetResource instanceof AssetResource)) {
-            $parentAssetResource = $assetResource;
-        }
-
         /** @var Product[] $products */
-        $products = [...$parentAssetResource->getProducts(), ...$assetResource->getProducts()];
+        $products = $assetResource->getProducts();
 
         $values = [];
 
@@ -56,6 +50,6 @@ final class GetProductContentPropertyValues
             }
         }
 
-        return array_values(array_filter(array_unique($values)));
+        return array_values(array_unique($values));
     }
 }

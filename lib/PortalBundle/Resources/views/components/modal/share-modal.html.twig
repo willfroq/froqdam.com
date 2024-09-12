@@ -1,0 +1,40 @@
+<app-modal trigger-id="share-button" onOpen-listener="onOpenShareModal" onOpen-listener-source="app-share-modal">
+    {% block content %}
+    {% endblock %}
+    <div id='modal-overlay' class="modal-overlay"></div>
+    <dialog class="modal modal-lg">
+        <div class="">
+            <div class="flex justify-between p-4">
+                <div>
+                    <h6 class="m-0">Basket Collection</h6>
+                    <span class="text-gray-200 font-light">A collection of assets that you can share</span>
+                </div>
+                <button id="close-modal" class="border-none bg-transparent">
+                    {% include '@FroqPortal/icons/close-icon.html.twig' %}
+                </button>
+            </div>
+            <div class="content overflow-auto">
+                <app-share-modal storage-name="selectorStates" data-selected-assets-url="{{ url }}">
+                    <div class="h-dvh">
+                        <div id="asset-list-container" class="grid grid-search-responsive-alt box-border px-8">
+                        </div>
+                    </div>
+
+                    {% include '@FroqPortal/components/modal/share-asset-list.html.twig' %}
+                </app-share-modal>
+            </div>
+            <div class="action flex justify-end p-4 relative">
+                <app-download-links id="download-links" storage-name="selectorStates" data-asset-resource-url="{{ url('froq_portal.asset_library.download.links') }}" >
+                    <button class="share-link-button flex place-items-center gap-2 rounded-full bg-primary border border-gray-200 px-4 py-2">
+                        {% include '@FroqPortal/icons/link-icon.html.twig' %}
+                        Copy Link
+                    </button>
+                </app-download-links>
+                <div id="toast-container" class="toast-container"></div>
+            </div>
+            <div class="notification">
+                <div class="element"></div>
+            </div>
+        </div>
+    </dialog>
+</app-modal>

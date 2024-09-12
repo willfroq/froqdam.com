@@ -9,6 +9,8 @@ use League\Csv\Exception;
 use League\Csv\Writer;
 use Pimcore\Console\AbstractCommand;
 use Pimcore\Db;
+use Pimcore\Model\Asset;
+use Pimcore\Model\DataObject;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,6 +26,15 @@ class PlaygroundCommand extends AbstractCommand
 {
     public function __construct()
     {
+        $org = DataObject\Organization::getById(12247);
+
+        $containerFolder = (new DataObject\Listing())
+        ->addConditionParam('o_key = ?', $org->getKey())
+        ->addConditionParam('o_path = ?', '/Customers/')
+        ->current();
+
+        dd($containerFolder instanceof DataObject\Folder);
+
         parent::__construct();
     }
 
@@ -32,6 +43,17 @@ class PlaygroundCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $assets = Asset::getList()->load();
+
+        $assetsZeroByte = [];
+
+        foreach ($assets as $asset) {
+            if ((int) $asset->getFileSize() !== 0) {
+                continue;
+            }
+
+            $assetsZeroByte[] = $asset->getId();
+        }
 
         return Command::SUCCESS;
     }

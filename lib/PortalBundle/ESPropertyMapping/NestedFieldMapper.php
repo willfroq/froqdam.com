@@ -66,21 +66,7 @@ class NestedFieldMapper implements
         );
 
         if ($values && count($values) === 1) {
-            $propertyValue = $values[0];
-
-            if (preg_match('/[.,_\s-]/', (string) $propertyValue)) {
-                $multiWords = [];
-
-                $separatedWords = (array) preg_split('/[.,_\s-]/', (string) $propertyValue);
-
-                foreach ($separatedWords as $word) {
-                    $multiWords[] = $word;
-                }
-
-                return array_values(array_filter(array_unique([$propertyValue, ...$multiWords])));
-            }
-
-            return $propertyValue;
+            return $values[0];
         }
 
         return $values;
