@@ -93,12 +93,28 @@ class AssetLibFilterManager
             } elseif ($filterDto instanceof InputFilterDto && $filterDto->getText()) {
                 $searchTerm = (string) $filterDto->getText();
 
+                $isFilename = preg_match('/^[a-zA-Z0-9._-]+$/', $searchTerm)
+                    && preg_match('/\./', $searchTerm)
+                    && ($key === 'file_name' || $key === 'file_name_text');
+
+                if ($isFilename && !preg_match('/\b(AND|OR|NOT)\b/', $searchTerm)) {
+                    $searchTerm = preg_replace('/\s+/', ' AND ', $searchTerm);
+                    $queryStringQuery = new QueryString("file_name:$searchTerm");
+                    $boolQuery->addFilter($queryStringQuery);
+
+                    return;
+                }
+
                 if (!preg_match('/\b(AND|OR|NOT)\b/', $searchTerm)) {
                     $searchTerm = preg_replace('/\s+/', ' AND ', $searchTerm);
+
+                    $queryStringQuery = new QueryString("$key:$searchTerm");
+                    $boolQuery->addFilter($queryStringQuery);
+
+                    return;
                 }
 
                 $queryStringQuery = new QueryString("$key:$searchTerm");
-
                 $boolQuery->addFilter($queryStringQuery);
             } else {
                 throw new \InvalidArgumentException('Unsupported Filter DTO: ' . get_class($filterDto));

@@ -32,10 +32,8 @@ youwe_pimcore_elasticsearch:
                             type: pattern_capture
                             preserve_original: true
                             patterns: [
-                                "([^_]+)_",
-                                "_([^_]+)",
-                                "([^_]+_)",
-                                "([^_]+)s?([^_]+)"
+                                "([^_]{9,19}+_)",
+                                "([^_]{9,19}+)s?([^_]{9,19}+)"
                             ]
                     analyzer:
                         edge_ngram_analyzer:
