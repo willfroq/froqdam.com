@@ -92,14 +92,15 @@ class AssetLibFilterManager
             } elseif ($filterDto instanceof MultiselectCheckboxFilterDto && $filterDto->getSelectedOptions()) {
                 $boolQuery->addFilter(new TermsQuery((string)$key, $filterDto->getSelectedOptions()));
             } elseif ($filterDto instanceof InputFilterDto && $filterDto->getText()) {
-                $searchTerm = (string)$filterDto->getText();
-                if (!($this->isLuceneQuery)($searchTerm)) {
-                    $searchTerm .= '*';
+                $searchTerm = (string) $filterDto->getText();
+
+                if (!preg_match('/\b(AND|OR|NOT)\b/', $searchTerm)) {
+                    $searchTerm = preg_replace('/\s+/', ' AND ', $searchTerm);
                 }
 
                 $queryStringQuery = new QueryString($searchTerm);
-                $queryStringQuery->setDefaultField((string)$key);
-                $queryStringQuery->setDefaultOperator('AND');
+                $queryStringQuery->setDefaultField((string) $key);
+
                 $boolQuery->addFilter($queryStringQuery);
             } else {
                 throw new \InvalidArgumentException('Unsupported Filter DTO: ' . get_class($filterDto));
