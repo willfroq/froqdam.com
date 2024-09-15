@@ -39,6 +39,10 @@ youwe_pimcore_elasticsearch:
                                 "([^_]{9,19}+)s?([^_]{9,19}+)"
                             ]
                     analyzer:
+                        text_analyzer:
+                            type: custom
+                            tokenizer: whitespace
+                            filter: [ "asciifolding", "lowercase" ]
                         edge_ngram_analyzer:
                             type: custom
                             tokenizer: whitespace
@@ -47,7 +51,7 @@ youwe_pimcore_elasticsearch:
                             tokenizer: standard
                             filter: [ "custom_filename_filter", "lowercase", "unique", "asciifolding" ]
                         custom_pdf_text_analyzer:
-                            tokenizer: standard
+                            tokenizer: whitespace
                             filter: [ "custom_pdf_text_filter", "lowercase", "unique", "asciifolding" ]
             mapping:
                 properties:
