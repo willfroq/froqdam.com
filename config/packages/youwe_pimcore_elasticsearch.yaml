@@ -26,7 +26,9 @@ youwe_pimcore_elasticsearch:
                             preserve_original: true
                             patterns: [
                                 "([^_]+)_",
-                                "_([^_]+)"
+                                "_([^_]+)",
+                                "([^-]+)-",
+                                "-([^-]+)"
                             ]
                         custom_pdf_text_filter:
                             type: pattern_capture
