@@ -14,12 +14,11 @@ use Froq\PortalBundle\DTO\FormData\LibraryFormDto;
 use Froq\PortalBundle\DTO\FormData\MultiselectCheckboxFilterDto;
 use Froq\PortalBundle\DTO\FormData\NumberRangeFilterDto;
 use Froq\PortalBundle\Repository\UserRepository;
-use Froq\PortalBundle\Utility\IsLuceneQuery;
 use Pimcore\Model\DataObject\User;
 
 class AssetLibFilterManager
 {
-    public function __construct(private readonly UserRepository $userRepo, private readonly IsLuceneQuery $isLuceneQuery)
+    public function __construct(private readonly UserRepository $userRepo)
     {
     }
 
@@ -98,8 +97,7 @@ class AssetLibFilterManager
                     $searchTerm = preg_replace('/\s+/', ' AND ', $searchTerm);
                 }
 
-                $queryStringQuery = new QueryString($searchTerm);
-                $queryStringQuery->setDefaultField((string) $key);
+                $queryStringQuery = new QueryString("$key:$searchTerm");
 
                 $boolQuery->addFilter($queryStringQuery);
             } else {

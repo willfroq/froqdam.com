@@ -20,18 +20,23 @@ class AssetLibSearchQueryManager
     {
         $searchTerm = (string) $formDto?->getQuery();
 
-        if (!$searchTerm) {
-            return $boolQuery;
-        }
+        $isFilename = preg_match('/^[a-zA-Z0-9._-]+$/', $searchTerm) && preg_match('/\./', $searchTerm);
 
-        $queryString = new QueryString();
+        $queryStringQuery = new QueryString();
+
+        if ($isFilename && !preg_match('/\b(AND|OR|NOT)\b/', $searchTerm)) {
+            $queryStringQuery = new QueryString("file_name:$searchTerm");
+        }
 
         if (!preg_match('/\b(AND|OR|NOT)\b/', $searchTerm)) {
             $searchTerm = preg_replace('/\s+/', ' AND ', $searchTerm);
         }
 
-        $queryString->setQuery($searchTerm);
-        $boolQuery->addMust($queryString);
+        if (!$isFilename) {
+            $queryStringQuery->setQuery($searchTerm);
+        }
+
+        $boolQuery->addMust($queryStringQuery);
 
         return $boolQuery;
     }

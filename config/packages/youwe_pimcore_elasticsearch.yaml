@@ -21,7 +21,14 @@ youwe_pimcore_elasticsearch:
                             type: edge_ngram
                             min_gram: 3
                             max_gram: 5
-                        custom_filter:
+                        custom_filename_filter:
+                            type: pattern_capture
+                            preserve_original: true
+                            patterns: [
+                                "([^_]+)_",
+                                "_([^_]+)"
+                            ]
+                        custom_pdf_text_filter:
                             type: pattern_capture
                             preserve_original: true
                             patterns: [
@@ -35,9 +42,12 @@ youwe_pimcore_elasticsearch:
                             type: custom
                             tokenizer: whitespace
                             filter: [ "asciifolding", "lowercase", "edge_ngram_filter" ]
-                        custom_text_analyzer:
+                        custom_filename_analyzer:
                             tokenizer: standard
-                            filter: [ "custom_filter", "lowercase", "unique", "asciifolding" ]
+                            filter: [ "custom_filename_filter", "lowercase", "unique", "asciifolding" ]
+                        custom_pdf_text_analyzer:
+                            tokenizer: standard
+                            filter: [ "custom_pdf_text_filter", "lowercase", "unique", "asciifolding" ]
             mapping:
                 properties:
                     parentId: integer
@@ -96,7 +106,7 @@ youwe_pimcore_elasticsearch:
                     file_name_text:
                         definition:
                             type: text
-                            analyzer: custom_text_analyzer
+                            analyzer: custom_filename_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Asset.fileName'
@@ -117,7 +127,7 @@ youwe_pimcore_elasticsearch:
                     pdf_text:
                         definition:
                             type: text
-                            analyzer: custom_text_analyzer
+                            analyzer: custom_pdf_text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\PdfTextMapper
                         mapper_config:
                             nested_field: 'Asset'
@@ -209,7 +219,6 @@ youwe_pimcore_elasticsearch:
                     product_category_campaign_text:
                         definition:
                             type: text
-                            analyzer: custom_text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
                         mapper_config:
                             nested_categories: 'Products.Categories'
@@ -225,7 +234,6 @@ youwe_pimcore_elasticsearch:
                     product_category_market_text:
                         definition:
                             type: text
-                            analyzer: custom_text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
                         mapper_config:
                             nested_categories: 'Products.Categories'
@@ -241,7 +249,6 @@ youwe_pimcore_elasticsearch:
                     product_category_platform_text:
                         definition:
                             type: text
-                            analyzer: custom_text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
                         mapper_config:
                             nested_categories: 'Products.Categories'
@@ -254,7 +261,6 @@ youwe_pimcore_elasticsearch:
                     product_ean_text:
                         definition:
                             type: text
-                            analyzer: custom_text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Products.ean'
@@ -266,7 +272,6 @@ youwe_pimcore_elasticsearch:
                     product_sku_text:
                         definition:
                             type: text
-                            analyzer: custom_text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Products.sku'
@@ -278,7 +283,6 @@ youwe_pimcore_elasticsearch:
                     product_name_text:
                         definition:
                             type: text
-                            analyzer: custom_text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Products.name'
@@ -374,7 +378,6 @@ youwe_pimcore_elasticsearch:
                     project_name_text:
                         definition:
                             type: text
-                            analyzer: custom_text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Projects.Name'
@@ -448,7 +451,6 @@ youwe_pimcore_elasticsearch:
                     shapecode_text:
                         definition:
                             type: text
-                            analyzer: custom_text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
