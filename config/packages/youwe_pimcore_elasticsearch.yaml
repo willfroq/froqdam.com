@@ -39,10 +39,6 @@ youwe_pimcore_elasticsearch:
                                 "([^_]{9,19}+)s?([^_]{9,19}+)"
                             ]
                     analyzer:
-                        text_analyzer:
-                            type: custom
-                            tokenizer: whitespace
-                            filter: [ "asciifolding", "lowercase" ]
                         edge_ngram_analyzer:
                             type: custom
                             tokenizer: whitespace

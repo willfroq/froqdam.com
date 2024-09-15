@@ -16,7 +16,7 @@ class AssetLibSearchQueryManager
      *
      * @return BoolQuery
      */
-    public function applySearch(BoolQuery $boolQuery, ?LibraryFormDto $formDto = null): BoolQuery
+    public function applySearch(BoolQuery $boolQuery, ?LibraryFormDto $formDto = null, bool &$sortByRelevance): BoolQuery
     {
         $searchTerm = (string) $formDto?->getQuery();
 
@@ -43,6 +43,8 @@ class AssetLibSearchQueryManager
         $queryStringQuery->setQuery($searchTerm);
 
         $boolQuery->addMust($queryStringQuery);
+
+        $sortByRelevance = true;
 
         return $boolQuery;
     }

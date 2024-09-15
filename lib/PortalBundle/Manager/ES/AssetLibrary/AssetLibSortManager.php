@@ -16,7 +16,7 @@ class AssetLibSortManager
     public const DEFAULT_SORT_DIRECTION = 'desc';
 
     public function __construct(private readonly AssetLibMappingManager $mappingManager,
-        private readonly SortConfigurationManager $sortConfigManager)
+                                private readonly SortConfigurationManager $sortConfigManager)
     {
     }
 
@@ -27,8 +27,14 @@ class AssetLibSortManager
      *
      * @return Query
      */
-    public function sort(Query $query, User $user, LibraryFormDto $libraryFormDto = null): Query
+    public function sort(Query $query, User $user, LibraryFormDto $libraryFormDto = null, bool $sortByRelevance): Query
     {
+        if ($sortByRelevance) {
+            $query->setSort(['_score' => ['order' => 'desc']]);
+
+            return $query;
+        }
+
         $sortBy = $libraryFormDto?->getSortBy() ?? self::DEFAULT_SORT_BY;
         $sortDirection = $libraryFormDto?->getSortDirection() ?? self::DEFAULT_SORT_DIRECTION;
 

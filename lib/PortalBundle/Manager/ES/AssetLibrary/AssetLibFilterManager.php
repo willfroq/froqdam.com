@@ -29,11 +29,11 @@ class AssetLibFilterManager
      *
      * @return BoolQuery
      */
-    public function filter(BoolQuery $boolQuery, User $user, ?LibraryFormDto $formDto = null): BoolQuery
+    public function filter(BoolQuery $boolQuery, User $user, ?LibraryFormDto $formDto = null, bool &$sortByRelevance): BoolQuery
     {
         $this->filterByUserOrganizations($boolQuery, $user);
 
-        $this->addDynamicFilters($boolQuery, $formDto);
+        $this->addDynamicFilters($boolQuery, $formDto, $sortByRelevance);
 
         return $boolQuery;
     }
@@ -55,7 +55,7 @@ class AssetLibFilterManager
      *
      * @return void
      */
-    private function addDynamicFilters(BoolQuery $boolQuery, ?LibraryFormDto $libraryFormDto = null): void
+    private function addDynamicFilters(BoolQuery $boolQuery, ?LibraryFormDto $libraryFormDto = null, bool &$sortByRelevance): void
     {
         if (!$libraryFormDto?->getFilters()) {
             return;
@@ -93,6 +93,10 @@ class AssetLibFilterManager
             } elseif ($filterDto instanceof InputFilterDto && $filterDto->getText()) {
                 $searchTerm = (string) $filterDto->getText();
 
+                if (empty($searchTerm)) {
+                    return;
+                }
+
                 $isFilename = preg_match('/^[a-zA-Z0-9._-]+$/', $searchTerm)
                     && preg_match('/\./', $searchTerm)
                     && ($key === 'file_name' || $key === 'file_name_text');
@@ -116,6 +120,8 @@ class AssetLibFilterManager
 
                 $queryStringQuery = new QueryString("$key:$searchTerm");
                 $boolQuery->addFilter($queryStringQuery);
+
+                $sortByRelevance = true;
             } else {
                 throw new \InvalidArgumentException('Unsupported Filter DTO: ' . get_class($filterDto));
             }
