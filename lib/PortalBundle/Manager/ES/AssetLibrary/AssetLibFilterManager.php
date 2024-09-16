@@ -29,7 +29,7 @@ class AssetLibFilterManager
      *
      * @return BoolQuery
      */
-    public function filter(BoolQuery $boolQuery, User $user, ?LibraryFormDto $formDto = null, bool &$sortByRelevance): BoolQuery
+    public function filter(BoolQuery $boolQuery, User $user, ?LibraryFormDto $formDto, bool &$sortByRelevance): BoolQuery
     {
         $this->filterByUserOrganizations($boolQuery, $user);
 
@@ -55,7 +55,7 @@ class AssetLibFilterManager
      *
      * @return void
      */
-    private function addDynamicFilters(BoolQuery $boolQuery, ?LibraryFormDto $libraryFormDto = null, bool &$sortByRelevance): void
+    private function addDynamicFilters(BoolQuery $boolQuery, ?LibraryFormDto $libraryFormDto, bool &$sortByRelevance): void
     {
         if (!$libraryFormDto?->getFilters()) {
             return;
@@ -92,10 +92,6 @@ class AssetLibFilterManager
                 $boolQuery->addFilter(new TermsQuery((string)$key, $filterDto->getSelectedOptions()));
             } elseif ($filterDto instanceof InputFilterDto && $filterDto->getText()) {
                 $searchTerm = (string) $filterDto->getText();
-
-                if (empty($searchTerm)) {
-                    return;
-                }
 
                 $isFilename = preg_match('/^[a-zA-Z0-9._-]+$/', $searchTerm)
                     && preg_match('/\./', $searchTerm)

@@ -16,7 +16,7 @@ class AssetLibSearchQueryManager
      *
      * @return BoolQuery
      */
-    public function applySearch(BoolQuery $boolQuery, ?LibraryFormDto $formDto = null, bool &$sortByRelevance): BoolQuery
+    public function applySearch(BoolQuery $boolQuery, ?LibraryFormDto $formDto, bool &$sortByRelevance): BoolQuery
     {
         $searchTerm = (string) $formDto?->getQuery();
 
@@ -40,7 +40,7 @@ class AssetLibSearchQueryManager
             $searchTerm = preg_replace('/\s+/', ' AND ', $searchTerm);
         }
 
-        $queryStringQuery->setQuery($searchTerm);
+        $queryStringQuery->setQuery((string) $searchTerm);
 
         $boolQuery->addMust($queryStringQuery);
 
