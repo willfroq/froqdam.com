@@ -62,8 +62,6 @@ final class BuildProjectFromPayload
             ->addConditionParam('o_path = ?', $projectPath)
             ->load();
 
-        $project = null;
-
         $projectFromPayload = new ProjectFromPayload(
             projectCode: $projectData['projectCode'] ?? '',
             projectName: $projectData['projectName'] ?? '',

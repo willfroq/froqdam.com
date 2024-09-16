@@ -11,7 +11,6 @@ use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\SupplierFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
 use Pimcore\Model\DataObject;
-use Pimcore\Model\DataObject\Folder;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Supplier;
 
@@ -63,19 +62,24 @@ final class BuildSupplierFromPayload
             supplierEmail: $supplierData['supplierEmail'] ?? '',
         );
 
-        $supplierCode = (string) $supplierFromPayload->supplierCode;
-
         $supplierPath = $rootSupplierFolder.AssetResourceOrganizationFolderNames::Suppliers->readable().'/';
 
         $supplier = (new Supplier\Listing())
-            ->addConditionParam('o_key = ?', $supplierCode)
+            ->addConditionParam('o_key = ?', $supplierFromPayload->supplierCode)
             ->addConditionParam('o_path = ?', $supplierPath)
+            ->addConditionParam('Code = ?', $supplierFromPayload->supplierCode)
+            ->addConditionParam('Company = ?', $supplierFromPayload->supplierCompany)
+            ->addConditionParam('Contact = ?', $supplierFromPayload->supplierContact)
+            ->addConditionParam('StreetName = ?', $supplierFromPayload->supplierStreetName)
+            ->addConditionParam('StreetNumber = ?', $supplierFromPayload->supplierStreetNumber)
+            ->addConditionParam('PostalCode = ?', $supplierFromPayload->supplierPostalCode)
+            ->addConditionParam('Email = ?', $supplierFromPayload->supplierEmail)
             ->current();
 
         if (!($supplier instanceof Supplier)) {
             $supplier = new Supplier();
 
-            $supplier->setCode($supplierCode);
+            $supplier->setCode($supplierFromPayload->supplierCode);
             $supplier->setCompany($supplierFromPayload->supplierCompany);
             $supplier->setContact($supplierFromPayload->supplierContact);
             $supplier->setStreetName($supplierFromPayload->supplierStreetName);
@@ -83,46 +87,52 @@ final class BuildSupplierFromPayload
             $supplier->setPostalCode($supplierFromPayload->supplierPostalCode);
             $supplier->setPhoneNumber($supplierFromPayload->supplierPhoneNumber);
             $supplier->setEmail($supplierFromPayload->supplierEmail);
-        }
 
-        if (empty($supplierCode)) {
-            $supplier->setCode($supplierCode);
-        }
-
-        if (empty($supplierFromPayload->supplierCompany)) {
-            $supplier->setCompany($supplierFromPayload->supplierCompany);
-        }
-
-        if (empty($supplierFromPayload->supplierContact)) {
-            $supplier->setContact($supplierFromPayload->supplierContact);
-        }
-
-        if (empty($supplierFromPayload->supplierStreetName)) {
-            $supplier->setStreetName($supplierFromPayload->supplierStreetName);
-        }
-
-        if (empty($supplierFromPayload->supplierStreetNumber)) {
-            $supplier->setStreetNumber($supplierFromPayload->supplierStreetNumber);
-        }
-
-        if (empty($supplierFromPayload->supplierPostalCode)) {
-            $supplier->setPostalCode($supplierFromPayload->supplierPostalCode);
-        }
-
-        if (empty($supplierFromPayload->supplierPhoneNumber)) {
-            $supplier->setPhoneNumber($supplierFromPayload->supplierPhoneNumber);
-        }
-
-        if (empty($supplierFromPayload->supplierEmail)) {
-            $supplier->setEmail($supplierFromPayload->supplierEmail);
-        }
-
-        if ($parentSupplierFolder instanceof Folder) {
             $supplier->setPublished(true);
             $supplier->setParentId((int) $parentSupplierFolder->getId());
-            $supplier->setKey($supplierCode);
+            $supplier->setKey((string) $supplierFromPayload->supplierCode);
 
             $supplier->save();
+
+            return;
         }
+
+        if (empty($supplier->getCode())) {
+            $supplier->setCode($supplierFromPayload->supplierCode);
+        }
+
+        if (empty($supplier->getCompany())) {
+            $supplier->setCompany($supplierFromPayload->supplierCompany);
+        }
+
+        if (empty($supplier->getContact())) {
+            $supplier->setContact($supplierFromPayload->supplierContact);
+        }
+
+        if (empty($supplier->getStreetName())) {
+            $supplier->setStreetName($supplierFromPayload->supplierStreetName);
+        }
+
+        if (empty($supplier->getStreetNumber())) {
+            $supplier->setStreetNumber($supplierFromPayload->supplierStreetNumber);
+        }
+
+        if (empty($supplier->getPostalCode())) {
+            $supplier->setPostalCode($supplierFromPayload->supplierPostalCode);
+        }
+
+        if (empty($supplier->getPhoneNumber())) {
+            $supplier->setPhoneNumber($supplierFromPayload->supplierPhoneNumber);
+        }
+
+        if (empty($supplier->getEmail())) {
+            $supplier->setEmail($supplierFromPayload->supplierEmail);
+        }
+
+        $supplier->setPublished(true);
+        $supplier->setParentId((int) $parentSupplierFolder->getId());
+        $supplier->setKey((string) $supplierFromPayload->supplierCode);
+
+        $supplier->save();
     }
 }

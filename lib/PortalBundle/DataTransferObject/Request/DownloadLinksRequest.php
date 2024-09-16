@@ -13,7 +13,7 @@ final class DownloadLinksRequest
 {
     public function __construct(/** @phpstan-ignore-line */
         #[NotBlank(message: 'AssetResourceIds can not be blank.')]
-                             /** @var array<int, int> $assetResourceIds */
+        /** @var array<int, int> $assetResourceIds */
         public readonly array $assetResourceIds,
         public readonly User $user,
         /** @var array<int, ValidationError> $errors */

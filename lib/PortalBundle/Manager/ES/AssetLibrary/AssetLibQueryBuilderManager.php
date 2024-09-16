@@ -15,12 +15,12 @@ class AssetLibQueryBuilderManager
 {
     public function __construct(
         private readonly ElasticsearchClientInterface $assetLibraryElasticsearchClient,
-        private readonly AssetLibSearchQueryManager   $searchQueryManager,
-        private readonly AssetLibSortManager          $sortManager,
-        private readonly AssetLibFilterManager        $filterManager,
-        private readonly AssetLibAggregationsManager  $aggregationsManager,
+        private readonly AssetLibSearchQueryManager $searchQueryManager,
+        private readonly AssetLibSortManager $sortManager,
+        private readonly AssetLibFilterManager $filterManager,
+        private readonly AssetLibAggregationsManager $aggregationsManager,
         private readonly AssetLibQueryResponseManager $queryResponseManager,
-        private readonly ApplicationLogger            $logger)
+        private readonly ApplicationLogger $logger)
     {
     }
 

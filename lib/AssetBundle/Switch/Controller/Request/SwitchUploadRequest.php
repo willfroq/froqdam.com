@@ -10,6 +10,7 @@ use Froq\AssetBundle\Switch\Validator\IsFilename;
 use Froq\AssetBundle\Switch\Validator\IsJsonMaxOneLevelArray;
 use Froq\AssetBundle\Switch\Validator\IsJsonMaxThreeLevelsDeep;
 use Froq\AssetBundle\Switch\Validator\OrganizationExists;
+use Froq\AssetBundle\Switch\Validator\OrganizationKeyAndNameMustBeEqual;
 use Froq\PortalBundle\Api\ValueObject\ValidationError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -27,6 +28,7 @@ final class SwitchUploadRequest
         public readonly string $filename,
         #[NotBlank(message: 'CustomerCode can not be blank.')]
         #[OrganizationExists]
+        #[OrganizationKeyAndNameMustBeEqual]
         public readonly string $customerCode,
         #[CustomerAssetFolderExists]
         public readonly ?string $customAssetFolder,

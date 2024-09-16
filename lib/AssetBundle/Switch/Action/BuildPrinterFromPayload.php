@@ -10,7 +10,6 @@ use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\PrinterFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
 use Pimcore\Model\DataObject;
-use Pimcore\Model\DataObject\Folder;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\Printer;
 
@@ -39,7 +38,7 @@ final class BuildPrinterFromPayload
             ->addConditionParam('o_path = ?', $rootPrinterFolder)
             ->current();
 
-        $printerData = (array) json_decode($switchUploadRequest->printerData, true);
+        $printerData = (array)json_decode($switchUploadRequest->printerData, true);
 
         if (!isset($printerData['printingProcess'])) {
             return;
@@ -60,13 +59,16 @@ final class BuildPrinterFromPayload
             substrateMaterial: $printerData['substrateMaterial'] ?? '',
         );
 
-        $printerKey = $printerFromPayload->printingProcess;
-
-        $printerPath = $rootPrinterFolder.AssetResourceOrganizationFolderNames::Printers->readable().'/';
+        $printerPath = $rootPrinterFolder . AssetResourceOrganizationFolderNames::Printers->readable() . '/';
 
         $printer = (new Printer\Listing())
-            ->addConditionParam('o_key = ?', $printerKey)
+            ->addConditionParam('PrintingProcess = ?', $printerFromPayload->printingProcess)
+            ->addConditionParam('PrintingWorkflow = ?', $printerFromPayload->printingWorkflow)
+            ->addConditionParam('PrintingWorkflow = ?', $printerFromPayload->printingWorkflow)
+            ->addConditionParam('EpsonMaterial = ?', $printerFromPayload->epsonMaterial)
+            ->addConditionParam('SubstrateMaterial = ?', $printerFromPayload->substrateMaterial)
             ->addConditionParam('o_path = ?', $printerPath)
+            ->addConditionParam('o_key = ?', $printerFromPayload->printingProcess)
             ->current();
 
         if (!($printer instanceof Printer)) {
@@ -76,32 +78,40 @@ final class BuildPrinterFromPayload
             $printer->setPrintingWorkflow($printerFromPayload->printingWorkflow);
             $printer->setEpsonMaterial($printerFromPayload->epsonMaterial);
             $printer->setSubstrateMaterial($printerFromPayload->substrateMaterial);
+
+            // TODO Printer, PrintingInks
+
+            $printer->setPublished(true);
+            $printer->setParentId((int)$parentPrinterFolder->getId());
+            $printer->setKey((string)$printerFromPayload->printingProcess);
+
+            $printer->save();
+
+            return;
         }
 
-        if (empty($printerFromPayload->printingProcess)) {
+        if (empty($printer->getPrintingProcess())) {
             $printer->setPrintingProcess($printerFromPayload->printingProcess);
         }
 
-        if (empty($printerFromPayload->printingWorkflow)) {
+        if (empty($printer->getPrintingWorkflow())) {
             $printer->setPrintingWorkflow($printerFromPayload->printingWorkflow);
         }
 
-        if (empty($printerFromPayload->epsonMaterial)) {
+        if (empty($printer->getEpsonMaterial())) {
             $printer->setEpsonMaterial($printerFromPayload->epsonMaterial);
         }
 
-        if (empty($printerFromPayload->substrateMaterial)) {
+        if (empty($printer->getSubstrateMaterial())) {
             $printer->setSubstrateMaterial($printerFromPayload->substrateMaterial);
         }
 
         // TODO Printer, PrintingInks
 
-        if ($parentPrinterFolder instanceof Folder) {
-            $printer->setPublished(true);
-            $printer->setParentId((int) $parentPrinterFolder->getId());
-            $printer->setKey((string) $printerFromPayload->printingProcess);
+        $printer->setPublished(true);
+        $printer->setParentId((int)$parentPrinterFolder->getId());
+        $printer->setKey((string)$printerFromPayload->printingProcess);
 
-            $printer->save();
-        }
+        $printer->save();
     }
 }

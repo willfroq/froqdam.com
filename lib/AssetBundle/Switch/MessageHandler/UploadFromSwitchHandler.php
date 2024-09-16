@@ -6,7 +6,6 @@ namespace Froq\AssetBundle\Switch\MessageHandler;
 
 use Doctrine\DBAL\Driver\Exception;
 use Froq\AssetBundle\Switch\Action\BuildSwitchUploadResponse;
-use Froq\AssetBundle\Switch\Action\DeleteTemporaryFile;
 use Froq\AssetBundle\Switch\Action\Email\SendCriticalErrorEmail;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Message\UploadFromSwitch;
@@ -23,7 +22,6 @@ final class UploadFromSwitchHandler
         private readonly BuildSwitchUploadResponse $buildSwitchUploadResponse,
         private readonly ApplicationLogger $applicationLogger,
         private readonly ImplodeAssociativeArray $implodeAssociativeArray,
-        private readonly DeleteTemporaryFile $deleteTemporaryFile,
         private readonly SendCriticalErrorEmail $sendCriticalErrorEmail
     ) {
     }
@@ -55,8 +53,6 @@ final class UploadFromSwitchHandler
             );
 
             $this->applicationLogger->info(message: ($this->implodeAssociativeArray)($response->toArray()));
-
-            ($this->deleteTemporaryFile)($uploadFromSwitch->temporaryFilePath);
         } catch (\Exception $exception) {
             $this->applicationLogger->error(message: $exception->getMessage());
 

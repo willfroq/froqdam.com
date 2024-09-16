@@ -51,4 +51,17 @@ final class MessengerRepository
 
         return (int) $statement->executeQuery()->fetchOne(); /** @phpstan-ignore-line */
     }
+
+    /**
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
+     */
+    public function hasSwitchUploadQueued(): bool
+    {
+        $sql = "SELECT id FROM messenger_messages WHERE queue_name = 'switch_upload'";
+
+        $statement = Db::get()->prepare($sql);
+
+        return (bool) $statement->executeQuery()->fetchOne(); /** @phpstan-ignore-line */
+    }
 }

@@ -16,7 +16,7 @@ class AssetLibSortManager
     public const DEFAULT_SORT_DIRECTION = 'desc';
 
     public function __construct(private readonly AssetLibMappingManager $mappingManager,
-                                private readonly SortConfigurationManager $sortConfigManager)
+        private readonly SortConfigurationManager $sortConfigManager)
     {
     }
 

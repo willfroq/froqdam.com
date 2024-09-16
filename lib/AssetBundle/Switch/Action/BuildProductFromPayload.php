@@ -90,7 +90,11 @@ final class BuildProductFromPayload
             throw new \Exception(message: 'BuildProductFromPayload: No container folder i.e. /Customers/org-name/Assets/filename');
         }
 
-        $product = Product::getByEAN((string) $productFromPayload->productEAN)?->current(); /** @phpstan-ignore-line */
+        $product = (new Product\Listing())
+            ->addConditionParam('EAN = ?', $productFromPayload->productEAN)
+            ->addConditionParam('o_path = ?', '/Customers/' . $organization->getName() . '/' . AssetResourceOrganizationFolderNames::Products->readable() . '/')
+            ->current();
+
         if ($product instanceof Product) {
             ($this->updateProduct)(
                 $product,
@@ -106,7 +110,11 @@ final class BuildProductFromPayload
             return;
         }
 
-        $product = Product::getBySKU((string) $productFromPayload->productSKU)?->current(); /** @phpstan-ignore-line */
+        $product = (new Product\Listing())
+            ->addConditionParam('SKU = ?', $productFromPayload->productEAN)
+            ->addConditionParam('o_path = ?', '/Customers/' . $organization->getName() . '/' . AssetResourceOrganizationFolderNames::Products->readable() . '/')
+            ->current();
+
         if ($product instanceof Product) {
             ($this->updateProduct)(
                 $product,

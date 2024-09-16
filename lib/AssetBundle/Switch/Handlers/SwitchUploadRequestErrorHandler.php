@@ -8,6 +8,7 @@ use Froq\AssetBundle\Switch\Action\Email\SendCriticalErrorEmail;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadResponse;
 use Froq\AssetBundle\Switch\Enum\LogLevelNames;
+use Froq\PortalBundle\Repository\OrganizationRepository;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\DataObject\AssetType;
 use Pimcore\Model\DataObject\Organization;
@@ -16,8 +17,11 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 final class SwitchUploadRequestErrorHandler
 {
-    public function __construct(private readonly ApplicationLogger $logger, private readonly SendCriticalErrorEmail $sendCriticalErrorEmail)
-    {
+    public function __construct(
+        private readonly ApplicationLogger $logger,
+        private readonly SendCriticalErrorEmail $sendCriticalErrorEmail,
+        private readonly OrganizationRepository $organizationRepository
+    ) {
     }
 
     /** @param array<int, string> $actions
@@ -30,7 +34,8 @@ final class SwitchUploadRequestErrorHandler
         ?SwitchUploadResponse &$switchUploadResponse,
         array $actions
     ): void {
-        $organization = Organization::getByCode($switchUploadRequest->customerCode)->current(); /** @phpstan-ignore-line */
+        $organization = $this->organizationRepository->getByOrganizationCode($switchUploadRequest->customerCode);
+
         if (!($organization instanceof Organization)) {
             $message = sprintf('Organization Code: %s does not exist.', $switchUploadRequest->customerCode);
 
