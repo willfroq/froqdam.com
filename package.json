@@ -25,6 +25,7 @@
     "production": "mix --production"
   },
   "dependencies": {
+    "copy-to-clipboard": "^3.3.3",
     "three": "^0.153.0"
   }
 }
