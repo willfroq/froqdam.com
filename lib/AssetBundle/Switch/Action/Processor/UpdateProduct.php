@@ -7,10 +7,8 @@ namespace Froq\AssetBundle\Switch\Action\Processor;
 use Froq\AssetBundle\Switch\Action\BuildCategoryFromPayload;
 use Froq\AssetBundle\Switch\Action\BuildProductContentsFromPayload;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
-use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\CategoryFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\ProductFromPayload;
-use Froq\AssetBundle\Utility\IsPathExists;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Fieldcollection;
@@ -23,7 +21,6 @@ final class UpdateProduct
     public function __construct(
         private readonly BuildCategoryFromPayload $buildCategoryFromPayload,
         private readonly BuildProductContentsFromPayload $buildProductContentsFromPayload,
-        private readonly IsPathExists $isPathExists,
     ) {
     }
 
@@ -92,16 +89,13 @@ final class UpdateProduct
         $assetResources = array_values(array_unique($recentAssetResources));
 
         $productKey = (string) $productFromPayload->productName;
-        $productPath = $rootProductFolder.AssetResourceOrganizationFolderNames::Products->readable().'/';
 
-        if (!($this->isPathExists)($productKey, $productPath)) {
-            $product->setAssets($assetResources);
-            $product->setParentId((int) $parentProductFolder->getId());
-            $product->setPublished(true);
+        $product->setAssets($assetResources);
+        $product->setParentId((int) $parentProductFolder->getId());
+        $product->setPublished(true);
 
-            if (empty($product->getKey())) {
-                $product->setKey($productKey);
-            }
+        if (empty($product->getKey())) {
+            $product->setKey($productKey);
         }
 
         $product->save();
