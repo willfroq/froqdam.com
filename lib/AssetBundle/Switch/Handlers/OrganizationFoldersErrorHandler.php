@@ -17,7 +17,7 @@ final class OrganizationFoldersErrorHandler
             empty($organization->getAssetFolder()) ||
             empty($organization->getAssetResourceFolders())
         ) {
-            $message = 'There\'s no organization AssetFolder or ObjectFolder or AssetResource paths specified. Creating them also failed, please make them manually.';
+            $message = 'OrganizationFoldersErrorHandler: There\'s no organization AssetFolder or ObjectFolder or AssetResource paths specified. Creating them also failed, please make them manually.';
 
             $actions[] = $message;
             $actions[] = 'REVERTING TO PREVIOUS STATE!!!';

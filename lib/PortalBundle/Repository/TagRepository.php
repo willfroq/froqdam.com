@@ -31,4 +31,17 @@ final class TagRepository
 
         return null;
     }
+
+    public function getTagByCode(string $code): ?Tag
+    {
+        $tag = (new Tag\Listing())
+            ->addConditionParam('Code = ?', $code)
+            ->current();
+
+        if (!($tag instanceof Tag)) {
+            return null;
+        }
+
+        return $tag;
+    }
 }

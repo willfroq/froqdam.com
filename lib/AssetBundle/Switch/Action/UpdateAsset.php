@@ -90,7 +90,7 @@ final class UpdateAsset
                 throw new \Exception(message: $exception->getMessage());
             }
 
-            $message = sprintf('%s is not an Asset. File might be broken.', $asset);
+            $message = sprintf('Update Asset line:93: %s is not an Asset. File might be broken.', $asset);
 
             $actions[] = $message;
             $actions[] = 'REVERTING TO PREVIOUS STATE!!!';

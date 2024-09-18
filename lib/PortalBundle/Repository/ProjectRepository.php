@@ -55,4 +55,43 @@ final class ProjectRepository
 
         return null;
     }
+
+    public function getByProjectCode(string $code): ?Project
+    {
+        $project = (new Project\Listing())
+            ->addConditionParam('Code = ?', $code)
+            ->current();
+
+        if (!($project instanceof Project)) {
+            return null;
+        }
+
+        return $project;
+    }
+
+    public function getByPimProjectNumber(string $code): ?Project
+    {
+        $project = (new Project\Listing())
+            ->addConditionParam('pim_project_number = ?', $code)
+            ->current();
+
+        if (!($project instanceof Project)) {
+            return null;
+        }
+
+        return $project;
+    }
+
+    public function getByFroqProjectNumber(string $code): ?Project
+    {
+        $project = (new Project\Listing())
+            ->addConditionParam('froq_project_number = ?', $code)
+            ->current();
+
+        if (!($project instanceof Project)) {
+            return null;
+        }
+
+        return $project;
+    }
 }

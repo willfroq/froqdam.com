@@ -59,19 +59,25 @@ final class CreateAsset
 
         $filename = $switchUploadRequest->filename;
         $asset = null;
-        $assetFolderContainer = null;
-        $newAssetVersionFolder = null;
 
+        $assetFolderContainer = Asset\Folder::getByPath($assetFolderPath.$filename);
+        $newAssetVersionFolder = Asset\Folder::getByPath($assetFolderPath."$filename/1");
         $assetFolder = Asset\Folder::getByPath($assetFolderPath);
 
-        if ($assetFolder instanceof Asset\Folder) {
+        if (!($assetFolderContainer instanceof Asset\Folder)) {
             $assetFolderContainer = new Asset\Folder();
+        }
+
+        if (!($newAssetVersionFolder instanceof Asset\Folder)) {
+            $newAssetVersionFolder = new Asset\Folder();
+        }
+
+        if ($assetFolder instanceof Asset\Folder) {
             $assetFolderContainer->setParent($assetFolder);
             $assetFolderContainer->setFilename($filename);
             $assetFolderContainer->setPath($assetFolderPath);
             $assetFolderContainer->save();
 
-            $newAssetVersionFolder = new Asset\Folder();
             $newAssetVersionFolder->setParent($assetFolderContainer);
             $newAssetVersionFolder->setFilename('1');
             $newAssetVersionFolder->setPath($assetFolderPath."$filename/");
@@ -85,13 +91,13 @@ final class CreateAsset
         if (!($asset instanceof Asset)) {
             try {
                 $asset?->delete(); /** @phpstan-ignore-line */
-                $assetFolderContainer?->delete();
-                $newAssetVersionFolder?->delete();
+                $assetFolderContainer->delete();
+                $newAssetVersionFolder->delete();
             } catch (\Exception $exception) {
                 throw new \Exception(message: $exception->getMessage());
             }
 
-            $message = 'No Asset created. Make sure there is a file and it\'s not broken.';
+            $message = 'CreateAsset line:94: No Asset created. Make sure there is a file and it\'s not broken.';
 
             $actions[] = $message;
             $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
@@ -145,8 +151,8 @@ final class CreateAsset
         if (!($parentAssetResource instanceof AssetResource)) {
             try {
                 $parentAssetResource->delete();
-                $assetFolderContainer?->delete();
-                $newAssetVersionFolder?->delete();
+                $assetFolderContainer->delete();
+                $newAssetVersionFolder->delete();
                 $asset->delete();
             } catch (\Exception $exception) {
                 throw new \Exception(message: $exception->getMessage());
@@ -196,8 +202,8 @@ final class CreateAsset
             try {
                 $parentAssetResource->delete();
                 $asset->delete();
-                $assetFolderContainer?->delete();
-                $newAssetVersionFolder?->delete();
+                $assetFolderContainer->delete();
+                $newAssetVersionFolder->delete();
                 $assetResourceVersionOne->delete();
             } catch (\Exception $exception) {
                 throw new \Exception(message: $exception->getMessage());
