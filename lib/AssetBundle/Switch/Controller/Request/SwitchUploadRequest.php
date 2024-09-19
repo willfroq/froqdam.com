@@ -11,8 +11,6 @@ use Froq\AssetBundle\Switch\Validator\IsJsonMaxOneLevelArray;
 use Froq\AssetBundle\Switch\Validator\IsJsonMaxThreeLevelsDeep;
 use Froq\AssetBundle\Switch\Validator\OrganizationExists;
 use Froq\AssetBundle\Switch\Validator\OrganizationKeyAndNameMustBeEqual;
-use Froq\AssetBundle\Switch\Validator\ProjectExists;
-use Froq\AssetBundle\Switch\Validator\TagExists;
 use Froq\PortalBundle\Api\ValueObject\ValidationError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -49,11 +47,9 @@ final class SwitchUploadRequest
         public readonly string $productData,
         #[Assert\Json(message: 'TagData is not a valid JSON')]
         #[IsJsonMaxOneLevelArray]
-        #[TagExists]
         public readonly string $tagData,
         #[Assert\Json(message: 'ProjectData is not a valid JSON')]
         #[IsJsonMaxThreeLevelsDeep]
-        #[ProjectExists]
         public readonly string $projectData,
         #[Assert\Json(message: 'PrinterData is not a valid JSON')]
         #[IsJsonMaxThreeLevelsDeep]

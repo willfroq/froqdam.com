@@ -53,12 +53,6 @@ final class BuildTags
             return [];
         }
 
-        $tagPath = $rootTagFolder.AssetResourceOrganizationFolderNames::Tags->readable().'/';
-
-        $existingTags = (new Tag\Listing())
-            ->addConditionParam('o_path = ?', $tagPath)
-            ->load();
-
         $newTags = [];
 
         foreach ($tagData as $tagDatum) {
@@ -70,8 +64,8 @@ final class BuildTags
 
             $tagFromPayload = new TagFromPayload(code: (string) $tagDatum['code'], name: $tagDatum['name'] ?? '');
 
-            if ($this->tagRepository->isPayloadTagCodeExistsInExistingTags($existingTags, (string) $tagFromPayload->code)) {
-                $tag = $this->tagRepository->getTagFromExistingTags($existingTags, (string) $tagFromPayload->code);
+            if ($this->tagRepository->isTagExists((string) $tagFromPayload->code)) {
+                $tag = $this->tagRepository->getTagByCode((string) $tagFromPayload->code);
 
                 if ($tag instanceof Tag) {
                     $tag->setCode($tagFromPayload->code);
@@ -84,7 +78,7 @@ final class BuildTags
                 }
             }
 
-            if (!$this->tagRepository->isPayloadTagCodeExistsInExistingTags($existingTags, (string) $tagFromPayload->code)) {
+            if (!$this->tagRepository->isTagExists((string) $tagFromPayload->code)) {
                 $tag = new Tag();
 
                 $tag->setCode($tagFromPayload->code);

@@ -8,30 +8,6 @@ use Pimcore\Model\DataObject\Tag;
 
 final class TagRepository
 {
-    /** @param array<int, Tag> $existingTags */
-    public function isPayloadTagCodeExistsInExistingTags(array $existingTags, string $tagCode): bool
-    {
-        foreach ($existingTags as $tag) {
-            if ($tag->getCode() === $tagCode) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /** @param array<int, Tag> $existingTags */
-    public function getTagFromExistingTags(array $existingTags, string $tagCode): ?Tag
-    {
-        foreach ($existingTags as $tag) {
-            if ($tag->getCode() === $tagCode) {
-                return $tag;
-            }
-        }
-
-        return null;
-    }
-
     public function getTagByCode(string $code): ?Tag
     {
         $tag = (new Tag\Listing())
@@ -43,5 +19,18 @@ final class TagRepository
         }
 
         return $tag;
+    }
+
+    public function isTagExists(string $code): bool
+    {
+        $tag = (new Tag\Listing())
+            ->addConditionParam('Code = ?', $code)
+            ->current();
+
+        if (!($tag instanceof Tag)) {
+            return false;
+        }
+
+        return true;
     }
 }
