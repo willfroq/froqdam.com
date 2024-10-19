@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Froq\PortalBundle\ESPropertyMapping;
 
+use Carbon\Carbon;
 use Froq\PortalBundle\ESPropertyMapping\Traits\NestedFieldMapperTrait;
 use Froq\PortalBundle\Helper\AssetResourceHierarchyHelper;
 use Pimcore\Model\DataObject\AssetResource;
@@ -65,8 +66,14 @@ class NestedFieldMapper implements
             explode('.', $this->getConfiguration(self::CONFIG_NESTED_FIELD))
         );
 
+        foreach ($values ?? [] as &$value) {
+            if ($value instanceof Carbon) {
+                $value = $value->toDateTimeString();
+            }
+        }
+
         if ($values && count($values) === 1) {
-            return $values[0];
+            return $values[0] instanceof Carbon ? $values[0]->toDateTimeString() : $values[0];
         }
 
         return $values;

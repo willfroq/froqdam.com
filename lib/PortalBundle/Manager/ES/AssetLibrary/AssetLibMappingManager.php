@@ -114,8 +114,17 @@ class AssetLibMappingManager
     public function isKeywordFilterAvailableForUser(User $user, string $filterID): bool
     {
         $mapping = $this->getFiltersMapping($user);
+
         if (!isset($mapping[$filterID])) {
             return false;
+        }
+
+        if ($mapping[$filterID] === 'pdf_text') {
+            return false;
+        }
+
+        if ($mapping[$filterID]['type'] === MappingTypes::MAPPING_TYPE_TEXT) {
+            return true;
         }
 
         if ($mapping[$filterID]['type'] === MappingTypes::MAPPING_TYPE_KEYWORD) {

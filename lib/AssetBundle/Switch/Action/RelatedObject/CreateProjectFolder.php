@@ -21,7 +21,7 @@ final class CreateProjectFolder
             ->current();
 
         if (!($containerFolder instanceof DataObject\Folder)) {
-            throw new \Exception(message: 'CreateProjectFolder: No container folder i.e. /Customers/org-name');
+            throw new \Exception(message: sprintf('CreateProjectFolder: No container folder i.e. /Customers/org-name. Path: %s does not exist!!!', '/Customers/' . $organization->getKey() . '/'));
         }
 
         $parentProjectFolder = new DataObject\Folder();
@@ -32,7 +32,7 @@ final class CreateProjectFolder
         try {
             $parentProjectFolder->save();
         } catch (\Exception $exception) {
-            throw new \Exception(message: $exception->getMessage());
+            throw new \Exception(message: $exception->getMessage() . 'CreateProjectFolder.php line: 37');
         }
 
         return $parentProjectFolder;

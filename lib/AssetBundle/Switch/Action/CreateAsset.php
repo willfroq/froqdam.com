@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Switch\Action;
 
+use Carbon\Carbon;
 use Doctrine\DBAL\Driver\Exception;
+use Froq\AssetBundle\Action\GetFileDateFromEmbeddedMetadata;
 use Froq\AssetBundle\Switch\Action\Email\SendCriticalErrorEmail;
 use Froq\AssetBundle\Switch\Action\RelatedObject\BuildAssetResourceFolderIfNotExists;
 use Froq\AssetBundle\Switch\Action\RelatedObject\BuildShapeCode;
@@ -39,6 +41,7 @@ final class CreateAsset
         private readonly SendCriticalErrorEmail $sendCriticalErrorEmail,
         private readonly BuildShapeCode $buildShapeCode,
         private readonly BuildAssetResourceFolderIfNotExists $buildAssetResourceFolderIfNotExists,
+        private readonly GetFileDateFromEmbeddedMetadata $getFileDateFromEmbeddedMetadata
     ) {
     }
 
@@ -94,7 +97,7 @@ final class CreateAsset
                 $assetFolderContainer->delete();
                 $newAssetVersionFolder->delete();
             } catch (\Exception $exception) {
-                throw new \Exception(message: $exception->getMessage());
+                throw new \Exception(message: $exception->getMessage() . 'CreateAsset.php line: 97');
             }
 
             $message = 'CreateAsset line:94: No Asset created. Make sure there is a file and it\'s not broken.';
@@ -135,6 +138,9 @@ final class CreateAsset
 
         $tags = ($this->buildTags)($switchUploadRequest, $organization, $actions);
 
+        $fileModifyDate = new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->modifyDate);
+        $fileCreateDate = new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->createDate);
+
         $parentAssetResource = AssetResource::create();
         $parentAssetResource->setPublished(true);
         $parentAssetResource->setPath("$rootAssetResourceFolder/$customAssetFolder/$filename/");
@@ -143,6 +149,8 @@ final class CreateAsset
         $parentAssetResource->setAssetType($assetType);
         $parentAssetResource->setAssetVersion(0);
         $parentAssetResource->setKey($switchUploadRequest->filename);
+        $parentAssetResource->setFileModifyDate($fileModifyDate);
+        $parentAssetResource->setFileCreateDate($fileCreateDate);
 
         $parentAssetResource->save();
 
@@ -155,7 +163,7 @@ final class CreateAsset
                 $newAssetVersionFolder->delete();
                 $asset->delete();
             } catch (\Exception $exception) {
-                throw new \Exception(message: $exception->getMessage());
+                throw new \Exception(message: $exception->getMessage() . 'CreateAsset.php line: 158');
             }
 
             $message = sprintf('ParentAssetResource %s does not exist.', $parentAssetResource);
@@ -193,6 +201,8 @@ final class CreateAsset
         $assetResourceVersionOne->setMetadata($assetResourceMetadataFieldCollection);
         $assetResourceVersionOne->setKey('1');
         $assetResourceVersionOne->setTags($tags);
+        $assetResourceVersionOne->setFileModifyDate($fileModifyDate);
+        $assetResourceVersionOne->setFileCreateDate($fileCreateDate);
 
         $assetResourceVersionOne->save();
 
@@ -206,7 +216,7 @@ final class CreateAsset
                 $newAssetVersionFolder->delete();
                 $assetResourceVersionOne->delete();
             } catch (\Exception $exception) {
-                throw new \Exception(message: $exception->getMessage());
+                throw new \Exception(message: $exception->getMessage() . 'CreateAsset.php line: 209');
             }
 
             $message = sprintf('AssetResourceVersionOne %s does not exist.', $assetResourceVersionOne);
@@ -244,8 +254,8 @@ final class CreateAsset
 
         $organization->save();
 
-        ($this->buildProductFromPayload)($switchUploadRequest, [$parentAssetResource], $organization, $actions);
-        ($this->buildProjectFromPayload)($switchUploadRequest, [$parentAssetResource], $organization, $actions);
+        ($this->buildProductFromPayload)($switchUploadRequest, $parentAssetResource, $organization, $actions);
+        ($this->buildProjectFromPayload)($switchUploadRequest, $parentAssetResource, $organization, $actions);
         ($this->buildPrinterFromPayload)($switchUploadRequest, $organization, $actions);
         ($this->buildSupplierFromPayload)($switchUploadRequest, $organization, $actions);
 

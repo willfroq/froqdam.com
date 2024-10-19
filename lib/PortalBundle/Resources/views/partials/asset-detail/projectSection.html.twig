@@ -24,41 +24,47 @@
 
                         {% if settings.projectSectionItems.data.project_pim_project_number.enabled and project.pim_project_number %}
                             <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'projectSectionItems', 'project_pim_project_number') }}</dt>
-                            <dd>
-                                {% if project.pim_project_number and is_asset_library_keyword_filter_available_for_user(user, 'project_pim_project_number' ) %}
-                                    <a href="{{ url('froq_portal.asset_library.search', {'filters': {'project_pim_project_number': [project.pim_project_number | lower ]}}) | raw }}">
-                                        {{ project.pim_project_number }}
-                                    </a>
-                                {% else %}
-                                    {{ project.pim_project_number|default('-') }}
-                                {% endif %}
-                            </dd>
+
+                            {% set keywordFieldUrl = url('froq_portal.asset_library.search', {'filters': {'project_pim_project_number': [project.pim_project_number | lower ]}}) | raw %}
+                            {% set textFieldUrl = url('froq_portal.asset_library.search', {'filters': {'project_pim_project_number_text': '"'~project.pim_project_number~'"'}}) | raw %}
+
+                            <twig:FieldValue :user="user"
+                                             :fieldValue="project.pim_project_number"
+                                             :keywordFieldName="'project_pim_project_number'"
+                                             :textFieldName="'project_pim_project_number_text'"
+                                             :keywordFieldUrl="keywordFieldUrl"
+                                             :textFieldUrl="textFieldUrl"
+                            />
                         {% endif %}
 
                         {% if settings.projectSectionItems.data.project_name.enabled and project.name %}
                             <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'projectSectionItems', 'project_name') }}</dt>
-                            <dd>
-                                {% if project.name and is_asset_library_keyword_filter_available_for_user(user, 'project_name' ) %}
-                                    <a href="{{ url('froq_portal.asset_library.search', {'filters': {'project_name': [project.name | lower ]}}) | raw }}">
-                                        {{ project.name }}
-                                    </a>
-                                {% else %}
-                                    {{ project.name|default('-') }}
-                                {% endif %}
-                            </dd>
+
+                            {% set keywordFieldUrl = url('froq_portal.asset_library.search', {'filters': {'project_name': [project.name | lower ]}}) | raw %}
+                            {% set textFieldUrl = url('froq_portal.asset_library.search', {'filters': {'project_name_text': '"'~project.name~'"'}}) | raw %}
+
+                            <twig:FieldValue :user="user"
+                                             :fieldValue="project.name"
+                                             :keywordFieldName="'project_name'"
+                                             :textFieldName="'project_name_text'"
+                                             :keywordFieldUrl="keywordFieldUrl"
+                                             :textFieldUrl="textFieldUrl"
+                            />
                         {% endif %}
 
                         {% if settings.projectSectionItems.data.project_froq_project_number.enabled and project.froq_project_number %}
                             <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'projectSectionItems', 'project_froq_project_number') }}</dt>
-                            <dd>
-                                {% if project.froq_project_number and is_asset_library_keyword_filter_available_for_user(user, 'project_froq_project_number' ) %}
-                                    <a href="{{ url('froq_portal.asset_library.search', {'filters': {'project_froq_project_number': [project.froq_project_number | lower ]}}) | raw }}">
-                                        {{ project.froq_project_number }}
-                                    </a>
-                                {% else %}
-                                    {{ project.froq_project_number|default('-') }}
-                                {% endif %}
-                            </dd>
+
+                            {% set keywordFieldUrl = url('froq_portal.asset_library.search', {'filters': {'project_froq_project_number': [project.froq_project_number | lower ]}}) | raw %}
+                            {% set textFieldUrl = url('froq_portal.asset_library.search', {'filters': {'project_froq_project_number_text': '"'~project.froq_project_number~'"'}}) | raw %}
+
+                            <twig:FieldValue :user="user"
+                                             :fieldValue="project.froq_project_number"
+                                             :keywordFieldName="'project_froq_project_number'"
+                                             :textFieldName="'project_froq_project_number_text'"
+                                             :keywordFieldUrl="keywordFieldUrl"
+                                             :textFieldUrl="textFieldUrl"
+                            />
                         {% endif %}
 
                         {% if settings.projectSectionItems.data.customer.enabled %}
@@ -76,15 +82,17 @@
 
                         {% if settings.projectSectionItems.data.project_froq_name.enabled and project.froq_name %}
                             <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'projectSectionItems', 'project_froq_name') }}</dt>
-                            <dd>
-                                {% if project.froq_name and project.froq_project_number and is_asset_library_keyword_filter_available_for_user(user, 'project_froq_name' ) %}
-                                    <a href="{{ url('froq_portal.asset_library.search', {'filters': {'project_froq_name': [project.froq_name | lower ]}}) | raw }}">
-                                        {{ project.froq_name }}
-                                    </a>
-                                {% else %}
-                                    {{ project.froq_name|default('-') }}
-                                {% endif %}
-                            </dd>
+
+                            {% set keywordFieldUrl = url('froq_portal.asset_library.search', {'filters': {'project_froq_name': [project.froq_name | lower ]}}) | raw %}
+                            {% set textFieldUrl = url('froq_portal.asset_library.search', {'filters': {'project_froq_name_text': '"'~project.froq_name~'"'}}) | raw %}
+
+                            <twig:FieldValue :user="user"
+                                             :fieldValue="project.froq_name"
+                                             :keywordFieldName="'project_froq_name'"
+                                             :textFieldName="'project_froq_name_text'"
+                                             :keywordFieldUrl="keywordFieldUrl"
+                                             :textFieldUrl="textFieldUrl"
+                            />
                         {% endif %}
                     </dl>
                 {% endfor %}

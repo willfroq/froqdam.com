@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Switch\Action\Processor;
 
+use Doctrine\DBAL\Driver\Exception;
 use Froq\AssetBundle\Switch\Action\BuildCategoryFromPayload;
 use Froq\AssetBundle\Switch\Action\BuildProductContentsFromPayload;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\ValueObject\CategoryFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\ProductFromPayload;
+use Pimcore\Db;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Fieldcollection;
@@ -27,22 +29,22 @@ final class CreateProduct
     /**
      * @param Organization $organization
      * @param ProductFromPayload $productFromPayload
-     * @param array<int, AssetResource> $assetResources
      * @param string $rootProductFolder
      * @param SwitchUploadRequest $switchUploadRequest
      * @param DataObject $parentProductFolder
      * @param array<int, string> $actions
      *
      * @throws \Exception
+     * @throws Exception
      */
     public function __invoke(
         Organization $organization,
         ProductFromPayload $productFromPayload,
-        array $assetResources,
+        AssetResource $parentAssetResource,
         string $rootProductFolder,
         SwitchUploadRequest $switchUploadRequest,
         DataObject $parentProductFolder,
-        array $actions
+        array &$actions
     ): void {
         $product = new Product();
 
@@ -59,7 +61,7 @@ final class CreateProduct
         }
 
         if (empty($product->getKey())) {
-            $product->setKey((string) $productFromPayload->productName);
+            $product->setKey($productFromPayload->productEAN . '-' . $productFromPayload->productSKU . '-' . uniqid());
         }
 
         if (isset($productFromPayload->productAttributes) && is_array($productFromPayload->productAttributes)) {
@@ -92,14 +94,47 @@ final class CreateProduct
             $product->setCategories(($this->buildCategoryFromPayload)($productFromPayload->productCategories, $organization, $product, $switchUploadRequest, $actions));
         }
 
-        $recentAssetResources = [...$product->getAssets(), ...$assetResources];
+        $statement = Db::get()->prepare('SELECT Assets FROM object_Product WHERE o_id = ?;');
 
-        $assetResources = array_values(array_unique($recentAssetResources));
+        $statement->bindValue(1, $product->getId(), \PDO::PARAM_INT);
+
+        $relatedAssetResourceIds = array_filter(explode(',', (string) $statement->executeQuery()->fetchOne())); /** @phpstan-ignore-line */
+        $previouslyRelatedAssetResources = [];
+
+        foreach ($relatedAssetResourceIds as $assetResourceId) {
+            $assetResource = AssetResource::getById((int) $assetResourceId);
+
+            if (!($assetResource instanceof AssetResource)) {
+                continue;
+            }
+
+            if (!$assetResource->hasChildren()) {
+                continue;
+            }
+
+            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $product->getEAN())) {
+                $previouslyRelatedAssetResources[] = $assetResource;
+
+                continue;
+            }
+
+            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $product->getSKU())) {
+                $previouslyRelatedAssetResources[] = $assetResource;
+            }
+        }
+
+        $assetResources = array_values(array_filter(array_unique([...$previouslyRelatedAssetResources, $parentAssetResource])));
 
         $product->setAssets($assetResources);
         $product->setParentId((int) $parentProductFolder->getId());
         $product->setPublished(true);
 
         $product->save();
+
+        $actions[] = sprintf(
+            'Product with ID %d is created with related AssetResource ids: %s',
+            $product->getId(),
+            implode(',', array_map(fn (AssetResource $assetResource) => $assetResource->getId(), $assetResources))
+        );
     }
 }

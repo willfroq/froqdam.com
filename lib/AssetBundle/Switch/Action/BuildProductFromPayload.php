@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Switch\Action;
 
+use Doctrine\DBAL\Driver\Exception;
 use Froq\AssetBundle\Switch\Action\Processor\CreateProduct;
 use Froq\AssetBundle\Switch\Action\Processor\UpdateProduct;
 use Froq\AssetBundle\Switch\Action\RelatedObject\CreateProductFolder;
@@ -12,7 +13,6 @@ use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\Handlers\SwitchUploadCriticalErrorHandler;
 use Froq\AssetBundle\Switch\ValueObject\CategoryFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\ProductFromPayload;
-use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Organization;
@@ -22,7 +22,6 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 final class BuildProductFromPayload
 {
     public function __construct(
-        private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
         private readonly CreateProductFolder $createProductFolder,
         private readonly CreateProduct $createProduct,
         private readonly UpdateProduct $updateProduct,
@@ -32,15 +31,16 @@ final class BuildProductFromPayload
 
     /**
      * @param array<int, string> $actions
-     * @param array<int, AssetResource> $assetResources
      *
      * @throws TransportExceptionInterface
-     * @throws \Exception*/
+     * @throws \Exception
+     * @throws Exception
+     */
     public function __invoke(
         SwitchUploadRequest $switchUploadRequest,
-        array $assetResources,
+        AssetResource $parentAssetResource,
         Organization $organization,
-        array $actions,
+        array &$actions,
     ): void {
         $rootProductFolder = $organization->getObjectFolder() . '/';
 
@@ -54,14 +54,6 @@ final class BuildProductFromPayload
         }
 
         $productData = (array) json_decode($switchUploadRequest->productData, true);
-
-        if (!isset($productData['productName'])) {
-            return;
-        }
-
-        if (($this->allPropsEmptyOrNull)($productData)) {
-            return;
-        }
 
         $categories = $productData['productCategories'] ?? null;
 
@@ -82,17 +74,15 @@ final class BuildProductFromPayload
             )
         );
 
-        $parentAssetResource = current($assetResources);
-
         if (!($parentAssetResource instanceof AssetResource)) {
             ($this->switchUploadCriticalErrorHandler)($switchUploadRequest);
 
-            throw new \Exception(message: 'BuildProductFromPayload: No container folder i.e. /Customers/org-name/Assets/filename');
+            throw new \Exception(message: 'BuildProductFromPayload: No container folder i.e. /Customers/org-name/Assets/filename. line: 90');
         }
 
         $product = (new Product\Listing())
             ->addConditionParam('EAN = ?', $productFromPayload->productEAN)
-            ->addConditionParam('o_path = ?', '/Customers/' . $organization->getName() . '/' . AssetResourceOrganizationFolderNames::Products->readable() . '/')
+            ->addConditionParam('o_path = ?', $rootProductFolder . AssetResourceOrganizationFolderNames::Products->readable() . '/')
             ->current();
 
         if ($product instanceof Product) {
@@ -100,7 +90,7 @@ final class BuildProductFromPayload
                 $product,
                 $organization,
                 $productFromPayload,
-                $assetResources,
+                $parentAssetResource,
                 $rootProductFolder,
                 $switchUploadRequest,
                 $parentProductFolder,
@@ -111,8 +101,8 @@ final class BuildProductFromPayload
         }
 
         $product = (new Product\Listing())
-            ->addConditionParam('SKU = ?', $productFromPayload->productEAN)
-            ->addConditionParam('o_path = ?', '/Customers/' . $organization->getName() . '/' . AssetResourceOrganizationFolderNames::Products->readable() . '/')
+            ->addConditionParam('SKU = ?', $productFromPayload->productSKU)
+            ->addConditionParam('o_path = ?', $rootProductFolder . AssetResourceOrganizationFolderNames::Products->readable() . '/')
             ->current();
 
         if ($product instanceof Product) {
@@ -120,7 +110,7 @@ final class BuildProductFromPayload
                 $product,
                 $organization,
                 $productFromPayload,
-                $assetResources,
+                $parentAssetResource,
                 $rootProductFolder,
                 $switchUploadRequest,
                 $parentProductFolder,
@@ -133,7 +123,7 @@ final class BuildProductFromPayload
         ($this->createProduct)(
             $organization,
             $productFromPayload,
-            $assetResources,
+            $parentAssetResource,
             $rootProductFolder,
             $switchUploadRequest,
             $parentProductFolder,

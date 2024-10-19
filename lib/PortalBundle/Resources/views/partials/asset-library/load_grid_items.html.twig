@@ -3,7 +3,8 @@
 {% if items is not empty %}
     {% for assetResource in items %}
         {% set assetResource = get_latest_asset_resource_version(assetResource) %}
-        <app-grid-item class="grid-item card col-span-1 box-border flex flex-col justify-between h-full" data-role="selector-target">
+
+        <app-grid-item class="grid-item card col-span-1 box-border flex flex-col justify-between card-hover">
             <a class="card-link" href="{{ url('froq_portal.asset_library.detail', { 'id' : assetResource.id }) }}">
                 <div class='img-container'>
                     {% for column in columns %}
@@ -15,11 +16,12 @@
                     {% endfor %}
                 </div>
 
-                <twig:Tooltip label="{{ assetResource.asset ?  assetResource.asset.fileName : 'No filename' }}">
+                <div class="tooltip">
+                    <span class="tooltip-text">{{ assetResource.asset ?  assetResource.asset.fileName : 'No filename' }}</span>
                     <h1 class="truncate-text-title title-wrap">
                         {{ assetResource.asset ?  assetResource.asset.fileName : 'No filename' }}
                     </h1>
-                </twig:Tooltip>
+                </div>
 
                 <div class="card-body">
                     <ul>
@@ -43,9 +45,11 @@
                             {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_PROJECT_NAME') %}
                                 <li><p class="m-0 wrap-text"><span>{{ get_available_column_label(columnKey, user)  }}: </span>{{ portal_asset_resource_project_name(assetResource)|default('-')|raw }}</p></li>
                             {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_ASSET_RESOURCE_CREATION_DATE') %}
-                                <li><p class="m-0 wrap-text"><span>{{ get_available_column_label(columnKey, user)  }}: </span>{{ assetResource.creationDate | date("d-m-Y") }}</p></li>
+                                <li><p class="m-0 wrap-text"><span>{{ get_available_column_label(columnKey, user)  }}: </span> {{ assetResource.creationDate | date("d-m-Y") }}</p></li>
                             {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_ASSET_CREATION_DATE') %}
                                 <li><p class="m-0 wrap-text"><span>{{ get_available_column_label(columnKey, user)  }}: </span>{{ assetResource.asset ? (assetResource.asset.creationDate | date("d-m-Y")) : '' }}</p></li>
+                            {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_FILE_CREATE_DATE') %}
+                                <li><p class="m-0 wrap-text"><span>{{ get_available_column_label(columnKey, user)  }}: </span>{{ assetResource.fileCreateDate ? (assetResource.fileCreateDate | date("d-m-Y")) : '' }}</p></li>
                             {% endif %}
                         {% endfor %}
                     </ul>
@@ -59,20 +63,18 @@
                     </a>
                 </div>
 
-                <div class="card-footer justify-around">
-                    <a class="py-2 mx-auto footer-button" href="{{ path('froq_portal.asset_library.detail.download.file', { 'id': assetResource.id }) }}">
-                        <twig:Tooltip label="Download">
-                            <div class="download-icon">{% include '@FroqPortal/icons/download-link.html.twig' %}</div>
-                        </twig:Tooltip>
+                <div class="card-footer justify-around mt-2">
+                    <a class="flex" href="{{ path('froq_portal.asset_library.detail.download.file', { 'id': assetResource.id }) }}">
+                        <div class="download-icon">{% include '@FroqPortal/icons/download-link.html.twig' %}</div>
+
+                        <div class="text">download</div>
                     </a>
-                    <a class="py-2 mx-auto footer-button" href="{{ url('froq_portal.asset_library.detail', { 'id' : assetResource.id }) }}">
-                        <twig:Tooltip label="View">
-                            <div class="view-icon">{% include '@FroqPortal/icons/open-link.html.twig' %}</div>
-                        </twig:Tooltip>
+
+                    <a href="{{ url('froq_portal.asset_library.detail', { 'id' : assetResource.id }) }}">
+                        <div class="view-icon">{% include '@FroqPortal/icons/open-link.html.twig' %}</div>
+
+                        <div class="text">view</div>
                     </a>
-                    <app-selector class="select-element card-footer-element py-2 mx-auto footer-button" trigger-id="selector-trigger" state={{ assetResource.id }}>
-                        <div id="selector-trigger" class="view-icon">{% include '@FroqPortal/icons/basket-add-icon.html.twig' %}</div>
-                    </app-selector>
                 </div>
             </a>
         </app-grid-item>

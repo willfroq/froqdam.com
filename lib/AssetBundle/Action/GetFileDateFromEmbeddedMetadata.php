@@ -15,7 +15,10 @@ final class GetFileDateFromEmbeddedMetadata
      */
     public function __invoke(Asset $asset): ?FileDate
     {
-        /** @var AssetDocument $assetDocument */
+        if (!($asset instanceof AssetDocument)) {
+            return null;
+        }
+
         $assetDocument = $asset;
 
         $metadataCreateDate = isset($assetDocument->getEmbeddedMetaData(force: true)['CreateDate']) ? $assetDocument->getEmbeddedMetaData(force: true)['CreateDate'] : '';

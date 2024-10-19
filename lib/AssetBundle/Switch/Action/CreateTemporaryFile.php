@@ -54,7 +54,7 @@ final class CreateTemporaryFile
 
             ($this->sendCriticalErrorEmail)($request->files->get('filename'));
 
-            throw new FileException(message: $exception->getMessage());
+            throw new FileException(message: $exception->getMessage() . 'CreateTemporaryFile.php line: 57');
         }
 
         return "$destination/$newFilename";

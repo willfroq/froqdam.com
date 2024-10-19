@@ -56,7 +56,7 @@ class AssetLibQueryResponseManager
                 foreach ($aggregationData['buckets'] as $bucket) {
                     $key = $bucket['key'];
                     $docCount = $bucket['doc_count'];
-                    $choices[$aggregationKey][] = new AggregationChoiceDto($key, $docCount);
+                    $choices[$aggregationKey][] = new AggregationChoiceDto((string) $key, $docCount);
                 }
             } elseif (!empty($aggregationData['doc_count'])) {
                 $nestedAggregations = $aggregationData;

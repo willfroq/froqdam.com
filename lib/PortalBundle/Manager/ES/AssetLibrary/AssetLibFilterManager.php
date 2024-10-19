@@ -29,11 +29,11 @@ class AssetLibFilterManager
      *
      * @return BoolQuery
      */
-    public function filter(BoolQuery $boolQuery, User $user, ?LibraryFormDto $formDto, bool &$sortByRelevance): BoolQuery
+    public function filter(BoolQuery $boolQuery, User $user, ?LibraryFormDto $formDto = null): BoolQuery
     {
         $this->filterByUserOrganizations($boolQuery, $user);
 
-        $this->addDynamicFilters($boolQuery, $formDto, $sortByRelevance);
+        $this->addDynamicFilters($boolQuery, $formDto);
 
         return $boolQuery;
     }
@@ -46,7 +46,7 @@ class AssetLibFilterManager
      */
     private function filterByUserOrganizations(BoolQuery $boolQuery, User $user): void
     {
-        $boolQuery->addFilter(new TermsQuery(AssetLibMappingManager::MAPPING_ORGANIZATION_ID, $this->userRepo->getOrganizationIDs($user)));
+        $boolQuery->addFilter(new TermsQuery(AssetLibMappingManager::MAPPING_ORGANIZATION_ID, (array) $this->userRepo->getOrganizationIDs($user)));
     }
 
     /**
@@ -55,7 +55,7 @@ class AssetLibFilterManager
      *
      * @return void
      */
-    private function addDynamicFilters(BoolQuery $boolQuery, ?LibraryFormDto $libraryFormDto, bool &$sortByRelevance): void
+    private function addDynamicFilters(BoolQuery $boolQuery, ?LibraryFormDto $libraryFormDto = null): void
     {
         if (!$libraryFormDto?->getFilters()) {
             return;
@@ -91,33 +91,12 @@ class AssetLibFilterManager
             } elseif ($filterDto instanceof MultiselectCheckboxFilterDto && $filterDto->getSelectedOptions()) {
                 $boolQuery->addFilter(new TermsQuery((string)$key, $filterDto->getSelectedOptions()));
             } elseif ($filterDto instanceof InputFilterDto && $filterDto->getText()) {
-                $searchTerm = (string) $filterDto->getText();
+                $searchTerm = (string)$filterDto->getText();
 
-                $isFilename = preg_match('/^[a-zA-Z0-9._-]+$/', $searchTerm)
-                    && preg_match('/\./', $searchTerm)
-                    && ($key === 'file_name' || $key === 'file_name_text');
-
-                if ($isFilename && !preg_match('/\b(AND|OR|NOT)\b/', $searchTerm)) {
-                    $searchTerm = preg_replace('/\s+/', ' AND ', $searchTerm);
-                    $queryStringQuery = new QueryString("file_name:$searchTerm");
-                    $boolQuery->addFilter($queryStringQuery);
-
-                    return;
-                }
-
-                if (!preg_match('/\b(AND|OR|NOT)\b/', $searchTerm)) {
-                    $searchTerm = preg_replace('/\s+/', ' AND ', $searchTerm);
-
-                    $queryStringQuery = new QueryString("$key:$searchTerm");
-                    $boolQuery->addFilter($queryStringQuery);
-
-                    return;
-                }
-
-                $queryStringQuery = new QueryString("$key:$searchTerm");
+                $queryStringQuery = new QueryString($searchTerm);
+                $queryStringQuery->setDefaultField((string)$key);
+                $queryStringQuery->setDefaultOperator('AND');
                 $boolQuery->addFilter($queryStringQuery);
-
-                $sortByRelevance = true;
             } else {
                 throw new \InvalidArgumentException('Unsupported Filter DTO: ' . get_class($filterDto));
             }

@@ -27,14 +27,8 @@ class AssetLibSortManager
      *
      * @return Query
      */
-    public function sort(Query $query, User $user, LibraryFormDto $libraryFormDto = null, bool $sortByRelevance): Query
+    public function sort(Query $query, User $user, LibraryFormDto $libraryFormDto = null): Query
     {
-        if ($sortByRelevance) {
-            $query->setSort(['_score' => ['order' => 'desc']]);
-
-            return $query;
-        }
-
         $sortBy = $libraryFormDto?->getSortBy() ?? self::DEFAULT_SORT_BY;
         $sortDirection = $libraryFormDto?->getSortDirection() ?? self::DEFAULT_SORT_DIRECTION;
 

@@ -15,6 +15,8 @@ class HomeController extends AbstractController
 
     public function indexAction(Request $request): Response
     {
+        $routeName = !is_array($this->getParameter('default_portal_dashboard_path')) ? $this->getParameter('default_portal_dashboard_path') : '';
+
         if (!$request->isXmlHttpRequest()) {
             $session = $request->getSession();
             $targetPath = $this->getTargetPath($session, 'portal');
@@ -26,6 +28,15 @@ class HomeController extends AbstractController
 
                 $fullPath = $path . ($query ? '?' . $query : '');
 
+                $fetchFormResultRegex = '/^\/portal\/asset-library\/search\/fetch-form-and-results\/?(?:\?.*)?$/';
+                $loadMoreResultRegex = '/^\/portal\/asset-library\/search\/load-more\/?(?:\?.*)?$/';
+
+                if (preg_match($fetchFormResultRegex, $fullPath) || preg_match($loadMoreResultRegex, $fullPath)) {
+                    $this->removeTargetPath($session, 'portal');
+
+                    return $this->redirectToRoute((string) $routeName);
+                }
+
                 $searchPageRegex = '/^\/portal\/asset-library\/search\/?(?:\?.*)?$/';
                 $detailPageRegex = '/^\/portal\/asset-library\/detail\/\d+\/?(?:\?.*)?$/';
 
@@ -36,8 +47,6 @@ class HomeController extends AbstractController
                 }
             }
         }
-
-        $routeName = !is_array($this->getParameter('default_portal_dashboard_path')) ? $this->getParameter('default_portal_dashboard_path') : '';
 
         return $this->redirectToRoute((string) $routeName);
     }

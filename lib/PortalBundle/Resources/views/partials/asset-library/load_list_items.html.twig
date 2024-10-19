@@ -39,9 +39,11 @@
                         {{ portal_asset_resource_project_name(assetResource)|default('-')|raw }}
 
                     {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_ASSET_RESOURCE_CREATION_DATE') %}
-                        {{ assetResource.creationDate | date("d-m-Y") }}
+                        {{ assetResource.creationDate? assetResource.creationDate | date("d-m-Y") : ''  }}
                     {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_ASSET_CREATION_DATE') %}
                         {{ assetResource.asset ? (assetResource.asset.creationDate | date("d-m-Y")) : '' }}
+                    {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_FILE_CREATE_DATE') %}
+                        {{ assetResource.fileCreateDate ? (assetResource.fileCreateDate | date("d-m-Y")) : '' }}
                     {% endif %}
                 </div>
             {% endfor %}

@@ -1,0 +1,17 @@
+<dd>
+    {% if fieldValue and is_asset_library_keyword_filter_available_for_user(user, keywordFieldName) and is_asset_library_keyword_filter_available_for_user(user, textFieldName) %}
+        <a href="{{ textFieldUrl }}">
+            {{ fieldValue }}
+        </a>
+    {% elseif fieldValue and is_asset_library_keyword_filter_available_for_user(user, keywordFieldName ) and not is_asset_library_keyword_filter_available_for_user(user, textFieldName) %}
+        <a href="{{ keywordFieldUrl }}">
+            {{ fieldValue }}
+        </a>
+    {% elseif fieldValue and not is_asset_library_keyword_filter_available_for_user(user, keywordFieldName) and is_asset_library_keyword_filter_available_for_user(user, textFieldName) %}
+        <a href="{{ textFieldUrl }}">
+            {{ fieldValue }}
+        </a>
+    {% else %}
+        {{ fieldValue|default('-') }}
+    {% endif %}
+</dd>

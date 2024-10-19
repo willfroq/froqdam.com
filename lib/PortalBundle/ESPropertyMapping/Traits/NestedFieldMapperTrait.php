@@ -45,10 +45,29 @@ trait NestedFieldMapperTrait
                     }
                 }
 
-                return $values;
+                return $this->sanitize($values);
             }
         }
         $values[] = $current;
+
+        return $this->sanitize($values);
+    }
+
+    /**
+     *
+     * @param array<string|int, mixed> $values
+     *
+     * @return array<string|int, mixed>
+     */
+    protected function sanitize(array $values): array
+    {
+        foreach ($values as &$value) {
+            if (is_string($value)) {
+                $value = trim($value, " \t\n\r\0\x0B");
+            } elseif (is_array($value)) {
+                $value = $this->sanitize($value);
+            }
+        }
 
         return $values;
     }

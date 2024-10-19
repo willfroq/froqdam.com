@@ -68,13 +68,13 @@ final class AuditMiddleware implements MiddlewareInterface
         if ($envelope->last(stampFqcn: ErrorDetailsStamp::class)) {
             $this->messengerAuditLogger->info(message: '[{id} ErrorDetailsStamp {class}]', context: $context);
 
-            $this->logger->info(message: (string) json_encode(array_merge($context, ['status' => 'ErrorDetailsStamp'])), context: $context);
+            $this->logger->error(message: (string) json_encode(array_merge($context, ['status' => 'ErrorDetailsStamp'])), context: $context);
         }
 
         if ($envelope->last(stampFqcn: SentToFailureTransportStamp::class)) {
             $this->messengerAuditLogger->info(message: '[{id} SentToFailureTransportStamp {class}]', context: $context);
 
-            $this->logger->info(message: (string) json_encode(array_merge($context, ['status' => 'SentToFailureTransportStamp'])), context: $context);
+            $this->logger->warning(message: (string) json_encode(array_merge($context, ['status' => 'SentToFailureTransportStamp'])), context: $context);
         }
 
         return $envelope;

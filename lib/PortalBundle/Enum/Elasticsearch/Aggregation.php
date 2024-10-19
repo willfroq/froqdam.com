@@ -11,7 +11,7 @@ enum Aggregation: int
     public function readable(): int
     {
         return match ($this) {
-            self::SizeLimit => 50,
+            self::SizeLimit => 200,
         };
     }
 }

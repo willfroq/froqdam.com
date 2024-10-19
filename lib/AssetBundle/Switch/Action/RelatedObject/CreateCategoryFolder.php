@@ -21,7 +21,7 @@ final class CreateCategoryFolder
             ->current();
 
         if (!($containerFolder instanceof DataObject\Folder)) {
-            throw new \Exception(message: 'CreateCategoryFolder: No container folder i.e. /Customers/org-name');
+            throw new \Exception(message: sprintf('CreateCategoryFolder: No container folder i.e. /Customers/org-name. Path: %s does not exist!!!', '/Customers/' . $organization->getKey() .'/'));
         }
 
         $parentCategoryFolder = new DataObject\Folder();
@@ -32,7 +32,7 @@ final class CreateCategoryFolder
         try {
             $parentCategoryFolder->save();
         } catch (\Exception $exception) {
-            throw new \Exception(message: $exception->getMessage());
+            throw new \Exception(message: $exception->getMessage() . 'CreateCategoryFolder line: 35');
         }
 
         return $parentCategoryFolder;

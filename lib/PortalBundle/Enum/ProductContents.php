@@ -19,13 +19,13 @@ enum ProductContents: int
     {
         return match ($this) {
             self::NetContents => 'net_contents',
-            self::NetContentsMillilitre => 'net_contents_mlt',
-            self::NetContentsGrams => 'net_contents_grm',
-            self::NetContentsPieces => 'net_contents_pcs',
+            self::NetContentsMillilitre => 'net_contents_ml',
+            self::NetContentsGrams => 'net_contents_g',
+            self::NetContentsPieces => 'net_contents_pc',
             self::NetContentsEach => 'net_contents_ea',
             self::NetUnitContents => 'net_unit_contents',
-            self::NetUnitContentsMillilitre => 'net_unit_contents_mlt',
-            self::NetUnitContentsGrams => 'net_unit_contents_grm',
+            self::NetUnitContentsMillilitre => 'net_unit_contents_ml',
+            self::NetUnitContentsGrams => 'net_unit_contents_g',
         };
     }
 }

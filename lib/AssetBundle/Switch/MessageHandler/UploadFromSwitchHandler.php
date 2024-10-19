@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-#[AsMessageHandler(fromTransport: 'switch_upload', handles: UploadFromSwitch::class, method: '__invoke', priority: 10)]
+#[AsMessageHandler(fromTransport: 'switch_upload', handles: UploadFromSwitch::class, method: '__invoke', priority: 1)]
 final class UploadFromSwitchHandler
 {
     public function __construct(
@@ -58,7 +58,7 @@ final class UploadFromSwitchHandler
 
             ($this->sendCriticalErrorEmail)($uploadFromSwitch->filename);
 
-            throw new \Exception(message: $exception->getMessage());
+            throw new \Exception(message: $exception->getMessage() . 'UploadFromSwitchHandler.php line: 61');
         }
     }
 }

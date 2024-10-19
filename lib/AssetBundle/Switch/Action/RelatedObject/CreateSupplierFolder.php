@@ -21,7 +21,7 @@ final class CreateSupplierFolder
             ->current();
 
         if (!($containerFolder instanceof DataObject\Folder)) {
-            throw new \Exception(message: 'CreateSupplierFolder: No container folder i.e. /Customers/org-name');
+            throw new \Exception(message: sprintf('CreateSupplierFolder: No container folder i.e. /Customers/org-name. Path: %s does not exist!!!', '/Customers/' . $organization->getKey() . '/'));
         }
 
         $parentSupplierFolder = new DataObject\Folder();
@@ -32,7 +32,7 @@ final class CreateSupplierFolder
         try {
             $parentSupplierFolder->save();
         } catch (\Exception $exception) {
-            throw new \Exception(message: $exception->getMessage());
+            throw new \Exception(message: $exception->getMessage() . 'CreateSupplierFolder.php line: 35');
         }
 
         return $parentSupplierFolder;

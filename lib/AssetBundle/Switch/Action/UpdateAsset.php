@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Switch\Action;
 
+use Carbon\Carbon;
 use Doctrine\DBAL\Driver\Exception;
+use Froq\AssetBundle\Action\GetFileDateFromEmbeddedMetadata;
 use Froq\AssetBundle\Switch\Action\Email\SendCriticalErrorEmail;
 use Froq\AssetBundle\Switch\Action\RelatedObject\BuildAssetResourceFolderIfNotExists;
 use Froq\AssetBundle\Switch\Action\RelatedObject\BuildShapeCode;
@@ -42,7 +44,7 @@ final class UpdateAsset
         private readonly BuildSupplierFromPayload $buildSupplierFromPayload,
         private readonly BuildShapeCode $buildShapeCode,
         private readonly BuildAssetResourceFolderIfNotExists $buildAssetResourceFolderIfNotExists,
-
+        private readonly GetFileDateFromEmbeddedMetadata $getFileDateFromEmbeddedMetadata
     ) {
     }
 
@@ -87,7 +89,7 @@ final class UpdateAsset
                 $asset?->delete(); /** @phpstan-ignore-line */
                 $newAssetVersionFolder->delete();
             } catch (\Exception $exception) {
-                throw new \Exception(message: $exception->getMessage());
+                throw new \Exception(message: $exception->getMessage() . 'UpdateAsset.php line: 90');
             }
 
             $message = sprintf('Update Asset line:93: %s is not an Asset. File might be broken.', $asset);
@@ -143,6 +145,14 @@ final class UpdateAsset
             $parentAssetResource->setAssetVersion(0);
             $parentAssetResource->setParent(($this->buildAssetResourceFolderIfNotExists)($organization, (string) $customAssetFolder));
 
+            if (empty($parentAssetResource->getFileCreateDate())) {
+                $parentAssetResource->setFileCreateDate(new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->createDate));
+            }
+
+            if (empty($parentAssetResource->getFileModifyDate())) {
+                $parentAssetResource->setFileModifyDate(new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->modifyDate));
+            }
+
             $parentAssetResource->save();
         }
 
@@ -164,6 +174,14 @@ final class UpdateAsset
             $newAssetResourceLatestVersion->setKey((string) $newAssetResourceVersionCount);
             $newAssetResourceLatestVersion->setTags($tags);
 
+            if (empty($newAssetResourceLatestVersion->getFileCreateDate())) {
+                $newAssetResourceLatestVersion->setFileCreateDate(new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->createDate));
+            }
+
+            if (empty($newAssetResourceLatestVersion->getFileModifyDate())) {
+                $newAssetResourceLatestVersion->setFileModifyDate(new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->modifyDate));
+            }
+
             $newAssetResourceLatestVersion->save();
 
             $actions[] = sprintf('New AssetResourceLatestVersion with ID %d is created in %s', $newAssetResourceLatestVersion->getId(), $newAssetResourceLatestVersion->getPath());
@@ -182,6 +200,14 @@ final class UpdateAsset
             $newAssetResourceLatestVersion->setKey('1');
             $newAssetResourceLatestVersion->setTags($tags);
 
+            if (empty($newAssetResourceLatestVersion->getFileCreateDate())) {
+                $newAssetResourceLatestVersion->setFileCreateDate(new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->createDate));
+            }
+
+            if (empty($newAssetResourceLatestVersion->getFileModifyDate())) {
+                $newAssetResourceLatestVersion->setFileModifyDate(new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->modifyDate));
+            }
+
             $newAssetResourceLatestVersion->save();
 
             $actions[] = sprintf('New AssetResourceLatestVersion with ID %d is created in %s', $newAssetResourceLatestVersion->getId(), $newAssetResourceLatestVersion->getPath());
@@ -193,7 +219,7 @@ final class UpdateAsset
                 $newAssetVersionFolder->delete();
                 $newAssetResourceLatestVersion->delete();
             } catch (\Exception $exception) {
-                throw new \Exception(message: $exception->getMessage());
+                throw new \Exception(message: $exception->getMessage() . 'UpdateAsset.php line: 196');
             }
 
             $message = sprintf('AssetResourceLatestVersion %s does not exist.', $newAssetResourceLatestVersion);
@@ -234,8 +260,8 @@ final class UpdateAsset
 
         $organization->save();
 
-        ($this->buildProductFromPayload)($switchUploadRequest, [$parentAssetResource], $organization, $actions);
-        ($this->buildProjectFromPayload)($switchUploadRequest, [$parentAssetResource], $organization, $actions);
+        ($this->buildProductFromPayload)($switchUploadRequest, $parentAssetResource, $organization, $actions);
+        ($this->buildProjectFromPayload)($switchUploadRequest, $parentAssetResource, $organization, $actions);
         ($this->buildPrinterFromPayload)($switchUploadRequest, $organization, $actions);
         ($this->buildSupplierFromPayload)($switchUploadRequest, $organization, $actions);
 

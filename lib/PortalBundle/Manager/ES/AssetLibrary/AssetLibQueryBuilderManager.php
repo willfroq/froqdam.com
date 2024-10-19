@@ -42,13 +42,11 @@ class AssetLibQueryBuilderManager
                 $query->setQuery($boolQuery);
                 $query->setParam('track_total_hits', true);
 
-                $sortByRelevance = false;
+                $this->searchQueryManager->applySearch($boolQuery, $formDto);
 
-                $this->searchQueryManager->applySearch($boolQuery, $formDto, $sortByRelevance);
+                $this->filterManager->filter($boolQuery, $user, $formDto);
 
-                $this->filterManager->filter($boolQuery, $user, $formDto, $sortByRelevance);
-
-                $this->sortManager->sort($query, $user, $formDto, $sortByRelevance);
+                $this->sortManager->sort($query, $user, $formDto);
 
                 $this->paginate($query, $formDto);
 

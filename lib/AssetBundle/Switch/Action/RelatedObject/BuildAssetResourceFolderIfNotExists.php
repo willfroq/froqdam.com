@@ -61,7 +61,7 @@ final class BuildAssetResourceFolderIfNotExists
         }
 
         if (!($assetResourceFolder instanceof Folder)) {
-            throw new \Exception(message: 'AssetResourceFolder i.e. /Customers/Action/Assets does not exists!');
+            throw new \Exception(message: sprintf('AssetResourceFolder i.e. /Customers/Action/Assets does not exists! Path %s does not exists!!!', '/Customers/'.$organization->getName().'/'));
         }
 
         $existingAssetResourceFolders =  $organization->getAssetResourceFolders();

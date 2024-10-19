@@ -21,7 +21,7 @@ final class CreatePrinterFolder
             ->current();
 
         if (!($containerFolder instanceof DataObject\Folder)) {
-            throw new \Exception(message: 'CreatePrinterFolder: No container folder i.e. /Customers/org-name');
+            throw new \Exception(message: sprintf('CreatePrinterFolder: No container folder i.e. /Customers/org-name. Path %s does not exist!!!', '/Customers/' . $organization->getKey() . '/'));
         }
 
         $parentPrinterFolder = new DataObject\Folder();
@@ -32,7 +32,7 @@ final class CreatePrinterFolder
         try {
             $parentPrinterFolder->save();
         } catch (\Exception $exception) {
-            throw new \Exception(message: $exception->getMessage());
+            throw new \Exception(message: $exception->getMessage() . 'CreatePrinterFolder.php line: 35');
         }
 
         return $parentPrinterFolder;

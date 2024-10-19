@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Switch\Action;
 
 use Doctrine\DBAL\Exception;
+use Froq\AssetBundle\Switch\Action\Processor\CreateProject;
+use Froq\AssetBundle\Switch\Action\Processor\UpdateProject;
 use Froq\AssetBundle\Switch\Action\RelatedObject\CreateProjectFolder;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\ProjectFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
-use Froq\PortalBundle\Repository\ProjectRepository;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Organization;
@@ -21,22 +22,23 @@ final class BuildProjectFromPayload
     public function __construct(
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
         private readonly CreateProjectFolder $createProjectFolder,
-        private readonly ProjectRepository $projectRepository,
+        private readonly CreateProject $createProject,
+        private readonly UpdateProject $updateProject,
     ) {
     }
 
     /**
+     * @param array<int, string> $actions
+     *
+     * @throws \Doctrine\DBAL\Driver\Exception
      * @throws Exception
      * @throws \Exception
-     *
-     * @param array<int, string> $actions
-     * @param array<int, AssetResource> $assetResources
      */
     public function __invoke(
         SwitchUploadRequest $switchUploadRequest,
-        array $assetResources,
+        AssetResource $parentAssetResource,
         Organization $organization,
-        array $actions,
+        array &$actions,
         bool $isUpdate = false
     ): void {
         $rootProjectFolder = $organization->getObjectFolder() . '/';
@@ -58,10 +60,6 @@ final class BuildProjectFromPayload
 
         $projectPath = $rootProjectFolder.AssetResourceOrganizationFolderNames::Projects->readable().'/';
 
-        $existingProjects = (new Project\Listing())
-            ->addConditionParam('o_path = ?', $projectPath)
-            ->load();
-
         $projectFromPayload = new ProjectFromPayload(
             projectCode: $projectData['projectCode'] ?? '',
             projectName: $projectData['projectName'] ?? '',
@@ -76,111 +74,50 @@ final class BuildProjectFromPayload
             deliveryType: $projectData['deliveryType'] ?? '',
         );
 
-        if ($this->projectRepository->isPayloadProjectCodeExistsInExistingProjects(
-            $existingProjects,
-            (string) $projectFromPayload->projectCode,
-            (string) $projectFromPayload->froqProjectNumber,
-            (string) $projectFromPayload->pimProjectNumber
-        )) {
-            $project = $this->projectRepository->getProjectFromExistingProjects(
-                $existingProjects,
-                (string) $projectFromPayload->projectCode,
-                (string) $projectFromPayload->froqProjectNumber,
-                (string) $projectFromPayload->pimProjectNumber
+        $projectByProjectCode = (new Project\Listing())
+            ->addConditionParam('Code = ?', $projectFromPayload->projectCode)
+            ->addConditionParam('o_path = ?', $projectPath)
+            ->current();
+
+        $projectByFroqNumber = (new Project\Listing())
+            ->addConditionParam('froq_project_number = ?', $projectFromPayload->froqProjectNumber)
+            ->addConditionParam('o_path = ?', $projectPath)
+            ->current();
+
+        $projectByPimNumber = (new Project\Listing())
+            ->addConditionParam('pim_project_number = ?', $projectFromPayload->pimProjectNumber)
+            ->addConditionParam('o_path = ?', $projectPath)
+            ->current();
+
+        $project = null;
+
+        match (true) {
+            $projectByProjectCode instanceof Project => $project = $projectByProjectCode,
+            $projectByFroqNumber instanceof Project => $project = $projectByFroqNumber,
+            $projectByPimNumber instanceof Project => $project = $projectByPimNumber,
+
+            default => $project
+        };
+
+        if ($project instanceof Project) {
+            ($this->updateProject)(
+                $project,
+                $projectFromPayload,
+                $parentAssetResource,
+                $organization,
+                $parentProjectFolder,
+                $actions
             );
-
-            if ($project instanceof Project) {
-                if (empty($project->getFroq_name())) {
-                    $project->setKey((string) $projectFromPayload->froqName);
-                    $project->setFroq_name($projectFromPayload->froqName);
-                }
-
-                if (empty($project->getName())) {
-                    $project->setName($projectFromPayload->projectName);
-                }
-
-                if (empty($project->getCode())) {
-                    $project->setCode($projectFromPayload->projectCode);
-                }
-
-                if (empty($project->getPim_project_number())) {
-                    $project->setPim_project_number((string) $projectFromPayload->pimProjectNumber);
-                }
-
-                if (empty($project->getFroq_project_number())) {
-                    $project->setFroq_project_number($projectFromPayload->froqProjectNumber);
-                }
-
-                if (empty($project->getCustomer_project_number2())) {
-                    $project->setCustomer_project_number2($projectFromPayload->customerProjectNumber);
-                }
-
-                if (empty($project->getDescription())) {
-                    $project->setDescription($projectFromPayload->description);
-                }
-
-                if (empty($project->getProject_type())) {
-                    $project->setProject_type($projectFromPayload->projectType);
-                }
-
-                if (empty($project->getStatus())) {
-                    $project->setStatus($projectFromPayload->status);
-                }
-
-                if (empty($project->getLocation())) {
-                    $project->setLocation($projectFromPayload->location);
-                }
-
-                if (empty($project->getDeliveryType())) {
-                    $project->setDeliveryType($projectFromPayload->deliveryType);
-                }
-
-                // TODO Contacts, startDate, EndDate, ProjectFields, SuppliedMaterial
-
-                $assetResources = array_values(array_filter(array_unique([...$project->getAssets(), ...$assetResources])));
-
-                $project->setAssets($assetResources);
-                $project->setPublished(true);
-                $project->setCustomer($organization);
-
-                $project->setParentId((int) $parentProjectFolder->getId());
-
-                $project->save();
-            }
         }
 
-        if (!$this->projectRepository->isPayloadProjectCodeExistsInExistingProjects(
-            $existingProjects,
-            (string)$projectFromPayload->projectCode,
-            (string)$projectFromPayload->froqProjectNumber,
-            (string) $projectFromPayload->pimProjectNumber
-        )) {
-            $project = new Project();
-
-            $project->setKey((string) $projectFromPayload->froqName);
-            $project->setFroq_name($projectFromPayload->froqName);
-            $project->setName($projectFromPayload->projectName);
-            $project->setCode($projectFromPayload->projectCode);
-            $project->setPim_project_number((string) $projectFromPayload->pimProjectNumber);
-            $project->setFroq_project_number($projectFromPayload->froqProjectNumber);
-            $project->setCustomer_project_number2($projectFromPayload->customerProjectNumber);
-            $project->setDescription($projectFromPayload->description);
-            $project->setProject_type($projectFromPayload->projectType);
-            $project->setStatus($projectFromPayload->status);
-            $project->setLocation($projectFromPayload->location);
-            $project->setDeliveryType($projectFromPayload->deliveryType);
-
-            // TODO Contacts, startDate, EndDate, ProjectFields, SuppliedMaterial
-
-            $assetResources = array_values(array_filter(array_unique([...$project->getAssets(), ...$assetResources])));
-
-            $project->setAssets($assetResources);
-            $project->setPublished(true);
-            $project->setCustomer($organization);
-
-            $project->setParentId((int) $parentProjectFolder->getId());
-
-            $project->save();
+        if (!($project instanceof Project)) {
+            ($this->createProject)(
+                $projectFromPayload,
+                $parentAssetResource,
+                $organization,
+                $parentProjectFolder,
+                $actions
+            );
         }
     }
 }

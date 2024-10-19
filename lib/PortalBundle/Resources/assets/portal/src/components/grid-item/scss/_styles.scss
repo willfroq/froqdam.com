@@ -33,8 +33,7 @@
 
 .tooltip-text {
     visibility: hidden;
-    max-width: 200px;
-    min-width: 100px;
+    width: 200px;
     background-color: black;
     color: #fff;
     text-align: center;
@@ -43,8 +42,21 @@
     position: absolute;
     z-index: 1;
     bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
     opacity: 0;
     transition: opacity 0.3s;
+
+    &::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: black transparent transparent transparent;
+    }
 }
 
 .title-wrap {
@@ -60,10 +72,6 @@
     box-sizing: border-box;
     padding: 16px;
     word-wrap: break-word;
-
-    &-alt {
-        background-color: $color-grey-50;
-    }
 
     &-link {
         text-decoration: none;
@@ -83,24 +91,6 @@
 .card .img-container {
     max-height: 250px;
     min-height: 250px;
-    width: 100%;
-    overflow: hidden;
-    border-radius: 5px;
-    align-self: center;
-    text-align-last: center;
-    position: relative;
-    //background-color: white;
-
-    img.image {
-        aspect-ratio: 1/1;
-        position: absolute;
-        inset: 0;
-        margin: auto;
-    }
-}
-.card .img-container-thumbnail {
-    max-height: 100px;
-    min-height: 100px;
     width: 100%;
     overflow: hidden;
     border-radius: 5px;
@@ -160,7 +150,6 @@
 }
 
 .card .card-footer {
-    //border: 1px solid grey;
     position: relative;
     display: flex;
     flex-wrap: wrap;
@@ -171,7 +160,7 @@
     font-size: 14px;
     font-weight: 400;
     line-height: 26px;
-    color: $color-primary
+    color: #009383
 }
 
 .card .card-footer .download-icon {
@@ -184,26 +173,7 @@
     height: 16px;
 }
 
-.card .card-footer .footer-button{
-    display: flex;
-    text-decoration: none;
-    color: $color-grey-500;
-    transition: transform 0.3s ease, color 0.3s ease;
-
-    &:hover {
-        color: $color-primary;
-        transform: scale(1.1);
-    }
-
-    &.error {
-        &:hover {
-            color: $color-error-red;
-            transform: scale(1.1);
-        }
-    }
-}
-
-.card .card-footer .card-footer-element {
+.card .card-footer a {
     display: flex;
     text-decoration: none;
 }
@@ -219,9 +189,4 @@
 .view-icon {
     width: 22px;
     height: 16px;
-}
-
-.icon-small {
-    width: 18px;
-    height: 14px;
 }

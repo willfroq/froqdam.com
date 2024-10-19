@@ -21,7 +21,7 @@ final class CreateTagFolder
             ->current();
 
         if (!($containerFolder instanceof DataObject\Folder)) {
-            throw new \Exception(message: 'CreateTagFolder: No container folder i.e. /Customers/org-name');
+            throw new \Exception(message: sprintf('CreateTagFolder: No container folder i.e. /Customers/org-name. Path: %s does not exist!!!', '/Customers/' . $organization->getKey() . '/'));
         }
 
         $parentTagFolder = new DataObject\Folder();
@@ -32,7 +32,7 @@ final class CreateTagFolder
         try {
             $parentTagFolder->save();
         } catch (\Exception $exception) {
-            throw new \Exception(message: $exception->getMessage());
+            throw new \Exception(message: $exception->getMessage() . 'CreateTagFolder.php line: 35');
         }
 
         return $parentTagFolder;

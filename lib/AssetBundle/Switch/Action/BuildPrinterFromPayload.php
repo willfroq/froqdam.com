@@ -110,7 +110,7 @@ final class BuildPrinterFromPayload
 
         $printer->setPublished(true);
         $printer->setParentId((int)$parentPrinterFolder->getId());
-        $printer->setKey((string)$printerFromPayload->printingProcess);
+        $printer->setKey($printerFromPayload->printingProcess . '-' . $printerFromPayload->printingWorkflow  . '-' . $printerFromPayload->epsonMaterial);
 
         $printer->save();
     }

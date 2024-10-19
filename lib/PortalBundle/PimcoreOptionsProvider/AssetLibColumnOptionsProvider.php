@@ -17,6 +17,7 @@ class AssetLibColumnOptionsProvider implements SelectOptionsProviderInterface
     public const ASSET_LIB_COLUMN_PROJECT_NAME = 'project_name';
     public const ASSET_LIB_COLUMN_ASSET_RESOURCE_CREATION_DATE = 'creation_date';
     public const ASSET_LIB_COLUMN_ASSET_CREATION_DATE = 'asset_creation_date';
+    public const ASSET_LIB_COLUMN_FILE_CREATE_DATE = 'file_create_date';
     public const ASSET_LIB_COLUMN_PRODUCT_NAME = 'product_name';
     public const ASSET_LIB_COLUMN_PRODUCT_EAN = 'product_ean';
     public const ASSET_LIB_COLUMN_FROQ_PROJECT_NUMBER = 'froq_project_number';
@@ -65,6 +66,7 @@ class AssetLibColumnOptionsProvider implements SelectOptionsProviderInterface
         $libColumnOptions = [
             ['key' => 'Asset Creation Date', 'value' => self::ASSET_LIB_COLUMN_ASSET_CREATION_DATE],
             ['key' => 'Asset Resource Creation Date', 'value' => self::ASSET_LIB_COLUMN_ASSET_RESOURCE_CREATION_DATE],
+            ['key' => 'File Create Date', 'value' => self::ASSET_LIB_COLUMN_FILE_CREATE_DATE],
             ['key' => 'Asset Resource Type', 'value' => self::ASSET_LIB_COLUMN_TYPE],
             ['key' => 'Asset Name', 'value' => self::ASSET_LIB_COLUMN_ASSET_NAME],
             ['key' => 'File Name', 'value' => self::ASSET_LIB_COLUMN_FILE_NAME],

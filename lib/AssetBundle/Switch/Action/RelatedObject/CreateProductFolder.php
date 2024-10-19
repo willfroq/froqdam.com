@@ -21,7 +21,7 @@ final class CreateProductFolder
             ->current();
 
         if (!($containerFolder instanceof DataObject\Folder)) {
-            throw new \Exception(message: 'CreateProductFolder: No container folder i.e. /Customers/org-name');
+            throw new \Exception(message: sprintf('CreateProductFolder: No container folder i.e. /Customers/org-name. Path: %s does not exist!!!', '/Customers/' . $organization->getKey() . '/'));
         }
 
         $parentProductFolder = new DataObject\Folder();
@@ -32,7 +32,7 @@ final class CreateProductFolder
         try {
             $parentProductFolder->save();
         } catch (\Exception $exception) {
-            throw new \Exception(message: $exception->getMessage());
+            throw new \Exception(message: $exception->getMessage() . 'CreateProductFolder.php line: 35');
         }
 
         return $parentProductFolder;
