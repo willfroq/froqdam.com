@@ -68,19 +68,15 @@ final class CreateProject
                 continue;
             }
 
-            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $project->getCode())) {
+            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $project->getCode()) && !empty($project->getCode())) {
                 $previouslyRelatedAssetResources[] = $assetResource;
-
-                continue;
             }
 
-            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $project->getFroq_project_number())) {
+            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $project->getFroq_project_number()) && !empty($project->getFroq_project_number())) {
                 $previouslyRelatedAssetResources[] = $assetResource;
-
-                continue;
             }
 
-            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $project->getPim_project_number())) {
+            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $project->getPim_project_number()) && !empty($project->getPim_project_number())) {
                 $previouslyRelatedAssetResources[] = $assetResource;
             }
         }

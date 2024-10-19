@@ -112,13 +112,11 @@ final class CreateProduct
                 continue;
             }
 
-            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $product->getEAN())) {
+            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $product->getEAN()) && !empty($product->getEAN())) {
                 $previouslyRelatedAssetResources[] = $assetResource;
-
-                continue;
             }
 
-            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $product->getSKU())) {
+            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $product->getSKU()) & !empty($product->getSKU())) {
                 $previouslyRelatedAssetResources[] = $assetResource;
             }
         }
