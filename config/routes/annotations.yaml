@@ -31,9 +31,3 @@ froq_dashboard:
     type:     annotation
     prefix:   /portal/dashboard
     trailing_slash_on_root: false
-
-froq_basket:
-    resource: '@FroqPortalBundle/Controller/Basket'
-    type:     annotation
-    prefix:   /portal/basket
-    trailing_slash_on_root: false
