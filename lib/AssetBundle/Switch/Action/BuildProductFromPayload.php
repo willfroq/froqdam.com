@@ -80,10 +80,14 @@ final class BuildProductFromPayload
             throw new \Exception(message: 'BuildProductFromPayload: No container folder i.e. /Customers/org-name/Assets/filename. line: 90');
         }
 
-        $product = (new Product\Listing())
-            ->addConditionParam('EAN = ?', $productFromPayload->productEAN)
-            ->addConditionParam('o_path = ?', $rootProductFolder . AssetResourceOrganizationFolderNames::Products->readable() . '/')
-            ->current();
+        $product = null;
+
+        if (!empty($productFromPayload->productEAN)) {
+            $product = (new Product\Listing())
+                ->addConditionParam('EAN = ?', $productFromPayload->productEAN)
+                ->addConditionParam('o_path = ?', $rootProductFolder . AssetResourceOrganizationFolderNames::Products->readable() . '/')
+                ->current();
+        }
 
         if ($product instanceof Product) {
             ($this->updateProduct)(
@@ -100,10 +104,12 @@ final class BuildProductFromPayload
             return;
         }
 
-        $product = (new Product\Listing())
-            ->addConditionParam('SKU = ?', $productFromPayload->productSKU)
-            ->addConditionParam('o_path = ?', $rootProductFolder . AssetResourceOrganizationFolderNames::Products->readable() . '/')
-            ->current();
+        if (!empty($productFromPayload->productSKU)) {
+            $product = (new Product\Listing())
+                ->addConditionParam('SKU = ?', $productFromPayload->productSKU)
+                ->addConditionParam('o_path = ?', $rootProductFolder . AssetResourceOrganizationFolderNames::Products->readable() . '/')
+                ->current();
+        }
 
         if ($product instanceof Product) {
             ($this->updateProduct)(

@@ -74,30 +74,14 @@ final class BuildProjectFromPayload
             deliveryType: $projectData['deliveryType'] ?? '',
         );
 
-        $projectByProjectCode = (new Project\Listing())
-            ->addConditionParam('Code = ?', $projectFromPayload->projectCode)
-            ->addConditionParam('o_path = ?', $projectPath)
-            ->current();
-
-        $projectByFroqNumber = (new Project\Listing())
-            ->addConditionParam('froq_project_number = ?', $projectFromPayload->froqProjectNumber)
-            ->addConditionParam('o_path = ?', $projectPath)
-            ->current();
-
-        $projectByPimNumber = (new Project\Listing())
-            ->addConditionParam('pim_project_number = ?', $projectFromPayload->pimProjectNumber)
-            ->addConditionParam('o_path = ?', $projectPath)
-            ->current();
-
         $project = null;
 
-        match (true) {
-            $projectByProjectCode instanceof Project => $project = $projectByProjectCode,
-            $projectByFroqNumber instanceof Project => $project = $projectByFroqNumber,
-            $projectByPimNumber instanceof Project => $project = $projectByPimNumber,
-
-            default => $project
-        };
+        if (!empty($projectFromPayload->froqProjectNumber)) {
+            $project = (new Project\Listing())
+                ->addConditionParam('froq_project_number = ?', $projectFromPayload->froqProjectNumber)
+                ->addConditionParam('o_path = ?', $projectPath)
+                ->current();
+        }
 
         if ($project instanceof Project) {
             ($this->updateProject)(
@@ -108,16 +92,16 @@ final class BuildProjectFromPayload
                 $parentProjectFolder,
                 $actions
             );
+
+            return;
         }
 
-        if (!($project instanceof Project)) {
-            ($this->createProject)(
-                $projectFromPayload,
-                $parentAssetResource,
-                $organization,
-                $parentProjectFolder,
-                $actions
-            );
-        }
+        ($this->createProject)(
+            $projectFromPayload,
+            $parentAssetResource,
+            $organization,
+            $parentProjectFolder,
+            $actions
+        );
     }
 }

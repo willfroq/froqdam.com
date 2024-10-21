@@ -10,7 +10,6 @@ use Froq\AssetBundle\Switch\Action\BuildProductContentsFromPayload;
 use Froq\AssetBundle\Switch\Controller\Request\SwitchUploadRequest;
 use Froq\AssetBundle\Switch\ValueObject\CategoryFromPayload;
 use Froq\AssetBundle\Switch\ValueObject\ProductFromPayload;
-use Pimcore\Db;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Fieldcollection;
@@ -89,34 +88,7 @@ final class UpdateProduct
 
         $productKey = $productFromPayload->productEAN . '-' . $productFromPayload->productSKU . '-' . uniqid();
 
-        $statement = Db::get()->prepare('SELECT Assets FROM object_Product WHERE o_id = ?;');
-
-        $statement->bindValue(1, $product->getId(), \PDO::PARAM_INT);
-
-        $relatedAssetResourceIds = array_filter(explode(',', (string) $statement->executeQuery()->fetchOne())); /** @phpstan-ignore-line */
-        $previouslyRelatedAssetResources = [];
-
-        foreach ($relatedAssetResourceIds as $assetResourceId) {
-            $assetResource = AssetResource::getById((int) $assetResourceId);
-
-            if (!($assetResource instanceof AssetResource)) {
-                continue;
-            }
-
-            if (!$assetResource->hasChildren()) {
-                continue;
-            }
-
-            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $product->getEAN()) && !empty($product->getEAN())) {
-                $previouslyRelatedAssetResources[] = $assetResource;
-            }
-
-            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $product->getSKU()) & !empty($product->getSKU())) {
-                $previouslyRelatedAssetResources[] = $assetResource;
-            }
-        }
-
-        $assetResources = array_values(array_filter(array_unique([...$previouslyRelatedAssetResources, $parentAssetResource])));
+        $assetResources = array_values(array_filter(array_unique([...$product->getAssets(), $parentAssetResource])));
 
         $product->setAssets($assetResources);
         $product->setParentId((int) $parentProductFolder->getId());

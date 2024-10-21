@@ -6,7 +6,6 @@ namespace Froq\AssetBundle\Switch\Action\Processor;
 
 use Doctrine\DBAL\Driver\Exception;
 use Froq\AssetBundle\Switch\ValueObject\ProjectFromPayload;
-use Pimcore\Db;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Organization;
@@ -14,11 +13,6 @@ use Pimcore\Model\DataObject\Project;
 
 final class UpdateProject
 {
-    public function __construct(
-
-    ) {
-    }
-
     /**
      * @throws Exception
      * @throws \Doctrine\DBAL\Exception
@@ -81,38 +75,7 @@ final class UpdateProject
 
         // TODO Contacts, startDate, EndDate, ProjectFields, SuppliedMaterial
 
-        $statement = Db::get()->prepare('SELECT Assets FROM object_Project WHERE o_id = ?;');
-
-        $statement->bindValue(1, $project->getId(), \PDO::PARAM_INT);
-
-        $relatedAssetResourceIds = array_filter(explode(',', (string) $statement->executeQuery()->fetchOne())); /** @phpstan-ignore-line */
-        $previouslyRelatedAssetResources = [];
-
-        foreach ($relatedAssetResourceIds as $assetResourceId) {
-            $assetResource = AssetResource::getById((int) $assetResourceId);
-
-            if (!($assetResource instanceof AssetResource)) {
-                continue;
-            }
-
-            if (!$assetResource->hasChildren()) {
-                continue;
-            }
-
-            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $project->getCode()) && !empty($project->getCode())) {
-                $previouslyRelatedAssetResources[] = $assetResource;
-            }
-
-            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $project->getFroq_project_number()) && !empty($project->getFroq_project_number())) {
-                $previouslyRelatedAssetResources[] = $assetResource;
-            }
-
-            if (str_contains(haystack: (string) $assetResource->getName(), needle: (string) $project->getPim_project_number()) && !empty($project->getPim_project_number())) {
-                $previouslyRelatedAssetResources[] = $assetResource;
-            }
-        }
-
-        $assetResources = array_values(array_filter(array_unique([...$previouslyRelatedAssetResources, $parentAssetResource])));
+        $assetResources = array_values(array_filter(array_unique([...$project->getAssets(), $parentAssetResource])));
 
         $project->setAssets($assetResources);
         $project->setPublished(true);
