@@ -138,8 +138,17 @@ final class CreateAsset
 
         $tags = ($this->buildTags)($switchUploadRequest, $organization, $actions);
 
-        $fileModifyDate = new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->modifyDate);
-        $fileCreateDate = new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->createDate);
+        try {
+            $fileModifyDate = new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->modifyDate);
+            $fileCreateDate = new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->createDate);
+        } catch (\Exception $exception) {
+            $this->logger->error(
+                message: sprintf('Create Asset line:146: %s has invalid date string format from file.', $asset),
+                context: ['component' => $switchUploadRequest->eventName]
+            );
+
+            throw new \Exception(message: $exception->getMessage() . 'CreateAsset.php line: 146');
+        }
 
         $parentAssetResource = AssetResource::create();
         $parentAssetResource->setPublished(true);

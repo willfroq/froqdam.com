@@ -44,13 +44,13 @@ final class PutFileMetadataInAssetResourceCommand extends AbstractCommand
 
         for ($i = 0; $i < $parentIdsCount; $i += $batchSize) {
             $parentIds = $this->assetResourceRepository->fetchParentIds($lastId, $batchSize);
+            if ($parentIds) {
+                $this->messageBus->dispatch(new PutFileMetadataInAssetResourceMessage(parentIds: $parentIds));
 
-            $this->messageBus->dispatch(new PutFileMetadataInAssetResourceMessage(parentIds: $parentIds));
+                $lastId = (int)end($parentIds);
 
-            $lastId = (int) end($parentIds);
-
-            $this->logger->info(message: sprintf('PutFileMetadataInAssetResourceMessage dispatched! Batch range: %s - %s Last Fetched Parent AR id: %s', $i, $parentIdsCount, $lastId));
-
+                $this->logger->info(message: sprintf('PutFileMetadataInAssetResourceMessage dispatched! Batch range: %s - %s Last Fetched Parent AR id: %s', $i, $parentIdsCount, $lastId));
+            }
             unset($parentIds);
         }
 

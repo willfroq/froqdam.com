@@ -11,6 +11,7 @@ use Froq\PortalBundle\Helper\AssetResourceCategoryHelper;
 use Froq\PortalBundle\Helper\AssetResourceHierarchyHelper;
 use Froq\PortalBundle\Helper\StrHelper;
 use Froq\PortalBundle\Manager\UserSettings\AssetDetail\AssetDetailSettingsManager;
+use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\AssetResource;
@@ -25,7 +26,7 @@ use Twig\TwigFunction;
 
 class PortalDetailExtension extends AbstractExtension implements PortalDetailExtensionInterface
 {
-    public function __construct(private readonly GetFileDateFromEmbeddedMetadata $getFileDateFromEmbeddedMetadata)
+    public function __construct(private readonly GetFileDateFromEmbeddedMetadata $getFileDateFromEmbeddedMetadata, private readonly ApplicationLogger $logger)
     {
     }
 
@@ -279,10 +280,19 @@ class PortalDetailExtension extends AbstractExtension implements PortalDetailExt
             return null;
         }
 
-        $fileDateCreateDate = (($this->getFileDateFromEmbeddedMetadata)($asset))?->createDate;
+        try {
+            $fileDateCreateDate = (($this->getFileDateFromEmbeddedMetadata)($asset))?->createDate;
+            $fileCreateDate = new Carbon(time: $fileDateCreateDate);
+        } catch (\Exception $exception) {
+            $this->logger->error(
+                message: sprintf('PortalDetailExtension line:288: %s has invalid date string format from file.', $asset),
+            );
+
+            throw new \Exception(message: $exception->getMessage() . 'PortalDetailExtension.php line: 291');
+        }
 
         if (empty($assetResource->getFileCreateDate())) {
-            $assetResource->setFileCreateDate(new Carbon(time: $fileDateCreateDate));
+            $assetResource->setFileCreateDate($fileCreateDate);
 
             $assetResource->save();
         }
@@ -307,10 +317,19 @@ class PortalDetailExtension extends AbstractExtension implements PortalDetailExt
             return null;
         }
 
-        $fileDateModifyDate = (($this->getFileDateFromEmbeddedMetadata)($asset))?->modifyDate;
+        try {
+            $fileDateModifyDate = (($this->getFileDateFromEmbeddedMetadata)($asset))?->modifyDate;
+            $fileModifyDate = new Carbon(time: $fileDateModifyDate);
+        } catch (\Exception $exception) {
+            $this->logger->error(
+                message: sprintf('PortalDetailExtension line:326: %s has invalid date string format from file.', $asset),
+            );
+
+            throw new \Exception(message: $exception->getMessage() . 'PortalDetailExtension.php line: 329');
+        }
 
         if (empty($assetResource->getFileModifyDate())) {
-            $assetResource->setFileModifyDate(new Carbon(time: $fileDateModifyDate));
+            $assetResource->setFileModifyDate($fileModifyDate);
 
             $assetResource->save();
         }

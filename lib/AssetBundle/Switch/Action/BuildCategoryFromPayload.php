@@ -80,7 +80,8 @@ final class BuildCategoryFromPayload
                 $category = new Category();
 
                 $category->setOrganization($organization);
-                $category->setLevelLabel($levelLabelName);
+                $category->setLevelLabel(ucfirst($levelLabel));
+                $category->setReportingType(ucfirst($levelLabel));
                 $category->setParentId((int) $categoryFolderLevelLabel->getId());
                 $category->setKey($productCategory);
                 $category->setPublished(true);
@@ -90,8 +91,12 @@ final class BuildCategoryFromPayload
                 $category->setOrganization($organization);
             }
 
+            if (empty($category->getReportingType())) {
+                $category->setReportingType(ucfirst($levelLabel));
+            }
+
             if (empty($category->getLevelLabel())) {
-                $category->setLevelLabel($levelLabelName);
+                $category->setLevelLabel(ucfirst($levelLabel));
             }
 
             if (empty($category->getKey())) {

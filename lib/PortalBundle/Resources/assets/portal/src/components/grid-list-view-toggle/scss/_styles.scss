@@ -9,7 +9,7 @@ $grid-list-view-toggle__background-color--hover: #F3F3F3;
     display: flex;
     justify-content: space-between;
     transition: background-color 250ms ease;
-    padding: 1px 5px 1px 5px;
+    padding: 5px;
 
     &.loading {
         opacity: 0.5;

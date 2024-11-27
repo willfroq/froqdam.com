@@ -12,7 +12,7 @@
                 <app-pdf-viewer class="pdf-viewer" url="{{ url }}"></app-pdf-viewer>
             {% endif %}
         {% elseif assetType == 'image' %}
-            {% set url = get_asset_image_preview_url(item.asset, 'portal_asset_detail_preview') %}
+            {% set url = get_asset_image_preview_url(item.asset, 'portal_asset_detail_preview', false) %}
 
             {% if url %}
                 <div class="image_wrapper">

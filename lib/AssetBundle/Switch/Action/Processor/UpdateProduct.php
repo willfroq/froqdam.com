@@ -86,17 +86,27 @@ final class UpdateProduct
             $product->setCategories(($this->buildCategoryFromPayload)($productFromPayload->productCategories, $organization, $product, $switchUploadRequest, $actions));
         }
 
-        $productKey = $productFromPayload->productEAN . '-' . $productFromPayload->productSKU . '-' . uniqid();
+        $productKey = null;
+
+        if (!empty($productFromPayload->productEAN)) {
+            $productKey = $productFromPayload->productEAN;
+        }
+
+        if (!empty($productFromPayload->productSKU) && empty($productKey)) {
+            $productKey = $productFromPayload->productSKU;
+        }
+
+        if (empty($productKey)) {
+            return;
+        }
+
+        $product->setKey($productKey);
 
         $assetResources = array_values(array_filter(array_unique([...$product->getAssets(), $parentAssetResource])));
 
         $product->setAssets($assetResources);
         $product->setParentId((int) $parentProductFolder->getId());
         $product->setPublished(true);
-
-        if (empty($product->getKey())) {
-            $product->setKey($productKey);
-        }
 
         $product->save();
 

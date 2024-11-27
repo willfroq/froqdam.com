@@ -96,6 +96,10 @@ final class BuildProjectFromPayload
             return;
         }
 
+        if (empty($projectFromPayload->froqProjectNumber)) {
+            return;
+        }
+
         ($this->createProject)(
             $projectFromPayload,
             $parentAssetResource,

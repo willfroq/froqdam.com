@@ -19,9 +19,24 @@ framework:
                 retry_strategy:
                     delay: 500
                 failure_transport: switch_upload_failed
+            cleanup_assets:
+                dsn: 'doctrine://default?queue_name=cleanup_assets'
+                retry_strategy:
+                    delay: 500
+                failure_transport: cleanup_assets_failed
             switch_upload_mailer:
                 dsn: 'doctrine://default?queue_name=switch_upload_mailer'
                 failure_transport: switch_upload_mailer_failed
+            put_file_metadata:
+                dsn: 'doctrine://default?queue_name=put_file_metadata'
+                retry_strategy:
+                    delay: 500
+                failure_transport: put_file_metadata_failed
+            put_file_dates:
+                dsn: 'doctrine://default?queue_name=put_file_dates'
+                retry_strategy:
+                    delay: 500
+                failure_transport: put_file_dates_failed
             youwe_es_indexing:
                 dsn: 'doctrine://default?queue_name=youwe_es_indexing'
                 retry_strategy:
@@ -32,10 +47,16 @@ framework:
             switch_upload_failed: 'doctrine://default?queue_name=switch_upload_failed'
             switch_upload_mailer_failed: 'doctrine://default?queue_name=switch_upload_mailer_failed'
             youwe_es_indexing_failed: 'doctrine://default?queue_name=youwe_es_indexing_failed'
+            put_file_metadata_failed: 'doctrine://default?queue_name=put_file_metadata_failed'
+            cleanup_assets_failed: 'doctrine://default?queue_name=cleanup_assets_failed'
+            put_file_dates_failed: 'doctrine://default?queue_name=put_file_dates_failed'
 
         routing:
             Froq\AssetBundle\Message\GenerateAssetThumbnailsMessage: generate_asset_thumbnail
             Froq\AssetBundle\Switch\Message\UploadFromSwitch: switch_upload
             Symfony\Component\Mailer\Messenger\SendEmailMessage: switch_upload_mailer
+            Froq\AssetBundle\Message\PutFileMetadataInAssetResourceMessage: put_file_metadata
+            Froq\AssetBundle\Message\CleanupAssetsMessage: cleanup_assets
+            Froq\AssetBundle\Message\FillInAssetResourceFileCreatedAndModifiedDateMessage: put_file_dates
             Youwe\PimcoreElasticsearchBundle\Message\DeleteElementMessage: youwe_es_indexing
             Youwe\PimcoreElasticsearchBundle\Message\UpdateElementMessage: youwe_es_indexing

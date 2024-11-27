@@ -11,6 +11,7 @@ use Froq\PortalBundle\Manager\AssetResource\AssetResourceVersionManager;
 use Froq\PortalBundle\Repository\AssetTypeRepository;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Pimcore\Model\DataObject\AssetResource;
+use Pimcore\Model\DataObject\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,11 +25,23 @@ class DetailController extends AbstractController
     }
 
     #[Route('/{id}', name: 'detail', methods: ['GET'])]
-    public function detailAction(int $id): Response
+    public function detailAction(int $id, AssetResourceRelatedManager $relatedManager, AssetResourceLinkedManager $linkedManager): Response
     {
+        $hasRelatedTabItem = false;
+        $hasLinkedTabItem= false;
+
+        $assetResource = $this->assetResourceRepository->getAssetResourceByIdWithChecks($id);
+
+        if ($assetResource instanceof AssetResource) {
+            $hasRelatedTabItem = $relatedManager->getRelatedHighestVersions($assetResource)?->getPaginationData()['totalCount'] !== 0;
+            $hasLinkedTabItem = $linkedManager->getLinkedHighestVersions($assetResource)?->getPaginationData()['totalCount'] !== 0;
+        }
+
         return $this->render('@FroqPortalBundle/asset-library/detail.html.twig', [
-            'item' => $this->assetResourceRepository->getAssetResourceByIdWithChecks($id),
-            'user' => $this->getUser()
+            'item' => $assetResource,
+            'user' => $this->getUser(),
+            'hasRelatedTabItem' => $hasRelatedTabItem,
+            'hasLinkedTabItem' => $hasLinkedTabItem,
         ]);
     }
 
@@ -74,15 +87,20 @@ class DetailController extends AbstractController
         $assetResource = $this->assetResourceRepository->getAssetResourceByIdWithChecks($id);
 
         $assetResourceId = null;
+        $user = $this->getUser();
 
         if ($assetResource instanceof AssetResource) {
             $assetResourceId = $assetResource->getId();
         }
 
+        if (!($user instanceof User)) {
+            throw $this->createAccessDeniedException();
+        }
+
         $url = $this->generateUrl('froq_portal.asset_library.detail.load_related_tab_list_items',
             ['id' => $assetResourceId], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $assetTypeList = $this->assetTypeRepo->findAssetTypesForUser($this->getUser()); /** @phpstan-ignore-line */
+        $assetTypeList = $this->assetTypeRepo->findAssetTypesForUser($user);
         $response = [
                    'html' => $this->renderView('@FroqPortalBundle/partials/load-related-tab.html.twig', compact('url', 'assetTypeList'))
                ];
@@ -119,15 +137,20 @@ class DetailController extends AbstractController
         $assetResource = $this->assetResourceRepository->getAssetResourceByIdWithChecks($id);
 
         $assetResourceId = null;
+        $user = $this->getUser();
 
         if ($assetResource instanceof AssetResource) {
             $assetResourceId = $assetResource->getId();
         }
 
+        if (!($user instanceof User)) {
+            throw $this->createAccessDeniedException();
+        }
+
         $url = $this->generateUrl('froq_portal.asset_library.detail.load_linked_tab_list_items',
             ['id' => $assetResourceId], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $assetTypeList = $this->assetTypeRepo->findAssetTypesForUser($this->getUser()); /** @phpstan-ignore-line */
+        $assetTypeList = $this->assetTypeRepo->findAssetTypesForUser($user);
         $response = [
             'html' => $this->renderView('@FroqPortalBundle/partials/load-linked-tab.html.twig', compact('url', 'assetTypeList'))
         ];

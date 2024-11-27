@@ -59,9 +59,21 @@ final class CreateProduct
             $product->setSKU($productFromPayload->productSKU);
         }
 
-        if (empty($product->getKey())) {
-            $product->setKey($productFromPayload->productEAN . '-' . $productFromPayload->productSKU . '-' . uniqid());
+        $productKey = null;
+
+        if (!empty($productFromPayload->productEAN)) {
+            $productKey = $productFromPayload->productEAN;
         }
+
+        if (!empty($productFromPayload->productSKU) && empty($productKey)) {
+            $productKey = $productFromPayload->productSKU;
+        }
+
+        if (empty($productKey)) {
+            return;
+        }
+
+        $product->setKey($productKey);
 
         if (isset($productFromPayload->productAttributes) && is_array($productFromPayload->productAttributes)) {
             $fieldCollectionItems = [];

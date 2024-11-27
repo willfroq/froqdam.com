@@ -21,14 +21,14 @@ final class GetFileDateFromEmbeddedMetadata
 
         $assetDocument = $asset;
 
-        $metadataCreateDate = isset($assetDocument->getEmbeddedMetaData(force: true)['CreateDate']) ? $assetDocument->getEmbeddedMetaData(force: true)['CreateDate'] : '';
-        $metadataModifyDate = isset($assetDocument->getEmbeddedMetaData(force: true)['ModifyDate']) ? $assetDocument->getEmbeddedMetaData(force: true)['ModifyDate'] : '';
-        $exifCreateDate = isset($assetDocument->getEXIFData()['FileDateTime']) ? $assetDocument->getEXIFData()['FileDateTime'] : '';
-        $exifModifyDate = isset($assetDocument->getEXIFData()['FileDateTime']) ? $assetDocument->getEXIFData()['FileDateTime'] : '';
-        $xmpCreateDate = isset($assetDocument->getXMPData()['CreateDate']) ? $assetDocument->getXMPData()['CreateDate'] : '';
-        $xmpModifyDate = isset($assetDocument->getXMPData()['ModifyDate']) ? $assetDocument->getXMPData()['ModifyDate'] : '';
-        $iptcCreateDate = isset($assetDocument->getIPTCData()['CreateDate']) ? $assetDocument->getIPTCData()['CreateDate'] : '';
-        $iptcModifyDate = isset($assetDocument->getIPTCData()['ModifyDate']) ? $assetDocument->getIPTCData()['ModifyDate'] : '';
+        $metadataCreateDate = $this->checkFileDateFormat($assetDocument->getEmbeddedMetaData(force: true), 'CreateDate');
+        $metadataModifyDate = $this->checkFileDateFormat($assetDocument->getEmbeddedMetaData(force: true), 'ModifyDate');
+        $exifCreateDate = $this->checkFileDateFormat($assetDocument->getEXIFData(), 'FileDateTime');
+        $exifModifyDate = $this->checkFileDateFormat($assetDocument->getEXIFData(), 'FileDateTime');
+        $xmpCreateDate = $this->checkFileDateFormat($assetDocument->getXMPData(), 'CreateDate');
+        $xmpModifyDate = $this->checkFileDateFormat($assetDocument->getXMPData(), 'ModifyDate');
+        $iptcCreateDate = $this->checkFileDateFormat($assetDocument->getIPTCData(), 'CreateDate');
+        $iptcModifyDate = $this->checkFileDateFormat($assetDocument->getIPTCData(), 'ModifyDate');
 
         return match (true) {
             !empty($metadataCreateDate) && !empty($metadataModifyDate)  => new FileDate(createDate: $metadataCreateDate, modifyDate: $metadataModifyDate),
@@ -38,5 +38,26 @@ final class GetFileDateFromEmbeddedMetadata
 
             default => null
         };
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function checkFileDateFormat(array $fileData, string $dateKey): string
+    {
+        $dateTime = $fileData[$dateKey] ?? '';
+
+        $allowedPatternOne = '/^\d{4}:\d{2}:\d{2} \d{2}:\d{2}\+\d{2}:\d{2}$/'; // Format: 2012:01:31 14:24+01:00
+        $allowedPatternTwo = '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}\+\d{2}:\d{2}$/'; // Format: 2012-01-31 14:24+01:00
+
+        if (preg_match($allowedPatternOne, $dateTime) || preg_match($allowedPatternTwo, $dateTime)) {
+            return (string) preg_replace(
+                '/^(\d{4}):(\d{2}):(\d{2})/',
+                '$1-$2-$3',
+                $dateTime
+            );
+        }
+
+        return '';
     }
 }

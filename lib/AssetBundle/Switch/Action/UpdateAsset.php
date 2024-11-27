@@ -66,6 +66,18 @@ final class UpdateAsset
     ): SwitchUploadResponse {
         ($this->organizationFoldersErrorHandler)($switchUploadRequest, $organization);
 
+        try {
+            $fileModifyDate = new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($existingAsset))?->modifyDate);
+            $fileCreateDate = new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($existingAsset))?->createDate);
+        } catch (\Exception $exception) {
+            $this->logger->error(
+                message: sprintf('Update Asset line:74: %s has invalid date string format from file.', $existingAsset->getId()),
+                context: ['component' => $switchUploadRequest->eventName]
+            );
+
+            throw new \Exception(message: $exception->getMessage() . 'UpdateAsset.php line: 78');
+        }
+
         $actions[] = sprintf('AssetFolderContainer path: %s', $assetFolderContainer->getPath());
         $actions[] = sprintf('Existing asset path: %s', $existingAsset->getPath());
 
@@ -146,11 +158,11 @@ final class UpdateAsset
             $parentAssetResource->setParent(($this->buildAssetResourceFolderIfNotExists)($organization, (string) $customAssetFolder));
 
             if (empty($parentAssetResource->getFileCreateDate())) {
-                $parentAssetResource->setFileCreateDate(new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->createDate));
+                $parentAssetResource->setFileCreateDate(new Carbon(time: $fileCreateDate));
             }
 
             if (empty($parentAssetResource->getFileModifyDate())) {
-                $parentAssetResource->setFileModifyDate(new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->modifyDate));
+                $parentAssetResource->setFileModifyDate(new Carbon(time: $fileModifyDate));
             }
 
             $parentAssetResource->save();
@@ -175,11 +187,11 @@ final class UpdateAsset
             $newAssetResourceLatestVersion->setTags($tags);
 
             if (empty($newAssetResourceLatestVersion->getFileCreateDate())) {
-                $newAssetResourceLatestVersion->setFileCreateDate(new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->createDate));
+                $newAssetResourceLatestVersion->setFileCreateDate(new Carbon(time: $fileCreateDate));
             }
 
             if (empty($newAssetResourceLatestVersion->getFileModifyDate())) {
-                $newAssetResourceLatestVersion->setFileModifyDate(new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->modifyDate));
+                $newAssetResourceLatestVersion->setFileModifyDate(new Carbon(time: $fileModifyDate));
             }
 
             $newAssetResourceLatestVersion->save();
@@ -201,11 +213,11 @@ final class UpdateAsset
             $newAssetResourceLatestVersion->setTags($tags);
 
             if (empty($newAssetResourceLatestVersion->getFileCreateDate())) {
-                $newAssetResourceLatestVersion->setFileCreateDate(new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->createDate));
+                $newAssetResourceLatestVersion->setFileCreateDate(new Carbon(time: $fileCreateDate));
             }
 
             if (empty($newAssetResourceLatestVersion->getFileModifyDate())) {
-                $newAssetResourceLatestVersion->setFileModifyDate(new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->modifyDate));
+                $newAssetResourceLatestVersion->setFileModifyDate(new Carbon(time: $fileModifyDate));
             }
 
             $newAssetResourceLatestVersion->save();

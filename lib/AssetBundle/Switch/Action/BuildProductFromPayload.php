@@ -126,6 +126,10 @@ final class BuildProductFromPayload
             return;
         }
 
+        if (empty($productFromPayload->productSKU) && empty($productFromPayload->productEAN)) {
+            return;
+        }
+
         ($this->createProduct)(
             $organization,
             $productFromPayload,

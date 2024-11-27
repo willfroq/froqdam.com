@@ -42,13 +42,17 @@
                 <app-tab class="tab"
                          role="button"
                          data-role="tab"
-                         url="{{ url('froq_portal.asset_library.detail.load_related_tab', {'id': item.id}) }}">
+                         url="{{ url('froq_portal.asset_library.detail.load_related_tab', {'id': item.id}) }}"
+                         style="{% if not hasRelatedTabItem %}cursor: default; opacity: 0.5; pointer-events: none;{% endif %}"
+                >
                     <span>Related</span>
                 </app-tab>
                 <app-tab class="tab"
                          role="button"
                          data-role="tab"
-                         url="{{ url('froq_portal.asset_library.detail.load_linked_tab', {'id': item.id}) }}">
+                         url="{{ url('froq_portal.asset_library.detail.load_linked_tab', {'id': item.id}) }}"
+                         style="{% if not hasLinkedTabItem %}cursor: default; opacity: 0.5; pointer-events: none;{% endif %}"
+                >
                     <span>Linked</span>
                 </app-tab>
             </nav>
