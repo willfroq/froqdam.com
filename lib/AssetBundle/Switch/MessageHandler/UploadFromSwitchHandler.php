@@ -58,7 +58,7 @@ final class UploadFromSwitchHandler
 
             ($this->sendCriticalErrorEmail)($uploadFromSwitch->filename);
 
-            throw new \Exception(message: $exception->getMessage() . 'UploadFromSwitchHandler.php line: 61');
+            throw new \Exception(message: $exception->getMessage() . 'UploadFromSwitchHandler.php line: '. __LINE__);
         }
     }
 }

@@ -109,14 +109,14 @@
     .selected-number-indicator {
         display: block;
         position: absolute;
-        top: -3px;
-        right: -7px;
+        top: -13px;
+        right: -13px;
         font-size: 10px;
-        padding: 2.5px 5px;
+        padding: 0.5px 10px;
         border-radius: 99999px;
-        border: 1px solid $color-primary;
-        background-color: $color-primary;
-        color: $color-white;
+        border: 0.5px solid $color-primary;
+        background-color: $color-white;
+        color: $color-primary;
 
         &.hidden {
             display: none;

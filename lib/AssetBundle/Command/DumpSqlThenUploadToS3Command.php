@@ -44,49 +44,51 @@ final class DumpSqlThenUploadToS3Command extends AbstractCommand
         $bucketName = $_ENV['AWS_S3_BUCKET_NAME'] ?? '';
 
         $localTempDirectory = sys_get_temp_dir();
-
         $dumpFilePath = $localTempDirectory . '/' . $dbName . '-' . date('Y-m-d') . '-dump.sql';
+        $zipFilePath = $localTempDirectory . '/' . $dbName . '-' . date('Y-m-d') . '-dump.zip';
 
-        $process = Process::fromShellCommandline("yousqldump > $dumpFilePath");
-        $process->setTimeout(1200);
-        $process->run();
+        try {
+            $process = Process::fromShellCommandline("yousqldump > $dumpFilePath");
+            $process->setTimeout(1800);
+            $process->run();
 
-        if (!$process->isSuccessful()) {
-            $message = 'Failed to dump SQL: ' . $process->getErrorOutput();
-            $this->logger->critical($message);
+            if (!$process->isSuccessful()) {
+                $message = 'Failed to dump SQL: ' . $process->getErrorOutput();
+                $this->logger->critical($message);
+                throw new \RuntimeException($message);
+            }
+
+            $zipProcess = Process::fromShellCommandline("zip $zipFilePath $dumpFilePath");
+            $zipProcess->setTimeout(1800);
+            $zipProcess->run();
+
+            if (!$zipProcess->isSuccessful()) {
+                $message = 'Failed to zip the dump file: ' . $zipProcess->getErrorOutput();
+                $this->logger->critical($message);
+                throw new \RuntimeException($message);
+            }
+
+            $objectKey = basename($zipFilePath);
+
+            $s3Client->putObject([
+                'Bucket' => $bucketName,
+                'Key' => $objectKey,
+                'Body' => fopen($zipFilePath, 'rb'),
+            ]);
+
+            $output->writeln('SQL dump zipped and uploaded to S3 successfully.');
+
+            return Command::SUCCESS;
+        } catch (\Exception $e) {
+            $this->logger->critical('An error occurred: ' . $e->getMessage());
+            throw $e;
+        } finally {
             if ($filesystem->exists([$dumpFilePath])) {
                 $filesystem->remove([$dumpFilePath]);
             }
-            throw new \RuntimeException($message);
-        }
-
-        $zipFilePath = $localTempDirectory . '/' . $dbName . '-' . date('Y-m-d') . '-dump.zip';
-
-        $zipProcess = Process::fromShellCommandline("zip $zipFilePath $dumpFilePath");
-        $zipProcess->setTimeout(1200);
-        $zipProcess->run();
-
-        if (!$zipProcess->isSuccessful()) {
-            $message = 'Failed to zip the dump file: ' . $zipProcess->getErrorOutput();
-            $this->logger->critical($message);
             if ($filesystem->exists([$zipFilePath])) {
                 $filesystem->remove([$zipFilePath]);
             }
-            throw new \RuntimeException($message);
         }
-
-        $objectKey = basename($zipFilePath);
-
-        $s3Client->putObject([
-            'Bucket' => $bucketName,
-            'Key' => $objectKey,
-            'Body' => fopen($zipFilePath, 'rb'),
-        ]);
-
-        $filesystem->remove([$dumpFilePath, $zipFilePath]);
-
-        $output->writeln('SQL dump zipped and uploaded to S3 successfully.');
-
-        return Command::SUCCESS;
     }
 }

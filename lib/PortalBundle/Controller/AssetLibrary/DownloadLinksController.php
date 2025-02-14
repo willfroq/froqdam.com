@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\Controller\AssetLibrary;
 
 use Froq\PortalBundle\Action\Request\BuildDownloadLinksRequest;
-use Froq\PortalBundle\Action\Response\GeneratePublicUrl;
+use Froq\PortalBundle\Action\Response\GenerateDownloadAssetsUrl;
 use Pimcore\Model\DataObject\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +21,7 @@ final class DownloadLinksController extends AbstractController
     public function __invoke(
         Request $request,
         BuildDownloadLinksRequest $buildDownloadLinksRequest,
-        GeneratePublicUrl $generatePublicUrl,
+        GenerateDownloadAssetsUrl $generateDownloadAssetsUrl,
     ): Response {
         $currentUser = $this->getUser();
 
@@ -35,6 +35,6 @@ final class DownloadLinksController extends AbstractController
             return $this->json(data: ['validationErrors' => $validatedRequest->errors, 'status' => 422], status:  422);
         }
 
-        return $this->json(data: ['publicUrl' => ($generatePublicUrl)($validatedRequest)]);
+        return $this->json(data: ['publicUrl' => ($generateDownloadAssetsUrl)($validatedRequest)]);
     }
 }

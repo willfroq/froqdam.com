@@ -8,6 +8,8 @@ services:
             $assetLibraryElasticsearchClient: '@youwe.pimcore_elasticsearch.client.asset_library'
             $membersSecurityLoginFormFactory: '@members.security.login.form.factory'
             $thumbnailEncryptionSecret: '%env(THUMBNAIL_ENCRYPTION_SECRET)%'
+            'string $s3BucketNameAssets': '%env(AWS_S3_BUCKET_NAME)%'
+            'string $projectDirectory': '%kernel.project_dir%'
 
     Froq\PortalBundle\:
         resource: '../../*'

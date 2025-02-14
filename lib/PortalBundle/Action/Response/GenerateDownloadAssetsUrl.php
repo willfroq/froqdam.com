@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\Action\Response;
 
 use Carbon\Carbon;
-use Froq\PortalBundle\Api\Action\GetBaseUrl;
 use Froq\PortalBundle\DataTransferObject\Request\DownloadLinksRequest;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject\AssetBasket;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Folder;
 use Pimcore\Model\DataObject\Listing;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Uid\Uuid;
 
-final class GeneratePublicUrl
+final class GenerateDownloadAssetsUrl
 {
-    public function __construct(private readonly GetBaseUrl $getBaseUrl)
+    public function __construct(private readonly RouterInterface $router)
     {
     }
 
@@ -44,11 +45,11 @@ final class GeneratePublicUrl
         $assetBasket = new AssetBasket();
 
         $assetBasket->setUUID($uuid);
-        $assetBasket->setExpirationDate((Carbon::now())->addDays(3));
+        $assetBasket->setExpirationDate((Carbon::now())->addMonths(3));
         $assetBasket->setUser([$downloadLinksRequest->user]);
         $assetBasket->setParentId((int) $assetBasketFolder->getId());
         $assetBasket->setKey($uuid);
-        $assetBasket->setPublicUrl(($this->getBaseUrl)()."/download-page/?uuid=$uuid");
+        $assetBasket->setPublicUrl($this->router->generate('download_page', ['uuid' => $uuid], UrlGeneratorInterface::ABSOLUTE_URL));
         $assetBasket->setPublished(true);
 
         $assetResources = [];

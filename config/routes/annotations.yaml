@@ -26,6 +26,12 @@ froq_portal_switch:
     prefix:   /switch
     trailing_slash_on_root: false
 
+froq_portal_pimtoday:
+    resource: '@FroqAssetBundle/Pimtoday/Controller/'
+    type:     annotation
+    prefix:   /pimtoday
+    trailing_slash_on_root: false
+
 froq_dashboard:
     resource: '@FroqPortalBundle/Controller/Dashboard'
     type:     annotation
@@ -33,7 +39,7 @@ froq_dashboard:
     trailing_slash_on_root: false
 
 froq_basket:
-    resource: '@FroqPortalBundle/Controller/Basket'
+    resource: '@FroqPortalBundle/Controller/AssetLibrary/Basket'
     type:     annotation
     prefix:   /portal/basket
     trailing_slash_on_root: false

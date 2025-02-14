@@ -60,7 +60,7 @@ class AssetResourceRelatedManager
      */
     private function getRelatedHighestVersionsIds(AssetResource $assetResource): array
     {
-        $assetResource = AssetResourceHierarchyHelper::getSourceAssetResource($assetResource);
+        $assetResource = AssetResourceHierarchyHelper::getParentAssetResource($assetResource);
 
         $productListing = new Product\Listing();
         $productListing->filterByAssets($assetResource->getId());

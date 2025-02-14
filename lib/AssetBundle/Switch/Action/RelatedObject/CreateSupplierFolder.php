@@ -32,7 +32,7 @@ final class CreateSupplierFolder
         try {
             $parentSupplierFolder->save();
         } catch (\Exception $exception) {
-            throw new \Exception(message: $exception->getMessage() . 'CreateSupplierFolder.php line: 35');
+            throw new \Exception(message: $exception->getMessage() . 'CreateSupplierFolder.php line:'. __LINE__);
         }
 
         return $parentSupplierFolder;

@@ -32,7 +32,7 @@ final class CreateProductFolder
         try {
             $parentProductFolder->save();
         } catch (\Exception $exception) {
-            throw new \Exception(message: $exception->getMessage() . 'CreateProductFolder.php line: 35');
+            throw new \Exception(message: $exception->getMessage() . 'CreateProductFolder.php line:'. __LINE__);
         }
 
         return $parentProductFolder;

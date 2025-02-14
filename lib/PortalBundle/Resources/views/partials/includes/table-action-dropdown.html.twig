@@ -5,13 +5,13 @@
         <button class="list-item__actions-button" data-role="list_item_actions_button"></button>
         <div class="list-item__actions-dropdown" data-role="list_item_actions_dropdown">
             <ul class="list-item__actions-dropdown-list">
-                {% if itemId %}
-                    <li class="list-item__actions-dropdown-list-item">
-                        <a data-role="list_item_goto_link"
-                           href="{{ url('froq_portal.asset_library.detail', { 'id' : itemId }) }}">Go to item</a>
-                    </li>
-                {% endif %}
-
+                <li class="list-item__actions-dropdown-list-item">
+                    <app-selector trigger-id="selector-list-trigger" state={{ itemId }}>
+                        <span id="selector-list-trigger">
+                           Add to Basket
+                        </span>
+                    </app-selector>
+                </li>
                 <li class="list-item__actions-dropdown-list-item">
                     {% if itemAsset and itemId  %}
                         {% set itemAssetLink = portal_asset_path(itemAsset) %}
@@ -19,6 +19,11 @@
                             <app-download-asset href="{{ path('froq_portal.asset_library.detail.download.file', {'id': itemId}) }}">Download asset</app-download-asset>
                         {% endif %}
                     {% endif %}
+                </li>
+
+                <li class="list-item__actions-dropdown-list-item">
+                    <a data-role="list_item_goto_link"
+                       href="{{ url('froq_portal.asset_library.detail', { 'id' : itemId }) }}">Go to item</a>
                 </li>
             </ul>
         </div>

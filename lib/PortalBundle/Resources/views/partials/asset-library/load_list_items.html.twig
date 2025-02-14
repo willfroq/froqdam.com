@@ -44,6 +44,8 @@
                         {{ assetResource.asset ? (assetResource.asset.creationDate | date("d-m-Y")) : '' }}
                     {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_FILE_CREATE_DATE') %}
                         {{ assetResource.fileCreateDate ? (assetResource.fileCreateDate | date("d-m-Y")) : '' }}
+                    {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_FILE_MODIFY_DATE') %}
+                        {{ assetResource.fileModifyDate ? (assetResource.fileModifyDate | date("d-m-Y")) : '' }}
                     {% endif %}
                 </div>
             {% endfor %}

@@ -34,21 +34,21 @@ class AssetThumbnailController extends AbstractController
     public function assetThumbnailHashedAction(AssetPreviewHasher $hasher, string $thumbnailName, int $assetID, string $hash): Response
     {
         if (!$hasher->verify($assetID, $hash)) {
-            $this->logger->error(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
+            $this->logger->warning(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
 
             throw $this->createAccessDeniedException('Invalid hash');
         }
 
         $asset = Asset::getById($assetID);
         if (!$asset) {
-            $this->logger->error(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
+            $this->logger->warning(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
 
             throw $this->createNotFoundException('Asset not found');
         }
 
         $thumbnailConfig = Asset\Image\Thumbnail\Config::getByName($thumbnailName);
         if (!$thumbnailConfig) {
-            $this->logger->error(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
+            $this->logger->warning(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
 
             throw $this->createNotFoundException('Thumbnail config not found');
         }
@@ -58,14 +58,14 @@ class AssetThumbnailController extends AbstractController
         } elseif ($asset instanceof Asset\Document) {
             $thumbnail = $asset->getImageThumbnail($thumbnailName);
         } else {
-            $this->logger->error(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
+            $this->logger->warning(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
 
             throw $this->createNotFoundException('Unsupported Asset type');
         }
 
         $stream = $thumbnail->getStream();
         if (!$stream) {
-            $this->logger->error(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
+            $this->logger->warning(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
 
             throw $this->createNotFoundException('Thumbnail not found');
         }

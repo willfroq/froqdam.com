@@ -41,7 +41,7 @@ final class SendCriticalErrorEmail
         try {
             $this->mailer->send($email);
         } catch (\Exception $exception) {
-            throw new \Exception(message: $exception->getMessage() . 'SendCriticalErrorEmail.php line: 44');
+            throw new \Exception(message: $exception->getMessage() . 'SendCriticalErrorEmail.php line:'. __LINE__);
         }
     }
 }

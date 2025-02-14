@@ -32,7 +32,7 @@ final class CreateProjectFolder
         try {
             $parentProjectFolder->save();
         } catch (\Exception $exception) {
-            throw new \Exception(message: $exception->getMessage() . 'CreateProjectFolder.php line: 37');
+            throw new \Exception(message: $exception->getMessage() . 'CreateProjectFolder.php line:'. __LINE__);
         }
 
         return $parentProjectFolder;

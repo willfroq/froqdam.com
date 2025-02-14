@@ -15,40 +15,25 @@ youwe_pimcore_elasticsearch:
                     normalizer:
                         keyword_norm:
                             type: custom
-                            filter: [ "asciifolding", "lowercase" ]
+                            filter: [ 'asciifolding', 'lowercase', 'trim' ]
                     filter:
-                        edge_ngram_filter:
-                            type: edge_ngram
-                            min_gram: 3
-                            max_gram: 5
-                        custom_filename_filter:
-                            type: pattern_capture
+                        custom_word_delimiter_graph:
+                            type: word_delimiter_graph
                             preserve_original: true
-                            patterns: [
-                                "([^_{9, 19}]+)_",
-                                "_([^_{9, 19}]+)",
-                                "([^_{9, 19}]+_)",
-                                "([^-{9, 19}]+)-",
-                                "-([^-{9, 19}]+)"
-                            ]
-                        custom_pdf_text_filter:
-                            type: pattern_capture
-                            preserve_original: true
-                            patterns: [
-                                "([^_]{9,19}+_)",
-                                "([^_]{9,19}+)s?([^_]{9,19}+)"
-                            ]
+                        remove_newlines:
+                            type: pattern_replace
+                            pattern: "\n"
+                            replacement: ""
                     analyzer:
-                        edge_ngram_analyzer:
+                        text_analyzer:
                             type: custom
                             tokenizer: whitespace
-                            filter: [ "asciifolding", "lowercase", "edge_ngram_filter" ]
-                        custom_filename_analyzer:
-                            tokenizer: standard
-                            filter: [ "custom_filename_filter", "lowercase", "unique", "asciifolding" ]
-                        custom_pdf_text_analyzer:
-                            tokenizer: whitespace
-                            filter: [ "custom_pdf_text_filter", "lowercase", "unique", "asciifolding" ]
+                            filter: ['asciifolding', 'lowercase', 'custom_word_delimiter_graph', 'trim', 'remove_newlines']
+                        general_analyzer:
+                            type: custom
+                            tokenizer: keyword
+                            filter: ['asciifolding', 'lowercase', 'custom_word_delimiter_graph', 'trim', 'remove_newlines']
+
             mapping:
                 properties:
                     parentId: integer
@@ -61,7 +46,7 @@ youwe_pimcore_elasticsearch:
                     creation_date:
                         definition:
                             type: date
-                            format: 'yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis'
+                            format: 'epoch_second||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis'
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'creationDate'
@@ -69,10 +54,26 @@ youwe_pimcore_elasticsearch:
                     asset_creation_date:
                         definition:
                             type: date
-                            format: 'yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis'
+                            format: 'epoch_second||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis'
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Asset.creationDate'
+                            from_latest_version: true
+                    file_create_date:
+                        definition:
+                            type: date
+                            format: 'epoch_second||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis'
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
+                        mapper_config:
+                            nested_field: 'fileCreateDate'
+                            from_latest_version: true
+                    file_modify_date:
+                        definition:
+                            type: date
+                            format: 'epoch_second||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis'
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
+                        mapper_config:
+                            nested_field: 'fileModifyDate'
                             from_latest_version: true
                     width:
                         definition: integer
@@ -87,19 +88,19 @@ youwe_pimcore_elasticsearch:
                             nested_custom_setting: 'imageHeight'
                             from_latest_version: true
                     asset_type_name:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'AssetType.name'
                             from_latest_version: true
                     upload_name:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'UploadName'
                             from_latest_version: true
                     file_name:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Asset.fileName'
@@ -107,7 +108,7 @@ youwe_pimcore_elasticsearch:
                     file_name_text:
                         definition:
                             type: text
-                            analyzer: custom_filename_analyzer
+                            analyzer: text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Asset.fileName'
@@ -120,98 +121,105 @@ youwe_pimcore_elasticsearch:
                             nested_field: 'Asset.fileSize'
                             from_latest_version: true
                     asset_resource_name:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Name'
                             from_latest_version: true
+                    packshotquality:
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
+                        mapper_config:
+                            nested_fc_field: 'Metadata'
+                            field_collection_key: 'packshotquality'
+                            from_latest_version: true
                     pdf_text:
                         definition:
                             type: text
-                            analyzer: custom_pdf_text_analyzer
+                            analyzer: text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\PdfTextMapper
                         mapper_config:
                             nested_field: 'Asset'
                             from_latest_version: true
                     printer_code:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'PrinterCode'
                             from_latest_version: true
                     printing_process:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'PrintingProcess'
                             from_latest_version: true
                     printing_workflow:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'PrintingWorkflow'
                             from_latest_version: true
                     epsonmaterial:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'epsonmaterial'
                             from_latest_version: true
                     substrate_material:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'SubstrateMaterial'
                             from_latest_version: true
                     printingmaterial:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'printingmaterial'
                             from_latest_version: true
                     software:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'software'
                             from_latest_version: true
                     gmgflow:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'gmgflow'
                             from_latest_version: true
                     keylinenumber:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'keylinenumber'
                             from_latest_version: true
                     product_category_brand:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
                         mapper_config:
                             nested_categories: 'Products.Categories'
                             level_label:
                                 - 'Brand'
                     product_category_segment:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
                         mapper_config:
                             nested_categories: 'Products.Categories'
                             level_label:
                                 - 'Segment'
                     product_category_campaign:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
                         mapper_config:
                             nested_categories: 'Products.Categories'
@@ -220,13 +228,14 @@ youwe_pimcore_elasticsearch:
                     product_category_campaign_text:
                         definition:
                             type: text
+                            analyzer: text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
                         mapper_config:
                             nested_categories: 'Products.Categories'
                             level_label:
                                 - 'Campaign'
                     product_category_market:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
                         mapper_config:
                             nested_categories: 'Products.Categories'
@@ -235,13 +244,14 @@ youwe_pimcore_elasticsearch:
                     product_category_market_text:
                         definition:
                             type: text
+                            analyzer: text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
                         mapper_config:
                             nested_categories: 'Products.Categories'
                             level_label:
                                 - 'Market'
                     product_category_platform:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
                         mapper_config:
                             nested_categories: 'Products.Categories'
@@ -250,6 +260,7 @@ youwe_pimcore_elasticsearch:
                     product_category_platform_text:
                         definition:
                             type: text
+                            analyzer: text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\CategoryLevelLabelMapper
                         mapper_config:
                             nested_categories: 'Products.Categories'
@@ -262,28 +273,31 @@ youwe_pimcore_elasticsearch:
                     product_ean_text:
                         definition:
                             type: text
+                            analyzer: text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Products.ean'
                     product_sku:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Products.sku'
                     product_sku_text:
                         definition:
                             type: text
+                            analyzer: text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Products.sku'
                     product_name:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Products.name'
                     product_name_text:
                         definition:
                             type: text
+                            analyzer: text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Products.name'
@@ -294,156 +308,174 @@ youwe_pimcore_elasticsearch:
                             nested_fc_field: 'Products.Attributes'
                             field_collection_key: 'grammage'
                     net_content_statement:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Products.netContentStatement'
                     net_contents:
-                        definition: integer
+                        definition: keyword
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetContentsMapper
                         mapper_config:
                             nested_fc_field: 'Products.netContents'
                             field_collection_key: 'net_contents'
                     net_unit_contents:
-                        definition: integer
+                        definition: keyword
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetUnitContentsMapper
                         mapper_config:
                             nested_fc_field: 'Products.netUnitContents'
                             field_collection_key: 'net_unit_contents'
-                    net_contents_mlt:
-                        definition: integer
+                    net_contents_ml:
+                        definition: keyword
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetContentsMapper
                         mapper_config:
-                            nested_fc_field: 'Products.netUnitContents'
-                            field_collection_key: 'net_contents_mlt'
-                    net_contents_grm:
-                        definition: integer
+                            nested_fc_field: 'Products.netContents'
+                            field_collection_key: 'net_contents_ml'
+                    net_contents_g:
+                        definition: keyword
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetContentsMapper
                         mapper_config:
-                            nested_fc_field: 'Products.netUnitContents'
-                            field_collection_key: 'net_contents_grm'
+                            nested_fc_field: 'Products.netContents'
+                            field_collection_key: 'net_contents_g'
                     net_contents_pcs:
-                        definition: integer
+                        definition: keyword
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetContentsMapper
                         mapper_config:
                             nested_fc_field: 'Products.netUnitContents'
                             field_collection_key: 'net_contents_pcs'
-                    net_contents_ea:
-                        definition: integer
-                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetContentsMapper
-                        mapper_config:
-                            nested_fc_field: 'Products.netUnitContents'
-                            field_collection_key: 'net_contents_ea'
-                    net_unit_contents_mlt:
-                        definition: integer
+                    net_unit_contents_ml:
+                        definition: keyword
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetUnitContentsMapper
                         mapper_config:
                             nested_fc_field: 'Products.netUnitContents'
-                            field_collection_key: 'net_unit_contents_mlt'
-                    net_unit_contents_grm:
-                        definition: integer
+                            field_collection_key: 'net_unit_contents_ml'
+                    net_unit_contents_g:
+                        definition: keyword
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductNetUnitContentsMapper
                         mapper_config:
                             nested_fc_field: 'Products.netUnitContents'
-                            field_collection_key: 'net_unit_contents_grm'
+                            field_collection_key: 'net_unit_contents_g'
                     producttype:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProductAttributesMapper
                         mapper_config:
                             nested_fc_field: 'Products.Attributes'
                             field_collection_key: 'producttype'
                     packrange:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'packrange'
                             from_latest_version: true
                     volumes:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'volumes'
                             from_latest_version: true
                     customer:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Organizations.name'
                     project_name:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Projects.Name'
                     project_name_text:
                         definition:
                             type: text
+                            analyzer: text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Projects.Name'
                     project_froq_name:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
+                        mapper_config:
+                            nested_field: 'Projects.froq_name'
+                    project_froq_name_text:
+                        definition:
+                            type: text
+                            analyzer: text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Projects.froq_name'
                     project_pim_project_number:
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
+                        mapper_config:
+                            nested_field: 'Projects.pim_project_number'
+                    project_pim_project_number_text:
+                        definition:
+                            type: text
+                            analyzer: text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Projects.pim_project_number'
                     project_froq_project_number:
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
+                        mapper_config:
+                            nested_field: 'Projects.froq_project_number'
+                    project_froq_project_number_text:
+                        definition:
+                            type: text
+                            analyzer: text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\NestedFieldMapper
                         mapper_config:
                             nested_field: 'Projects.froq_project_number'
                     project_owner:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProjectOwnerMapper
                         mapper_config:
                             nested_contacts: 'Projects.Contacts'
                             project_role_code: 'project_owner'
                     froq_project_owner:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\ProjectOwnerMapper
                         mapper_config:
                             nested_contacts: 'Projects.Contacts'
                             project_role_code: 'froq_project_owner'
                     packshottype:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'packshottype'
                             from_latest_version: true
                     materials:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'materials'
                             from_latest_version: true
                     packtype:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'packtype'
                             from_latest_version: true
                     angle:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'angle'
                             from_latest_version: true
                     shape:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'shape'
                             from_latest_version: true
                     shapecode:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
@@ -452,26 +484,27 @@ youwe_pimcore_elasticsearch:
                     shapecode_text:
                         definition:
                             type: text
+                            analyzer: text_analyzer
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'shapecode'
                             from_latest_version: true
                     shapes:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'shapes'
                             from_latest_version: true
                     tags:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\TagsFieldMapper
                         mapper_config:
                             nested_field: 'Code'
                             from_latest_version: true
                     packaging:
-                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { text: { type: text, analyzer: edge_ngram_analyzer } } }
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
                         mapper_config:
                             nested_fc_field: 'Metadata'

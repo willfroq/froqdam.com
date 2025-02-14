@@ -42,6 +42,8 @@ final class GetFileDateFromEmbeddedMetadata
 
     /**
      * @throws \Exception
+     *
+     * @param array<string, mixed> $fileData
      */
     private function checkFileDateFormat(array $fileData, string $dateKey): string
     {

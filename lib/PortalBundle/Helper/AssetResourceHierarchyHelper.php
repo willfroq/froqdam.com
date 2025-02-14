@@ -8,16 +8,6 @@ use Pimcore\Model\DataObject\AssetResource;
 
 class AssetResourceHierarchyHelper
 {
-    /**
-     * @var array<int|string, mixed>
-     */
-    protected static array $latestVersionCache = [];
-
-    /**
-     * @var array<int|string, mixed>
-     */
-    protected static array $totalVersionsCountCache = [];
-
     public static function isChild(AssetResource $assetResource): bool
     {
         return !static::isParent($assetResource);
@@ -59,24 +49,16 @@ class AssetResourceHierarchyHelper
 
     public static function getTotalVersionCount(AssetResource $assetResource): int
     {
-        $assetResource = static::getSourceAssetResource($assetResource);
-
-        if (isset(static::$totalVersionsCountCache[$assetResource->getId()])) {
-            return static::$totalVersionsCountCache[$assetResource->getId()];
-        }
+        $assetResource = static::getParentAssetResource($assetResource);
 
         $children = $assetResource->getChildren([AssetResource::OBJECT_TYPE_OBJECT]);
 
-        return static::$totalVersionsCountCache[$assetResource->getId()] = count($children);
+        return count($children);
     }
 
     public static function getLatestVersion(AssetResource $assetResource): AssetResource
     {
-        $assetResource = static::getSourceAssetResource($assetResource);
-
-        if (!empty(static::$latestVersionCache[$assetResource->getId()])) {
-            return static::$latestVersionCache[$assetResource->getId()];
-        }
+        $assetResource = static::getParentAssetResource($assetResource);
 
         $children = $assetResource->getChildren([AssetResource::OBJECT_TYPE_OBJECT]);
 
@@ -89,13 +71,10 @@ class AssetResourceHierarchyHelper
             }
         }
 
-        return static::$latestVersionCache[$assetResource->getId()] = $latest;
+        return $latest;
     }
 
-    /**
-     * The source asset resource is the parent.
-     */
-    public static function getSourceAssetResource(AssetResource $assetResource): AssetResource
+    public static function getParentAssetResource(AssetResource $assetResource): AssetResource
     {
         if (static::isChild($assetResource)) {
             $assetResource = $assetResource->getParent();
@@ -106,6 +85,6 @@ class AssetResourceHierarchyHelper
 
     public static function getHighestVersionNumber(AssetResource $assetResource): int
     {
-        return self::getLatestVersion($assetResource)->getAssetVersion() ?: 0;
+        return static::getLatestVersion($assetResource)->getAssetVersion() ?: 0;
     }
 }

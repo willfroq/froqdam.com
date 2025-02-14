@@ -18,7 +18,7 @@ enum AssetInfoSectionItems: int
             self::AssetTypeName => 'asset_type_name',
             self::CreationDate => 'creation_date',
             self::AssetCreationDate => 'asset_creation_date',
-            self::LastModified => 'last_modified',
+            self::LastModified => 'file_modify_date',
             self::AssetVersion => 'asset_version',
         };
     }

@@ -3,7 +3,6 @@
 }
 
 .element-selected {
-    color: $color-primary !important;
-    transform: scale(1.1);
+    color: $color-error-red !important;
     border-radius: 8px;
 }

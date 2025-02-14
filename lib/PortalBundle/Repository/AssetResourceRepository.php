@@ -9,6 +9,8 @@ use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\PortalBundle\Contract\AssetResourceRepositoryInterface;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\AssetResource;
+use Pimcore\Model\DataObject\Product;
+use Pimcore\Model\DataObject\Project;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -109,5 +111,39 @@ class AssetResourceRepository implements AssetResourceRepositoryInterface
         $statement->bindValue(5, AssetResourceOrganizationFolderNames::Packshots->readable().'/', \PDO::PARAM_STR);
 
         return (int) $statement->executeQuery()->fetchOne();  /** @phpstan-ignore-line */
+    }
+
+    public function hasLinkedTabItem(?AssetResource $assetResource): bool
+    {
+        $parentAssetResource = $assetResource?->getParent();
+
+        if (!($parentAssetResource instanceof AssetResource)) {
+            return false;
+        }
+
+        return (new AssetResource\Listing())
+                ->addConditionParam('Contains IS NOT NULL')
+                ->addConditionParam("FIND_IN_SET({$parentAssetResource->getId()}, Contains)")
+                ->addConditionParam('o_published = ?', true)
+                ->count() > 0;
+    }
+
+    public function hasRelatedTabItem(?AssetResource $assetResource): bool
+    {
+        $parentAssetResource = $assetResource?->getParent();
+
+        if (!($parentAssetResource instanceof AssetResource)) {
+            return false;
+        }
+
+        return (new Product\Listing())
+                ->addConditionParam('Assets IS NOT NULL')
+                ->addConditionParam("FIND_IN_SET({$parentAssetResource->getId()}, Assets)")
+                ->addConditionParam('o_published = ?', true)
+                ->count() + (new Project\Listing())
+                ->addConditionParam('Assets IS NOT NULL')
+                ->addConditionParam("FIND_IN_SET({$parentAssetResource->getId()}, Assets)")
+                ->addConditionParam('o_published = ?', true)
+                ->count() > 0;
     }
 }

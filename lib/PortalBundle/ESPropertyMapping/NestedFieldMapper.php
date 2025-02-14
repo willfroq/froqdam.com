@@ -68,12 +68,12 @@ class NestedFieldMapper implements
 
         foreach ($values ?? [] as &$value) {
             if ($value instanceof Carbon) {
-                $value = $value->toDateTimeString();
+                $value = $value->timestamp;
             }
         }
 
         if ($values && count($values) === 1) {
-            return $values[0] instanceof Carbon ? $values[0]->toDateTimeString() : $values[0];
+            return $values[0] instanceof Carbon ? $values[0]->timestamp : $values[0];
         }
 
         return $values;

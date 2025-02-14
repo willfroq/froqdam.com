@@ -56,7 +56,7 @@ final class DeleteSwitchUploadTemporaryFilesCommand extends AbstractCommand
         } catch (IOExceptionInterface $exception) {
             $this->logger->error(message: $exception->getMessage(), context: ['component' => 'upload']);
 
-            throw new IOException(message: $exception->getMessage() . 'DeleteSwitchUploadTemporaryFilesCommand.php line: 59');
+            throw new IOException(message: $exception->getMessage() . 'DeleteSwitchUploadTemporaryFilesCommand.php line: '. __LINE__);
         }
 
         return Command::SUCCESS;

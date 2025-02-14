@@ -48,6 +48,8 @@
                                 <li><p class="m-0 wrap-text"><span>{{ get_available_column_label(columnKey, user)  }}: </span>{{ assetResource.asset ? (assetResource.asset.creationDate | date("d-m-Y")) : '' }}</p></li>
                             {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_FILE_CREATE_DATE') %}
                                 <li><p class="m-0 wrap-text"><span>{{ get_available_column_label(columnKey, user)  }}: </span>{{ assetResource.fileCreateDate ? (assetResource.fileCreateDate | date("d-m-Y")) : '' }}</p></li>
+                            {% elseif columnKey == constant('Froq\\PortalBundle\\PimcoreOptionsProvider\\AssetLibColumnOptionsProvider::ASSET_LIB_COLUMN_FILE_MODIFY_DATE') %}
+                                <li><p class="m-0 wrap-text"><span>{{ get_available_column_label(columnKey, user)  }}: </span>{{ assetResource.fileModifyDate ? (assetResource.fileModifyDate | date("d-m-Y")) : '' }}</p></li>
                             {% endif %}
                         {% endfor %}
                     </ul>
@@ -72,9 +74,21 @@
                             <div class="view-icon">{% include '@FroqPortal/icons/open-link.html.twig' %}</div>
                         </twig:Tooltip>
                     </a>
-                    <app-selector class="select-element card-footer-element py-2 mx-auto footer-button" trigger-id="selector-trigger" state={{ assetResource.id }}>
-                        <div id="selector-trigger" class="view-icon">{% include '@FroqPortal/icons/basket-add-icon.html.twig' %}</div>
-                    </app-selector>
+                    <div class="mx-auto footer-button">
+                        <app-selector class="select-element card-footer-element py-2 mx-auto footer-button"
+                                      trigger-id="selector-trigger"
+                                      state="{{ assetResource.id }}"
+                        >
+                            <div id="selector-trigger" class="view-icon">
+                                <twig:Tooltip label="Add to Basket">
+                                    <span id="icon-selector-container">
+                                        <span class="icon add-icon">{% include '@FroqPortal/icons/basket-add-icon.html.twig' %}</span>
+                                        <span class="icon remove-icon d-none">{% include '@FroqPortal/icons/basket-remove-icon.html.twig' %}</span>
+                                    </span>
+                                </twig:Tooltip>
+                            </div>
+                        </app-selector>
+                    </div>
                 </div>
             </a>
         </app-grid-item>

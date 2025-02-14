@@ -23,7 +23,7 @@ final class CreateCategoryFolderLevelLabel
         try {
             $parentCategoryFolderLevelLabel->save();
         } catch (\Exception $exception) {
-            throw new \Exception(message: $exception->getMessage() . 'CreateCategoryFolderLevelLabel.php line: 26');
+            throw new \Exception(message: $exception->getMessage() . 'CreateCategoryFolderLevelLabel.php line:'. __LINE__);
         }
 
         return $parentCategoryFolderLevelLabel;

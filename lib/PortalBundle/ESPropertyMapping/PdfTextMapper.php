@@ -62,12 +62,14 @@ class PdfTextMapper implements
             return null;
         }
 
+        $assetResource = $element;
+
         if ($this->getConfiguration(self::CONFIG_FROM_LATEST_VERSION) === true) {
-            $element = AssetResourceHierarchyHelper::getLatestVersion($element);
+            $assetResource = AssetResourceHierarchyHelper::getLatestVersion($assetResource);
         }
 
         $assets = $this->getNestedFieldValues(
-            $element,
+            $assetResource,
             $this->propertyName,
             explode('.', $this->getConfiguration(self::CONFIG_NESTED_FIELD))
         );
@@ -79,9 +81,10 @@ class PdfTextMapper implements
                 continue;
             }
 
-            /** @var string $pdfText */
-            $pdfText = StrHelper::hardTrim(
-                $asset->getText(),
+            $text = !is_null($assetResource->getPdfText()) ? $assetResource->getPdfText() : $asset->getText();
+
+            $pdfText = (string) StrHelper::hardTrim(
+                (string) $text,
                 regexReplacements: [
                     '/[\x{200B}-\x{200D}\x{FEFF}]/u' => '', // Remove Unicode Zero Width
                 ]
@@ -90,7 +93,7 @@ class PdfTextMapper implements
             $pdfTextLines = explode("\r\n", $pdfText);
 
             foreach ($pdfTextLines as $pdfTextLine) {
-                $pdfTextLine = StrHelper::hardTrim(
+                $pdfTextLine = (string) StrHelper::hardTrim(
                     $pdfTextLine,
                     regexReplacements: [
                         '/\s+/' => ' ', // replace multiple spaces to 1 space
@@ -108,7 +111,7 @@ class PdfTextMapper implements
 
     private function isMappablePdfAsset(?Asset $asset): bool
     {
-        return $asset && ($asset->getMimeType() === 'application/pdf') && method_exists($asset, 'getText') && $asset->getText();
+        return $asset && ($asset->getMimeType() === 'application/pdf');
     }
 
     /**

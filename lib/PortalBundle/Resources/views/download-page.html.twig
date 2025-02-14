@@ -4,38 +4,77 @@
 
 {% block body %}
     <header>
-        <div class="flex justify-center">
-            <div class="flex-col">
-                <h6><strong>Welcome! Download Assets!</strong></h6>
-                <div>Download links will be expired at {{ expiryDate }}</div>
+        <div class="flex container mb-3 px-4">
+            <div class="flex md:absolute md:inset-y-0 md:left-0 lg:static xl:col-span-8">
+                <div class="flex flex-shrink-0 items-center">
+                    <a href="/">
+                        <img class="h-8 w-auto" alt="Froq Brand services" src={{ mix('build/portal/media/logo-froq-brandservices.png') }} >
+                    </a>
+                </div>
             </div>
         </div>
     </header>
 
-    <main class="flex justify-center pt-m pb-xs pl-xl pr-xl">
+    <main class="justify-center pt-m pb-xs pl-xl pr-xl">
         <div class="main-content flex gap-5 ">
             <section class="grow">
-                <div class="relative h-full flex flex-col justify-between" id="content">
-                    <app-static-list class="list-container-alt overflow-auto bg-white h-dvh">
+                <div class="relative h-full flex w-full" id="content">
+                    <app-static-list class="list-container-alt bg-white h-[calc(100dvh-100px)] w-full">
                         <div class="list" data-role="list">
-                            <div class="list-header" data-role="list_header">
-                                <div><strong>File Names</strong></div>
+                            <div class="flex flex-col sm:flex-row justify-between p-4 border-b border-b-gray-100 gap-4" >
+                                <div class="flex flex-col">
+                                    <strong>Shared Assets</strong>
+                                    <span class="text-xs font-light">Links will expire on <span class="font-semibold">{{ expiryDate }}</span></span>
+                                </div>
+                                <div class="self-end sm:self-center">
+                                    <a
+                                        href="{{ path('download_all_public_files', { 'uuid': uuid } ) }}"
+                                        class="rounded no-underline px-3 text-white py-2 bg-green-600 hover:bg-green-500 {% if assetResourceIds is empty %}disabled:cursor-not-allowed{% endif %}"
+                                    >
+                                        Download all assets
+                                    </a>
+                                </div>
                             </div>
 
-                            {% if assetResources is not empty %}
-                                {% for assetResource in assetResources %}
-                                    <app-list-item class="list-item">
-                                        {% for columnName in ['File Names'] %}
-                                            <div class="relative">
-                                                {% if columnName == 'File Names' %}
-                                                    <a href="{{ path('download_public_file', { 'id': assetResource.id }) }}">{{ assetResource.name }}</a>
-                                                {% endif %}
-                                            </div>
-                                        {% endfor %}
-                                    </app-list-item>
-                                {% endfor %}
-                            {% endif %}
+                            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-10 p-4 overflow-auto">
+                                {% if assetResources is not empty %}
+                                    {% for assetResource in assetResources %}
+                                        <app-list-item class="bg-gray-100 rounded break-words p-2">
+                                            <a href="{{ path('download_public_file', { 'id': assetResource.id, 'uuid': uuid }) }}" class="card-link">
+                                                {% for columnName in ['File Names'] %}
+                                                    {% if assetResource.asset %}
+                                                        {% set imageSrc = get_public_thumbnail_link(assetResource.asset, 'portal_asset_library_item') %}
 
+                                                        {% if imageSrc %}
+                                                            <img src="{{ imageSrc }}" alt="" class="image w-full h-auto max-h-screen object-contain" />
+                                                        {% else %}
+                                                            <div class="h-[100px] w-full bg-gray-300"></div>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <div class="h-[100px] w-full bg-gray-300"></div>
+                                                    {% endif %}
+
+                                                    <div class="card-body">
+                                                        <ul>
+                                                            <li>
+                                                                {% if columnName == 'File Names' %}
+                                                                    {% set filename = assetResource.name|default('filename') %}
+
+                                                                    <twig:Tooltip label="{{ filename }}">
+                                                                        <p class="m-0 wrap-text text-xs line-clamp-2 pt-5">
+                                                                            {{ filename }}
+                                                                        </p>
+                                                                    </twig:Tooltip>
+                                                                {% endif %}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                {% endfor %}
+                                            </a>
+                                        </app-list-item>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
                             {% if assetResources is empty %}
                                 <div class="">
                                     No File Found

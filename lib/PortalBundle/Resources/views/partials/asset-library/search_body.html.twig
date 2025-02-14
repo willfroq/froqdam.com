@@ -38,8 +38,8 @@
 
             <twig:ShareModal url="{{ path('froq_basket.selected_asset_resource') }}">
                 <button id='share-button' data-role="share-button" id="gridViewButton" class="modal-share-button" >
-                    {% include '@FroqPortal/icons/share-icon.html.twig' %}
-                    Share
+                    {% include '@FroqPortal/icons/basket-icon.html.twig' %}
+                    Basket
                     <span class="selected-number-indicator hidden"></span>
                 </button>
             </twig:ShareModal>
@@ -63,10 +63,7 @@
             </app-filter-options>
         </aside>
         <section>
-            <div class="content" id="content">
-                <div class="search-results__loading-screen">
-                    <span></span>
-                </div>
+            <div class="overflow-x-hidden" id="content">
                 {% include '@FroqPortalBundle/partials/asset-library/load_' ~ itemsLayout ~ '.html.twig' %}
             </div>
         </section>

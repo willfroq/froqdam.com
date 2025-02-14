@@ -23,9 +23,9 @@
                 {% if settings.assetInfoSectionItems.data.creation_date.enabled %}
                     <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'assetInfoSectionItems', 'creation_date') }}</dt>
                     <dd>
-                        {% set fileDateAdded = portal_asset_resource_file_date_added(item) %}
-                        {% if fileDateAdded %}
-                            {{ fileDateAdded|date('Y-m-d') }}
+                        {% set assetResourceCreateDate = portal_asset_resource_create_date(item) %}
+                        {% if assetResourceCreateDate %}
+                            {{ assetResourceCreateDate|date('Y-m-d') }}
                         {% else %}
                             -
                         {% endif %}
@@ -35,17 +35,29 @@
                 {% if settings.assetInfoSectionItems.data.asset_creation_date.enabled %}
                     <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'assetInfoSectionItems', 'asset_creation_date') }}</dt>
                     <dd>
-                        {% set fileDateCreated = portal_asset_resource_file_date_created(item) %}
-                        {% if fileDateCreated %}
-                            {{ fileDateCreated|date('Y-m-d') }}
+                        {% set assetCreationDate = portal_asset_creation_date(item) %}
+                        {% if assetCreationDate %}
+                            {{ assetCreationDate|date('Y-m-d') }}
                         {% else %}
                             -
                         {% endif %}
                     </dd>
                 {% endif %}
 
-                {% if settings.assetInfoSectionItems.data.last_modified.enabled %}
-                    <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'assetInfoSectionItems', 'last_modified') }}</dt>
+                {% if settings.assetInfoSectionItems.data.file_create_date.enabled %}
+                    <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'assetInfoSectionItems', 'file_create_date') }}</dt>
+                    <dd>
+                        {% set fileCeateDate = portal_asset_resource_file_date_created(item) %}
+                        {% if fileCeateDate %}
+                            {{ fileCeateDate|date('Y-m-d') }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </dd>
+                {% endif %}
+
+                {% if settings.assetInfoSectionItems.data.file_modify_date.enabled %}
+                    <dt>{{ get_table_row_label_for_asset_detail_config(settings, 'assetInfoSectionItems', 'file_modify_date') }}</dt>
                     <dd>
                         {% set fileDateModified = portal_asset_resource_file_date_modified(item) %}
                         {% if fileDateModified %}

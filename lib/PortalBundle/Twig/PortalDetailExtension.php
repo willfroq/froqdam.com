@@ -36,7 +36,8 @@ class PortalDetailExtension extends AbstractExtension implements PortalDetailExt
             new TwigFunction('portal_asset_resource_version', [$this, 'portalAssetResourceVersion']),
             new TwigFunction('portal_asset_resource_product_sku', [$this, 'portalAssetResourceProductSku']),
             new TwigFunction('portal_asset_resource_project_name', [$this, 'portalAssetResourceProjectName']),
-            new TwigFunction('portal_asset_resource_file_date_added', [$this, 'portalAssetResourceFileDateAdded']),
+            new TwigFunction('portal_asset_resource_create_date', [$this, 'portalAssetResourceCreateDate']),
+            new TwigFunction('portal_asset_creation_date', [$this, 'portalAssetCreationDate']),
             new TwigFunction('portal_asset_resource_file_date_created', [$this, 'portalAssetResourceFileDateCreated']),
             new TwigFunction('portal_asset_resource_file_date_modified', [$this, 'portalAssetResourceFileDateModified']),
             new TwigFunction('portal_product_category_hierarchies', [$this, 'portalProductCategoryHierarchies']),
@@ -63,7 +64,7 @@ class PortalDetailExtension extends AbstractExtension implements PortalDetailExt
 
     public function portalAssetResourceVersion(AssetResource $assetResource): string
     {
-        $parent = AssetResourceHierarchyHelper::getSourceAssetResource($assetResource);
+        $parent = AssetResourceHierarchyHelper::getParentAssetResource($assetResource);
 
         if (AssetResourceHierarchyHelper::isParentWithoutChildren($parent)) {
             // There is no choice but to hard code this cause currently we still show the parent asset resource in search page
@@ -258,9 +259,14 @@ class PortalDetailExtension extends AbstractExtension implements PortalDetailExt
         return $result;
     }
 
-    public function portalAssetResourceFileDateAdded(AssetResource $assetResource): string
+    public function portalAssetCreationDate(AssetResource $assetResource): string
     {
         return (string) $assetResource->getAsset()?->getCreationDate();
+    }
+
+    public function portalAssetResourceCreateDate(AssetResource $assetResource): string
+    {
+        return (string) $assetResource->getCreationDate();
     }
 
     /**
@@ -285,10 +291,10 @@ class PortalDetailExtension extends AbstractExtension implements PortalDetailExt
             $fileCreateDate = new Carbon(time: $fileDateCreateDate);
         } catch (\Exception $exception) {
             $this->logger->error(
-                message: sprintf('PortalDetailExtension line:288: %s has invalid date string format from file.', $asset),
+                message: sprintf('PortalDetailExtension line: '. __LINE__ .' %s has invalid date string format from file.', $asset),
             );
 
-            throw new \Exception(message: $exception->getMessage() . 'PortalDetailExtension.php line: 291');
+            throw new \Exception(message: $exception->getMessage() . 'PortalDetailExtension.php line: '. __LINE__);
         }
 
         if (empty($assetResource->getFileCreateDate())) {
@@ -322,10 +328,10 @@ class PortalDetailExtension extends AbstractExtension implements PortalDetailExt
             $fileModifyDate = new Carbon(time: $fileDateModifyDate);
         } catch (\Exception $exception) {
             $this->logger->error(
-                message: sprintf('PortalDetailExtension line:326: %s has invalid date string format from file.', $asset),
+                message: sprintf('PortalDetailExtension line: '. __LINE__.' %s has invalid date string format from file.', $asset),
             );
 
-            throw new \Exception(message: $exception->getMessage() . 'PortalDetailExtension.php line: 329');
+            throw new \Exception(message: $exception->getMessage() . 'PortalDetailExtension.php line: '. __LINE__);
         }
 
         if (empty($assetResource->getFileModifyDate())) {
@@ -402,7 +408,7 @@ class PortalDetailExtension extends AbstractExtension implements PortalDetailExt
      */
     public function portalAssetResourceProducts(AssetResource $assetResource): array
     {
-        return AssetResourceHierarchyHelper::getSourceAssetResource($assetResource)->getProducts();
+        return AssetResourceHierarchyHelper::getParentAssetResource($assetResource)->getProducts();
     }
 
     /**
@@ -410,7 +416,7 @@ class PortalDetailExtension extends AbstractExtension implements PortalDetailExt
      */
     public function portalAssetResourceProjects(AssetResource $assetResource): array
     {
-        return AssetResourceHierarchyHelper::getSourceAssetResource($assetResource)->getProjects();
+        return AssetResourceHierarchyHelper::getParentAssetResource($assetResource)->getProjects();
     }
 
     /** @return QuantityValue[] */

@@ -7,29 +7,42 @@
             <div class="flex justify-between p-4">
                 <div>
                     <h6 class="m-0">Basket Collection</h6>
-                    <span class="text-gray-200 font-light">A collection of assets that you can share</span>
+                    <span class="text-gray-600 font-light">A collection of assets that you can share</span>
                 </div>
                 <button id="close-modal" class="border-none bg-transparent">
                     {% include '@FroqPortal/icons/close-icon.html.twig' %}
                 </button>
             </div>
-            <div class="content overflow-auto">
+            <div class="content overflow-auto overflow-x-hidden h-dvh">
                 <app-share-modal storage-name="selectorStates" data-selected-assets-url="{{ url }}">
-                    <div class="h-dvh">
-                        <div id="asset-list-container" class="grid grid-search-responsive-alt box-border px-8">
-                        </div>
+                    <div id="asset-list-container" class="grid grid-search-responsive-alt box-border px-8">
                     </div>
 
                     {% include '@FroqPortal/components/modal/share-asset-list.html.twig' %}
                 </app-share-modal>
             </div>
-            <div class="action flex justify-end p-4 relative">
-                <app-download-links id="download-links" storage-name="selectorStates" data-asset-resource-url="{{ url('froq_portal.asset_library.download.links') }}" >
-                    <button class="share-link-button flex place-items-center gap-2 rounded-full bg-primary border border-gray-200 px-4 py-2">
-                        {% include '@FroqPortal/icons/link-icon.html.twig' %}
-                        Copy Link
+            <div class="action flex justify-between p-4 relative gap-3">
+                <app-clear-basket>
+                    <button class="flex place-items-center gap-2 rounded-xl text-gray-700 hover:bg-gray-200 border border-gray-200 px-4 py-2">
+                        {% include '@FroqPortal/icons/trash-icon.html.twig' %}
+                        Clear basket
                     </button>
-                </app-download-links>
+                </app-clear-basket>
+                <div class="flex gap-3">
+                    <app-download-all id="download-all" storage-name="selectorStates" data-download-all-url="{{ path('download_all_files') }}">
+                        <a id="download-all-button" class="flex place-items-center gap-2 rounded-xl bg-primary hover:bg-primary/70 text-white border border-gray-200 px-4 py-2 no-underline hover:cursor-pointer">
+                            {% include '@FroqPortal/icons/download-link.html.twig' %}
+                            Download All
+                        </a>
+                    </app-download-all>
+
+                    <app-share-links id="download-links" storage-name="selectorStates" data-asset-resource-url="{{ path('froq_portal.asset_library.download.links') }}">
+                        <button class="hover:bg-primary/70 flex place-items-center gap-2 rounded-xl bg-primary text-white border border-gray-200 px-4 py-2">
+                            {% include '@FroqPortal/icons/link-icon.html.twig' %}
+                            Share
+                        </button>
+                    </app-share-links>
+                </div>
                 <div id="toast-container" class="toast-container"></div>
             </div>
             <div class="notification">

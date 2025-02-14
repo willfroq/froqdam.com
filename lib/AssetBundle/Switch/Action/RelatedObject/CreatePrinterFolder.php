@@ -32,7 +32,7 @@ final class CreatePrinterFolder
         try {
             $parentPrinterFolder->save();
         } catch (\Exception $exception) {
-            throw new \Exception(message: $exception->getMessage() . 'CreatePrinterFolder.php line: 35');
+            throw new \Exception(message: $exception->getMessage() . 'CreatePrinterFolder.php line: '. __LINE__);
         }
 
         return $parentPrinterFolder;

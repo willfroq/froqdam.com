@@ -16,7 +16,7 @@ final class DownloadLinksRequest
         /** @var array<int, int> $assetResourceIds */
         public readonly array $assetResourceIds,
         public readonly User $user,
-        /** @var array<int, ValidationError> $errors */
+        /** @var array<int, ValidationError>|null $errors */
         public ?array $errors
     ) {
         AssertProps::isArray($this->assetResourceIds, 'Expected "assetResourceIds" to be an array, got %s');

@@ -57,7 +57,7 @@ class AssetResourceLinkedManager
      */
     public function getLinkedHighestVersionsIds(AssetResource $assetResource): array
     {
-        $assetResource = AssetResourceHierarchyHelper::getSourceAssetResource($assetResource);
+        $assetResource = AssetResourceHierarchyHelper::getParentAssetResource($assetResource);
 
         $linkedIds = $assetResource->getDao()->getRelationIds('Contains');
 

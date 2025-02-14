@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Action\Messenger;
 
-use Froq\AssetBundle\Message\CleanupAssetsMessage;
 use Froq\AssetBundle\Message\FillInAssetResourceFileCreatedAndModifiedDateMessage;
 use Froq\AssetBundle\Message\GenerateAssetThumbnailsMessage;
 use Froq\AssetBundle\Message\PutFileMetadataInAssetResourceMessage;
@@ -35,7 +34,6 @@ final class GetMessageClass
             str_contains(haystack: $serializedObject, needle: 'UpdateElementMessage') => UpdateElementMessage::class,
             str_contains(haystack: $serializedObject, needle: 'PutFileMetadataInAssetResourceMessage') => PutFileMetadataInAssetResourceMessage::class,
             str_contains(haystack: $serializedObject, needle: 'FillInAssetResourceFileCreatedAndModifiedDateMessage') => FillInAssetResourceFileCreatedAndModifiedDateMessage::class,
-            str_contains(haystack: $serializedObject, needle: 'CleanupAssetsMessage') => CleanupAssetsMessage::class,
             str_contains(haystack: $serializedObject, needle: 'SendNewsletterMessage') => SendNewsletterMessage::class,
             str_contains(haystack: $serializedObject, needle: 'VideoConvertMessage') => VideoConvertMessage::class,
             str_contains(haystack: $serializedObject, needle: 'CleanupThumbnailsMessage') => CleanupThumbnailsMessage::class,

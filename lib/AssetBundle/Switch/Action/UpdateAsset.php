@@ -71,11 +71,11 @@ final class UpdateAsset
             $fileCreateDate = new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($existingAsset))?->createDate);
         } catch (\Exception $exception) {
             $this->logger->error(
-                message: sprintf('Update Asset line:74: %s has invalid date string format from file.', $existingAsset->getId()),
+                message: sprintf('Update Asset line: '. __LINE__ .' %s has invalid date string format from file.', $existingAsset->getId()),
                 context: ['component' => $switchUploadRequest->eventName]
             );
 
-            throw new \Exception(message: $exception->getMessage() . 'UpdateAsset.php line: 78');
+            throw new \Exception(message: $exception->getMessage() . 'UpdateAsset.php line: '. __LINE__);
         }
 
         $actions[] = sprintf('AssetFolderContainer path: %s', $assetFolderContainer->getPath());
@@ -101,10 +101,10 @@ final class UpdateAsset
                 $asset?->delete(); /** @phpstan-ignore-line */
                 $newAssetVersionFolder->delete();
             } catch (\Exception $exception) {
-                throw new \Exception(message: $exception->getMessage() . 'UpdateAsset.php line: 90');
+                throw new \Exception(message: $exception->getMessage() . 'UpdateAsset.php line:'. __LINE__);
             }
 
-            $message = sprintf('Update Asset line:93: %s is not an Asset. File might be broken.', $asset);
+            $message = sprintf('Update Asset line: '. __LINE__ .' %s is not an Asset. File might be broken.', $asset);
 
             $actions[] = $message;
             $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
@@ -143,7 +143,6 @@ final class UpdateAsset
         $parentAssetResource = (new AssetResource\Listing())
             ->addConditionParam('o_key = ?', $filename)
             ->addConditionParam('o_path = ?', $rootAssetResourceFolder)
-            ->addConditionParam('Name = ?', $filename)
             ->addConditionParam('o_published = ?', true)
             ->addConditionParam('AssetVersion = ?', 0)
             ->current();
@@ -231,7 +230,7 @@ final class UpdateAsset
                 $newAssetVersionFolder->delete();
                 $newAssetResourceLatestVersion->delete();
             } catch (\Exception $exception) {
-                throw new \Exception(message: $exception->getMessage() . 'UpdateAsset.php line: 196');
+                throw new \Exception(message: $exception->getMessage() . 'UpdateAsset.php line: '. __LINE__);
             }
 
             $message = sprintf('AssetResourceLatestVersion %s does not exist.', $newAssetResourceLatestVersion);

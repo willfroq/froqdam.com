@@ -1,4 +1,6 @@
 security:
+    access_decision_manager:
+        strategy: unanimous
     providers:
         pimcore_admin:
             id: Pimcore\Bundle\AdminBundle\Security\User\UserProvider
@@ -68,6 +70,14 @@ security:
                 authenticators:
                     - Froq\PortalBundle\Security\ApiKeyAuthenticator
 
+        pimtoday:
+            pattern: ^/pimtoday
+            stateless: true
+            provider: members
+            guard:
+                authenticators:
+                    - Froq\PortalBundle\Security\ApiKeyAuthenticator
+
     access_control:
         # Pimcore admin ACl  // DO NOT CHANGE!
         - { path: ^/admin/sso/([ a-z- ]+/)?(login|logout|acs|metadata)$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -82,6 +92,7 @@ security:
         - { path: ^/portal/connect/azure/check, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/portal, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/switch, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/pimtoday, roles: IS_AUTHENTICATED_FULLY }
 
     role_hierarchy:
         # Pimcore admin  // DO NOT CHANGE!

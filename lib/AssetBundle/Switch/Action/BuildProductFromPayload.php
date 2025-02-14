@@ -77,7 +77,7 @@ final class BuildProductFromPayload
         if (!($parentAssetResource instanceof AssetResource)) {
             ($this->switchUploadCriticalErrorHandler)($switchUploadRequest);
 
-            throw new \Exception(message: 'BuildProductFromPayload: No container folder i.e. /Customers/org-name/Assets/filename. line: 90');
+            throw new \Exception(message: 'BuildProductFromPayload: No container folder i.e. /Customers/org-name/Assets/filename. line:'. __LINE__);
         }
 
         $product = null;

@@ -97,10 +97,10 @@ final class CreateAsset
                 $assetFolderContainer->delete();
                 $newAssetVersionFolder->delete();
             } catch (\Exception $exception) {
-                throw new \Exception(message: $exception->getMessage() . 'CreateAsset.php line: 97');
+                throw new \Exception(message: $exception->getMessage() . 'CreateAsset.php line:'. __LINE__);
             }
 
-            $message = 'CreateAsset line:94: No Asset created. Make sure there is a file and it\'s not broken.';
+            $message = 'CreateAsset line:'. __LINE__ .' No Asset created. Make sure there is a file and it\'s not broken.';
 
             $actions[] = $message;
             $actions[] = 'REVERTING TO PREVIOUS STATE!!!';
@@ -143,14 +143,22 @@ final class CreateAsset
             $fileCreateDate = new Carbon(time: (($this->getFileDateFromEmbeddedMetadata)($asset))?->createDate);
         } catch (\Exception $exception) {
             $this->logger->error(
-                message: sprintf('Create Asset line:146: %s has invalid date string format from file.', $asset),
+                message: sprintf('Create Asset line:'. __LINE__ . ' %s has invalid date string format from file.', $asset),
                 context: ['component' => $switchUploadRequest->eventName]
             );
 
-            throw new \Exception(message: $exception->getMessage() . 'CreateAsset.php line: 146');
+            throw new \Exception(message: $exception->getMessage() . 'CreateAsset.php line: ' . __LINE__);
         }
 
-        $parentAssetResource = AssetResource::create();
+        $parentAssetResource = (new AssetResource\Listing())
+            ->addConditionParam('o_key = ?', $switchUploadRequest->filename)
+            ->addConditionParam('o_path = ?', "$rootAssetResourceFolder/$customAssetFolder/$filename/")
+            ->current();
+
+        if (!($parentAssetResource instanceof AssetResource)) {
+            $parentAssetResource = AssetResource::create();
+        }
+
         $parentAssetResource->setPublished(true);
         $parentAssetResource->setPath("$rootAssetResourceFolder/$customAssetFolder/$filename/");
         $parentAssetResource->setName($switchUploadRequest->filename);
@@ -172,7 +180,7 @@ final class CreateAsset
                 $newAssetVersionFolder->delete();
                 $asset->delete();
             } catch (\Exception $exception) {
-                throw new \Exception(message: $exception->getMessage() . 'CreateAsset.php line: 158');
+                throw new \Exception(message: $exception->getMessage() . 'CreateAsset.php line:'. __LINE__);
             }
 
             $message = sprintf('ParentAssetResource %s does not exist.', $parentAssetResource);
@@ -199,7 +207,15 @@ final class CreateAsset
             );
         }
 
-        $assetResourceVersionOne = AssetResource::create();
+        $assetResourceVersionOne = (new AssetResource\Listing())
+            ->addConditionParam('o_key = ?', '1')
+            ->addConditionParam('o_path = ?', $parentAssetResource->getPath().$parentAssetResource->getKey().'/')
+            ->current();
+
+        if (!($assetResourceVersionOne instanceof AssetResource)) {
+            $assetResourceVersionOne = AssetResource::create();
+        }
+
         $assetResourceVersionOne->setPublished(true);
         $assetResourceVersionOne->setPath($parentAssetResource->getPath().$parentAssetResource->getKey().'/');
         $assetResourceVersionOne->setName($switchUploadRequest->filename);
@@ -225,7 +241,7 @@ final class CreateAsset
                 $newAssetVersionFolder->delete();
                 $assetResourceVersionOne->delete();
             } catch (\Exception $exception) {
-                throw new \Exception(message: $exception->getMessage() . 'CreateAsset.php line: 209');
+                throw new \Exception(message: $exception->getMessage() . 'CreateAsset.php line:'. __LINE__);
             }
 
             $message = sprintf('AssetResourceVersionOne %s does not exist.', $assetResourceVersionOne);

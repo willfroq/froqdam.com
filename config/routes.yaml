@@ -7,8 +7,12 @@ home:
 
 download_page:
     path: /download-page/
-    controller: Froq\PortalBundle\Controller\PublicPage\DownloadPublicPageController
+    controller: Froq\PortalBundle\Controller\AssetLibrary\Basket\PublicPageController::downloadPage
 
 download_public_file:
-    path: /download-public-file/{id<\d+>}
-    controller: Froq\PortalBundle\Controller\PublicPage\DownloadPublicFileController
+    path: /download-public-file/{id<\d+>}/{uuid}
+    controller: Froq\PortalBundle\Controller\AssetLibrary\Basket\PublicPageController::downloadPublicFile
+
+download_all_public_files:
+    path: /download-all-public-files/
+    controller: Froq\PortalBundle\Controller\AssetLibrary\Basket\PublicPageController::downloadAllPublicFiles

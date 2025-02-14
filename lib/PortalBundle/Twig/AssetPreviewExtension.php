@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\Twig;
 
 use Froq\AssetBundle\Converter\RtfToHtmlConverter;
+use Froq\PortalBundle\Action\GetS3Client;
+use Froq\PortalBundle\Action\GetS3PrefixName;
 use Froq\PortalBundle\Security\AssetPreviewHasher;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\Asset;
@@ -17,8 +19,11 @@ class AssetPreviewExtension extends AbstractExtension
     public function __construct(protected RouterInterface $router,
         protected RtfToHtmlConverter $rtfToHtmlConverter,
         protected AssetPreviewHasher $assetPreviewHasher,
-        protected ApplicationLogger $logger)
-    {
+        protected ApplicationLogger $logger,
+        private readonly GetS3Client $getS3Client,
+        private readonly GetS3PrefixName $getS3PrefixName,
+        private readonly string $s3BucketNameAssets
+    ) {
     }
 
     public function getFunctions(): array
@@ -29,6 +34,7 @@ class AssetPreviewExtension extends AbstractExtension
             new TwigFunction('get_asset_text_preview_content', [$this, 'getTextPreviewContent']),
             new TwigFunction('get_asset_extension', [$this, 'getAssetExtension']),
             new TwigFunction('get_asset_thumbnail_hashed_url', [$this, 'getAssetThumbnailHashedURL']),
+            new TwigFunction('get_public_thumbnail_link', [$this, 'getPublicThumbnailLink']),
         ];
     }
 
@@ -98,5 +104,42 @@ class AssetPreviewExtension extends AbstractExtension
             'assetID' => $asset->getId(),
             'hash' => $this->assetPreviewHasher->hash((int) $asset->getId()),
         ]);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function getPublicThumbnailLink(Asset $asset, string $thumbnailName): string
+    {
+        $thumbnailConfig = Asset\Image\Thumbnail\Config::getByName($thumbnailName);
+
+        if (!$thumbnailConfig) {
+            throw new \Exception('ThumbnailConfig not found');
+        }
+
+        if ($asset instanceof Asset\Image) {
+            $thumbnail = $asset->getThumbnail($thumbnailName, false);
+        } elseif ($asset instanceof Asset\Document) {
+            $thumbnail = $asset->getImageThumbnail($thumbnailName);
+        } else {
+            throw new \Exception('Asset not found');
+        }
+
+        $stream = $thumbnail->getStream();
+
+        if (!is_resource($stream)) {
+            throw new \Exception('Asset not found');
+        }
+        $s3Client = ($this->getS3Client)();
+
+        $prefix = ($this->getS3PrefixName)();
+
+        return (string) $s3Client->createPresignedRequest(
+            $s3Client->getCommand('GetObject', [
+                'Bucket' => $this->s3BucketNameAssets,
+                'Key'    => "$prefix{$asset->getRealPath()}{$asset->getFilename()}"
+            ]),
+            '+20 minutes'
+        )->getUri();
     }
 }

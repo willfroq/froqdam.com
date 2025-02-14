@@ -15,9 +15,9 @@ final class ProductFromPayload
         /** @var array<int, array<string, string>>|null $productAttributes */
         public readonly ?array $productAttributes,
         public readonly ?string $productNetContentStatement,
-        /** @var array<string, float|int|string|null>|null $productNetContents */
+        /** @var array<int|string, mixed>|null $productNetContents */
         public readonly ?array $productNetContents,
-        /** @var array<string, float|int|string|null>|null $productNetUnitContents */
+        /** @var array<int|string, mixed>|null $productNetUnitContents */
         public readonly ?array $productNetUnitContents,
         public readonly ?CategoryFromPayload $productCategories,
     ) {

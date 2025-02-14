@@ -17,7 +17,9 @@ interface PortalDetailExtensionInterface
 
     public function portalAssetResourceProjectName(AssetResource $assetResource): ?string;
 
-    public function portalAssetResourceFileDateAdded(AssetResource $assetResource): ?string;
+    public function portalAssetResourceCreateDate(AssetResource $assetResource): ?string;
+
+    public function portalAssetCreationDate(AssetResource $assetResource): ?string;
 
     public function portalAssetResourceFileDateCreated(AssetResource $assetResource): ?string;
 

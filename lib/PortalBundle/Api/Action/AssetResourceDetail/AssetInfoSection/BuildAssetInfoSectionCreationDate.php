@@ -39,7 +39,7 @@ final class BuildAssetInfoSectionCreationDate
             $assetResource->getAssetType()->getName() &&
             $this->assetLibraryExtension->isFilterAvailableForUser($user, $name);
 
-        $fileDateAdded = date('Y-m-d', (int) $this->portalDetailExtension->portalAssetResourceFileDateAdded($assetResource));
+        $fileDateAdded = date('Y-m-d', (int) $this->portalDetailExtension->portalAssetCreationDate($assetResource));
 
         return new AssetInfoSectionCreationDate(
             name: $name,

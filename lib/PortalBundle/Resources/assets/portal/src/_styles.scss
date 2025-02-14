@@ -1,5 +1,13 @@
 $baseUrl: "/build/portal";
 
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+a {
+    @apply underline;
+}
+
 @import "styles/_variables.scss";
 @import "styles/_buttons.scss";
 @import "styles/_layout.scss";
@@ -11,7 +19,7 @@ $baseUrl: "/build/portal";
 @import "components/asset-information/scss/_styles.scss";
 @import "components/asset-title/scss/_styles.scss";
 @import "components/breadcrumbs/scss/_styles.scss";
-@import "components/download-links/scss/_styles.scss";
+@import "components/share-links/scss/_styles.scss";
 @import "components/dropdown-filter/scss/_styles.scss";
 @import "components/edit-popup/scss/_styles.scss";
 @import "components/filter-option/scss/_styles.scss";
