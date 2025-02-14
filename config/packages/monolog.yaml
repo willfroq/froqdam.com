@@ -1,4 +1,5 @@
 monolog:
+    channels: [messenger_audit]
     handlers:
         doctrine:
             type: stream
@@ -27,6 +28,7 @@ when@dev:
                 type: stream
                 path: "%kernel.logs_dir%/messenger.log"
                 level: debug
+                channels: ["messenger_audit"]
 
 when@test:
     monolog:
