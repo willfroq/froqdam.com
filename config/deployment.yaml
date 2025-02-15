@@ -7,7 +7,7 @@ framework:
                 tags: true
                 default_lifetime: 259200 # 3 days
                 adapter: pimcore.cache.adapter.redis_tag_aware
-        default_redis_provider: "redis://##redis_hostname##:##redis_port##/##redis_database##"
+        default_redis_provider: '%env(REDIS_URL)%'
 
 doctrine:
     dbal:
@@ -27,4 +27,4 @@ doctrine:
 
 youwe_pimcore_elasticsearch:
     es_hosts:
-        - '##elasticsearch_protocol##://##elasticsearch_hostname##:##elasticsearch_port##'
+        - '%env(ES_URL)%'
