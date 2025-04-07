@@ -1,0 +1,7 @@
+<button 
+    {{ attributes }}
+    class="p-1.5 {{ active ? 'bg-teal-600 text-white' : 'bg-white text-gray-500' }} rounded-full hover:text-teal-600"
+    aria-label="{{ label }}"
+>
+    {% include '@FroqPortal/icons/' ~ icon ~ '.html.twig' %}
+</button> 

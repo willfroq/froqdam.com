@@ -1,0 +1,31 @@
+{% extends '@FroqPortalBundle/portal-layout.html.twig' %}
+
+{% block title %}
+    {{ brand_name }} | Colour Library
+{% endblock %}
+
+{% block body %}
+    <div class="px-[24px] bg-[#F4F6FF]">
+        <!-- Back Link -->
+        <a href="{{ path('froq_portal.colour_library.search') }}" class="no-underline text-[#009383] font-semibold text-[16px] inline-flex items-center gap-1 h-[72px] py-[12px]">
+            <span>&lt;</span>
+            <span>Heineken Brand Colour Library</span>
+        </a>
+
+        <!-- Header Section -->
+        <div class="bg-white rounded-[4px] p-[38px] gap-[24px]">
+            {% include '@FroqPortalBundle/partials/colour-detail/header.html.twig' %}
+
+            <!-- Description -->
+            <div class="font-montserrat font-normal text-[18px] leading-[32px] tracking-[0%] text-[#171B3F] mb-6">
+                <p class="mb-4">Colour is key to the visual brand identity of Amstel. The 3 colours, red, white and gold are the three essential colours for the brand.</p>
+                <p>For the right balance there always have to be at least two of the dominant colours and one of the secondary colours. This combination is simple yet powerful, ensuring that moving forward is truly iconic and recognizable worldwide.</p>
+            </div>
+
+            {% include '@FroqPortalBundle/partials/colour-detail/color-swatches.html.twig' %}
+        </div>
+
+        {% include '@FroqPortalBundle/partials/colour-detail/print-filters.html.twig' %}
+        {% include '@FroqPortalBundle/partials/colour-detail/expert-notes.html.twig' %}
+    </div>
+{% endblock %}

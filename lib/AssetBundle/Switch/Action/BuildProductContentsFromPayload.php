@@ -10,6 +10,7 @@ use Pimcore\Model\DataObject\Data\QuantityValue;
 use Pimcore\Model\DataObject\Fieldcollection;
 use Pimcore\Model\DataObject\Fieldcollection\Data\ProductContents;
 use Pimcore\Model\DataObject\Product;
+use Pimcore\Model\DataObject\QuantityValue\Unit;
 
 final class BuildProductContentsFromPayload
 {
@@ -19,24 +20,26 @@ final class BuildProductContentsFromPayload
 
     public function __invoke(Product $product, ProductFromPayload $productFromPayload, bool $isUpdate): void
     {
-        $netContents = $productFromPayload->productNetContents;
+        $netContents = (array) $productFromPayload->productNetContents;
+        $netUnitContents = (array) $productFromPayload->productNetUnitContents;
 
-        $keys = array_keys((array) $netContents);
+        $netContentKeys = array_keys($netContents);
+        $netUnitContentKeys = array_keys($netUnitContents);
 
-        if (!in_array(needle: 'value', haystack: $keys) && !in_array(needle: 'attribute', haystack: $keys)) {
+        if (!in_array(needle: 'value', haystack: $netContentKeys) && !in_array(needle: 'attribute', haystack: $netContentKeys)) {
             $this->createNetContents((array) $netContents, $product);
-
-            $this->createNetUnitContents((array) $netContents, $product);
-
-            return;
         }
 
-        if (isset($productFromPayload->productNetContents) && is_array($productFromPayload->productNetContents)) {
-            ($this->setProductContents)($product, $productFromPayload->productNetContents, true, $isUpdate);
+        if (!in_array(needle: 'value', haystack: $netUnitContentKeys) && !in_array(needle: 'attribute', haystack: $netUnitContentKeys)) {
+            $this->createNetUnitContents((array) $netUnitContents, $product);
         }
 
-        if (isset($productFromPayload->productNetUnitContents) && is_array($productFromPayload->productNetUnitContents)) {
-            ($this->setProductContents)($product, $productFromPayload->productNetUnitContents, false, $isUpdate);
+        if (in_array(needle: 'value', haystack: $netContentKeys) && in_array(needle: 'attribute', haystack: $netContentKeys)) {
+            ($this->setProductContents)($product, $netContents, true, $isUpdate);
+        }
+
+        if (in_array(needle: 'value', haystack: $netUnitContentKeys) && in_array(needle: 'attribute', haystack: $netUnitContentKeys)) {
+            ($this->setProductContents)($product, $netUnitContents, false, $isUpdate);
         }
     }
 
@@ -57,10 +60,20 @@ final class BuildProductContentsFromPayload
                 continue;
             }
 
+            $unit = Unit::getByAbbreviation((string) $unitId);
+
+            if (!($unit instanceof Unit)) {
+                continue;
+            }
+
+            if (!is_numeric($value)) {
+                continue;
+            }
+
             $productContents = new ProductContents();
 
             $quantityValue = new QuantityValue();
-            $quantityValue->setUnitId($unitId);
+            $quantityValue->setUnitId($unit->getId());
             $quantityValue->setValue((float) $value);
 
             $productContents->setNetContent($quantityValue);
@@ -91,10 +104,20 @@ final class BuildProductContentsFromPayload
                 continue;
             }
 
+            $unit = Unit::getByAbbreviation((string) $unitId);
+
+            if (!($unit instanceof Unit)) {
+                continue;
+            }
+
+            if (!is_numeric($value)) {
+                continue;
+            }
+
             $productContents = new ProductContents();
 
             $quantityValue = new QuantityValue();
-            $quantityValue->setUnitId($unitId);
+            $quantityValue->setUnitId($unit->getId());
             $quantityValue->setValue((float) $value);
 
             $productContents->setNetContent($quantityValue);

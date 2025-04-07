@@ -37,7 +37,7 @@ class AssetResourceVersionManager
 
         $children = array_filter(
             $parentAssetResource->getChildren(),
-            fn ($child) => $child !== $assetResource
+            fn ($child) => $child !== $parentAssetResource
         );
 
         return $this->paginator->paginate(

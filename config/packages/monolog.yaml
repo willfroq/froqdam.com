@@ -1,20 +1,5 @@
 monolog:
     channels: [messenger_audit]
-    handlers:
-        doctrine:
-            type: stream
-            path: "%kernel.logs_dir%/doctrine_%kernel.environment%.log"
-            level: error
-            channels: [ "doctrine" ]
-        main:
-            type: stream
-            path: '%kernel.logs_dir%/%kernel.environment%.log'
-            level: error
-            channels: [ "!event" ] # Excludes event logs, optional
-        console:
-            type: console
-            process_psr_3_messages: false
-            channels: [ "!event", "!doctrine" ]
 
 when@dev:
     monolog:
@@ -22,8 +7,10 @@ when@dev:
             main:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
-                level: debug
+                level: error
                 channels: ["!event"]
+                formatter: monolog.formatter.line
+                include_stacktraces: true
             messenger:
                 type: stream
                 path: "%kernel.logs_dir%/messenger.log"

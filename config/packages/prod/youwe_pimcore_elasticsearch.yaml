@@ -1,3 +1,0 @@
-youwe_pimcore_elasticsearch:
-    es_hosts:
-        - 'http://localhost:9200'

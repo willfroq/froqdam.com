@@ -1,0 +1,27 @@
+<div class="{{ class }}">
+    {# List Header #}
+    <div class="grid grid-cols-12 items-center px-6 py-3 border-b border-gray-200 bg-gray-50">
+        <div class="col-span-2">
+            <span class="text-sm font-semibold text-black">Thumbnail</span>
+        </div>
+        <div class="col-span-4 px-4">
+            <span class="text-sm font-semibold text-black">Title</span>
+        </div>
+        <div class="col-span-5 px-4">
+            <span class="text-sm font-semibold text-black">Markets</span>
+        </div>
+        <div class="col-span-1">
+            <span class="text-sm font-semibold text-black">Actions</span>
+        </div>
+    </div>
+
+    {# List Items #}
+    {% for item in items %}
+        <twig:ListCard
+            title="{{ item.title }}"
+            markets="{{ item.markets }}"
+            imageUrl="{{ item.imageUrl }}"
+            :id="item.id"
+        />
+    {% endfor %}
+</div>

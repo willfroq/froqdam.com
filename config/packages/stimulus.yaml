@@ -1,0 +1,4 @@
+stimulus:
+  controller_paths:
+    - '%kernel.project_dir%/lib/PortalBundle/Resources/assets/stimulus/controllers'
+  controllers_json: '%kernel.project_dir%/lib/PortalBundle/Resources/assets/stimulus/controllers.json'

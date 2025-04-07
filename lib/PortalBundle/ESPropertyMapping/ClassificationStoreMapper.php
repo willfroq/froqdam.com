@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\ESPropertyMapping;
 
 use Froq\PortalBundle\ESPropertyMapping\Traits\NestedFieldMapperTrait;
+use Froq\PortalBundle\Exception\ES\ESPropertyMappingException;
 use Froq\PortalBundle\Helper\AssetResourceHierarchyHelper;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Classificationstore;
@@ -20,7 +21,7 @@ use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingTrait;
 
-class ClassificationStoreMapper implements
+class ClassificationStoreMapper extends AbstractMapper implements
     PropertyMappingInterface,
     ConfigurationAwarePropertyMappingInterface,
     PropertyNameAwarePropertyMappingInterface,
@@ -53,30 +54,40 @@ class ClassificationStoreMapper implements
      */
     public function translate(object $element): bool|int|float|string|array|null
     {
-        $this->resolveOptions($this->configuration);
+        try {
+            $this->resolveOptions($this->configuration);
 
-        if (!$element instanceof AssetResource) {
-            return null;
-        }
-
-        if ($this->getConfiguration(self::CONFIG_FROM_LATEST_VERSION) === true) {
-            $element = AssetResourceHierarchyHelper::getLatestVersion($element);
-        }
-
-        $classificationStores = $this->getNestedFieldValues(
-            $element,
-            $this->propertyName,
-            explode('.', $this->getConfiguration(self::CONFIG_NESTED_CS_FIELD))
-        );
-
-        $values = [];
-        foreach ($classificationStores ?? [] as $cs) {
-            if ($value = $this->getValueByConfiguredCSKey($cs)) {
-                $values[] = $value;
+            if (!$element instanceof AssetResource) {
+                return null;
             }
+
+            if ($this->getConfiguration(self::CONFIG_FROM_LATEST_VERSION) === true) {
+                $element = AssetResourceHierarchyHelper::getLatestVersion($element);
+            }
+
+            $classificationStores = $this->getNestedFieldValues(
+                $element,
+                $this->propertyName,
+                explode('.', $this->getConfiguration(self::CONFIG_NESTED_CS_FIELD))
+            );
+
+            $values = [];
+            foreach ($classificationStores ?? [] as $cs) {
+                if ($value = $this->getValueByConfiguredCSKey($cs)) {
+                    $values[] = $value;
+                }
+            }
+
+            return array_unique($values);
+        } catch (\Exception $exception) {
+            $this->logger->error(sprintf(
+                '%s: %s',
+                ESPropertyMappingException::PROPERTY_MAPPING_EXCEPTION,
+                $exception->getMessage()
+            ));
         }
 
-        return array_unique($values);
+        return null;
     }
 
     /**
@@ -95,7 +106,7 @@ class ClassificationStoreMapper implements
 
         foreach ($group->getKeys() as $key) {
             if (strtolower($key->getConfiguration()->getName()) === strtolower($this->getConfiguration(self::CONFIG_CS_KEY_NAME))) {
-                return (string)$cs->getLocalizedKeyValue((int) $group->getConfiguration()->getId(), (int) $key->getConfiguration()->getId(), 'en');
+                return (string)$cs->getLocalizedKeyValue((int)$group->getConfiguration()->getId(), (int)$key->getConfiguration()->getId(), 'en');
             }
         }
 

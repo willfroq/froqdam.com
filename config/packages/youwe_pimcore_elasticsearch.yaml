@@ -155,6 +155,13 @@ youwe_pimcore_elasticsearch:
                             nested_fc_field: 'Metadata'
                             field_collection_key: 'PrintingProcess'
                             from_latest_version: true
+                    printingprocess:
+                        definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
+                        mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper
+                        mapper_config:
+                            nested_fc_field: 'Metadata'
+                            field_collection_key: 'printingprocess'
+                            from_latest_version: true
                     printing_workflow:
                         definition: { type: keyword, normalizer: 'keyword_norm', fields: { analyzed: { type: text, analyzer: general_analyzer } } }
                         mapper_class: \Froq\PortalBundle\ESPropertyMapping\AssetResourceMetadataMapper

@@ -6,6 +6,7 @@ namespace Froq\PortalBundle\ESPropertyMapping;
 
 use Froq\PortalBundle\Action\ESPropertyMapping\GetProductContentPropertyValues;
 use Froq\PortalBundle\ESPropertyMapping\Traits\NestedFieldMapperTrait;
+use Froq\PortalBundle\Exception\ES\ESPropertyMappingException;
 use Pimcore\Model\DataObject\AssetResource;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -18,7 +19,7 @@ use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingTrait;
 
-class ProductNetContentsMapper implements
+class ProductNetContentsMapper extends AbstractMapper implements
     PropertyMappingInterface,
     ConfigurationAwarePropertyMappingInterface,
     PropertyNameAwarePropertyMappingInterface,
@@ -48,28 +49,38 @@ class ProductNetContentsMapper implements
      *
      * @return array<string|int, mixed>
      */
-    public function translate(object $element): array
+    public function translate(object $element): array|null
     {
-        $this->resolveOptions($this->configuration);
+        try {
+            $this->resolveOptions($this->configuration);
 
-        if (!($element instanceof AssetResource)) {
-            return [];
+            if (!($element instanceof AssetResource)) {
+                return [];
+            }
+
+            $metricUnits = [];
+
+            if (isset($this->configuration[self::CONFIG_FIELD_COLLECTION_KEY])) {
+                $filterKey = $this->configuration[self::CONFIG_FIELD_COLLECTION_KEY];
+
+                $metricUnits = explode('_', $filterKey);
+            }
+
+            return (new GetProductContentPropertyValues)(
+                assetResource: $element,
+                hasConfig: (bool)$this->getConfiguration(self::CONFIG_FROM_LATEST_VERSION),
+                isNetContent: true,
+                metricUnit: (string)(fn () => end($metricUnits))()
+            );
+        } catch (\Exception $exception) {
+            $this->logger->error(sprintf(
+                '%s: %s',
+                ESPropertyMappingException::PROPERTY_MAPPING_EXCEPTION,
+                $exception->getMessage()
+            ));
         }
 
-        $metricUnits = [];
-
-        if (isset($this->configuration[self::CONFIG_FIELD_COLLECTION_KEY])) {
-            $filterKey = $this->configuration[self::CONFIG_FIELD_COLLECTION_KEY];
-
-            $metricUnits = explode('_', $filterKey);
-        }
-
-        return (new GetProductContentPropertyValues)(
-            assetResource: $element,
-            hasConfig: (bool) $this->getConfiguration(self::CONFIG_FROM_LATEST_VERSION),
-            isNetContent: true,
-            metricUnit: (string) (fn () => end($metricUnits))()
-        );
+        return null;
     }
 
     /**

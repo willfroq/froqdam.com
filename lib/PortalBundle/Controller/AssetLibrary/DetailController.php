@@ -69,8 +69,7 @@ class DetailController extends AbstractController
             throw $this->createNotFoundException('Page not found');
         }
 
-        $paginationData = $pagination->getPaginationData();
-
+        $paginationData = $pagination->getPaginationData(); /** @phpstan-ignore-line */
         $response = [
             'html' => $this->renderView('@FroqPortalBundle/partials/load-versions-tab-list-items.html.twig', compact('pagination')),
             'pages' => $paginationData['pageCount'] ?? 1,

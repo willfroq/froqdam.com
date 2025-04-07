@@ -1,11 +1,12 @@
 monolog:
     handlers:
-        streamed:
-            type: rotating_file
-            level: debug
+        main:
+            type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.log"
-            max_files: 10
-            channels: ['!deprecation']
+            level: error
+            formatter: monolog.formatter.line
+            include_stacktraces: true
+            channels: [ "!event" ]
         messenger:
             type: stream
             path: "%kernel.logs_dir%/messenger.log"

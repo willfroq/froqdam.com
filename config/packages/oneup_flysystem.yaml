@@ -3,15 +3,15 @@ oneup_flysystem:
         public_uploads_adapter:
             awss3v3:
                 client: Aws\S3\S3Client
-                bucket: '%env(AWS_S3_BUCKET_NAME)%'
+                bucket: '%env(AWS_S3_BUCKET_NAME_DUMP_SQL)%'
         private_uploads_adapter:
             awss3v3:
                 client: Aws\S3\S3Client
-                bucket: '%env(AWS_S3_BUCKET_NAME)%'
+                bucket: '%env(AWS_S3_BUCKET_NAME_DUMP_SQL)%'
         uploads_adapter:
             awss3v3:
                 client: Aws\S3\S3Client
-                bucket: '%env(AWS_S3_BUCKET_NAME)%'
+                bucket: '%env(AWS_S3_BUCKET_NAME_DUMP_SQL)%'
 
     filesystems:
         public_uploads_filesystem:

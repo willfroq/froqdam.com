@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Action;
 
 use Froq\AssetBundle\Model\DataObject\AssetDocument;
+use Froq\AssetBundle\Utility\FileValidator;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject\AssetResource;
@@ -51,7 +52,7 @@ final class SetFileMetadata
         }
 
         if ($assetDocument instanceof AssetDocument) {
-            if (empty($assetResourceChild->getPdfText()) && $assetDocument->getMimeType() === 'application/pdf' && !empty($assetDocument->getText())) {
+            if (empty($assetResourceChild->getPdfText()) && FileValidator::isValidPdf($assetDocument) && !empty($assetDocument->getText())) {
                 $assetResourceChild->setPdfText((string) $assetDocument->getText());
 
                 $isUpdated = true;

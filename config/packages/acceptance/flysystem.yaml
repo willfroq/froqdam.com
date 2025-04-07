@@ -16,20 +16,20 @@ flysystem:
             visibility: public
             options:
                 client: 'assets_s3'
-                bucket: '%env(AWS_S3_BUCKET_NAME)%'
+                bucket: '%env(AWS_S3_BUCKET_NAME_ASSETS)%'
                 prefix: 'uat/assets'
         pimcore.thumbnail.storage:
             adapter: 'aws'
             visibility: public
             options:
                 client: 'assets_s3'
-                bucket: '%env(AWS_S3_BUCKET_NAME)%'
+                bucket: '%env(AWS_S3_BUCKET_NAME_ASSETS)%'
                 prefix: 'uat/thumbnails'
         pimcore.asset_cache.storage:
             adapter: 'aws'
             visibility: public
             options:
                 client: 'assets_s3'
-                bucket: '%env(AWS_S3_BUCKET_NAME)%'
+                bucket: '%env(AWS_S3_BUCKET_NAME_ASSETS)%'
                 prefix: 'uat/asset-cache'
 

@@ -1,0 +1,10 @@
+<label class="flex items-center px-2 h-8 hover:bg-gray-50 rounded-lg group cursor-pointer">
+    <input 
+        type="checkbox"
+        {{ checked ? 'checked' : '' }}
+        class="w-4 h-4 rounded border-gray-300 text-teal-600 
+               focus:ring-teal-600"
+        {{ attributes }}
+    >
+    <span class="ml-2 text-sm text-gray-700">{{ label }}</span>
+</label> 

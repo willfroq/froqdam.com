@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Froq\PortalBundle\ESPropertyMapping;
 
+use Froq\AssetBundle\Utility\FileValidator;
 use Froq\PortalBundle\ESPropertyMapping\Traits\NestedFieldMapperTrait;
+use Froq\PortalBundle\Exception\ES\ESPropertyMappingException;
 use Froq\PortalBundle\Helper\AssetResourceHierarchyHelper;
 use Froq\PortalBundle\Helper\StrHelper;
 use Pimcore\Model\Asset;
@@ -21,7 +23,7 @@ use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingTrait;
 
-class PdfTextMapper implements
+class PdfTextMapper extends AbstractMapper implements
     PropertyMappingInterface,
     ConfigurationAwarePropertyMappingInterface,
     PropertyNameAwarePropertyMappingInterface,
@@ -52,66 +54,71 @@ class PdfTextMapper implements
      */
     public function translate(object $element): bool|int|float|string|array|null
     {
-        $this->resolveOptions($this->configuration);
+        try {
+            $this->resolveOptions($this->configuration);
 
-        if (!$element instanceof AbstractObject) {
-            return null;
-        }
-
-        if (!($element instanceof AssetResource)) {
-            return null;
-        }
-
-        $assetResource = $element;
-
-        if ($this->getConfiguration(self::CONFIG_FROM_LATEST_VERSION) === true) {
-            $assetResource = AssetResourceHierarchyHelper::getLatestVersion($assetResource);
-        }
-
-        $assets = $this->getNestedFieldValues(
-            $assetResource,
-            $this->propertyName,
-            explode('.', $this->getConfiguration(self::CONFIG_NESTED_FIELD))
-        );
-
-        $values = [];
-        /** @var Asset&Asset\Document $asset */
-        foreach ($assets ?? [] as $asset) {
-            if (!$this->isMappablePdfAsset($asset)) {
-                continue;
+            if (!$element instanceof AbstractObject) {
+                return null;
             }
 
-            $text = !is_null($assetResource->getPdfText()) ? $assetResource->getPdfText() : $asset->getText();
+            if (!($element instanceof AssetResource)) {
+                return null;
+            }
 
-            $pdfText = (string) StrHelper::hardTrim(
-                (string) $text,
-                regexReplacements: [
-                    '/[\x{200B}-\x{200D}\x{FEFF}]/u' => '', // Remove Unicode Zero Width
-                ]
+            $assetResource = $element;
+
+            if ($this->getConfiguration(self::CONFIG_FROM_LATEST_VERSION) === true) {
+                $assetResource = AssetResourceHierarchyHelper::getLatestVersion($assetResource);
+            }
+
+            $assets = $this->getNestedFieldValues(
+                $assetResource,
+                $this->propertyName,
+                explode('.', $this->getConfiguration(self::CONFIG_NESTED_FIELD))
             );
 
-            $pdfTextLines = explode("\r\n", $pdfText);
+            $values = [];
+            /** @var Asset&Asset\Document $asset */
+            foreach ($assets ?? [] as $asset) {
+                if (!FileValidator::isValidPdf($asset)) {
+                    continue;
+                }
 
-            foreach ($pdfTextLines as $pdfTextLine) {
-                $pdfTextLine = (string) StrHelper::hardTrim(
-                    $pdfTextLine,
+                $text = !is_null($assetResource->getPdfText()) ? $assetResource->getPdfText() : $asset->getText();
+
+                $pdfText = (string)StrHelper::hardTrim(
+                    (string)$text,
                     regexReplacements: [
-                        '/\s+/' => ' ', // replace multiple spaces to 1 space
+                        '/[\x{200B}-\x{200D}\x{FEFF}]/u' => '', // Remove Unicode Zero Width
                     ]
                 );
 
-                if ($pdfText) {
-                    $values[] = $pdfTextLine;
+                $pdfTextLines = explode("\r\n", $pdfText);
+
+                foreach ($pdfTextLines as $pdfTextLine) {
+                    $pdfTextLine = (string)StrHelper::hardTrim(
+                        $pdfTextLine,
+                        regexReplacements: [
+                            '/\s+/' => ' ', // replace multiple spaces to 1 space
+                        ]
+                    );
+
+                    if ($pdfText) {
+                        $values[] = $pdfTextLine;
+                    }
                 }
             }
+
+            return $values;
+        } catch (\Exception $exception) {
+            $this->logger->error(sprintf(
+                '%s: %s',
+                ESPropertyMappingException::PROPERTY_MAPPING_EXCEPTION,
+                $exception->getMessage()
+            ));
         }
 
-        return $values;
-    }
-
-    private function isMappablePdfAsset(?Asset $asset): bool
-    {
-        return $asset && ($asset->getMimeType() === 'application/pdf');
+        return null;
     }
 
     /**

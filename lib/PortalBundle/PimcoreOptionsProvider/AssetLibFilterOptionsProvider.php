@@ -107,7 +107,7 @@ class AssetLibFilterOptionsProvider implements SelectOptionsProviderInterface
             ['key' => 'PDF Text', 'value' => 'pdf_text'],
             ['key' => 'Printer Code', 'value' => 'printer_code'],
             ['key' => 'Printing Material', 'value' => 'printingmaterial'],
-            ['key' => 'Printing Process', 'value' => 'printing_process'],
+            ['key' => 'Printing Process', 'value' => 'printingprocess'],
             ['key' => 'Printing Workflow', 'value' => 'printing_workflow'],
             ['key' => 'Product EAN', 'value' => 'product_ean'],
             ['key' => 'Product EAN (Text Search)', 'value' => 'product_ean_text'],

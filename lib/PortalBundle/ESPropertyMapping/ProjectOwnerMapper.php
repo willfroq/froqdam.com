@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\ESPropertyMapping;
 
 use Froq\PortalBundle\ESPropertyMapping\Traits\NestedFieldMapperTrait;
+use Froq\PortalBundle\Exception\ES\ESPropertyMappingException;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\ProjectRole;
 use Pimcore\Model\DataObject\User;
@@ -19,7 +20,7 @@ use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingTrait;
 
-class ProjectOwnerMapper implements
+class ProjectOwnerMapper extends AbstractMapper implements
     PropertyMappingInterface,
     ConfigurationAwarePropertyMappingInterface,
     PropertyNameAwarePropertyMappingInterface,
@@ -60,43 +61,53 @@ class ProjectOwnerMapper implements
      */
     public function translate(object $element): bool|int|float|string|array|null
     {
-        $this->resolveOptions($this->configuration);
+        try {
+            $this->resolveOptions($this->configuration);
 
-        if (!$element instanceof AssetResource) {
-            return null;
-        }
-
-        $contacts = $this->getNestedFieldValues(
-            $element,
-            $this->propertyName,
-            explode('.', $this->getConfiguration(self::CONFIG_NESTED_CONTACTS_FIELD))
-        );
-
-        $values = [];
-        foreach ($contacts ?? [] as $contact) {
-            if (!$contact || !isset($contact['Person']) || !isset($contact['Role'])) {
-                continue;
+            if (!$element instanceof AssetResource) {
+                return null;
             }
 
-            $user = $contact['Person']->getData();
-            $role = $contact['Role']->getData();
+            $contacts = $this->getNestedFieldValues(
+                $element,
+                $this->propertyName,
+                explode('.', $this->getConfiguration(self::CONFIG_NESTED_CONTACTS_FIELD))
+            );
 
-            if (!($user instanceof User) || !($role instanceof ProjectRole)) {
-                continue;
-            }
+            $values = [];
+            foreach ($contacts ?? [] as $contact) {
+                if (!$contact || !isset($contact['Person']) || !isset($contact['Role'])) {
+                    continue;
+                }
 
-            if ($role->getCode() === $this->getConfiguration(self::CONFIG_PROJECT_ROLE_CODE)) {
-                $ids = array_column($values, 'user_id');
-                if ($user->getId() && $user->getName() && !isset($ids[$user->getId()])) {
-                    $values[] = [
-                        'user_id' => $user->getId(),
-                        'user_name' => $user->getName()
-                    ];
+                $user = $contact['Person']->getData();
+                $role = $contact['Role']->getData();
+
+                if (!($user instanceof User) || !($role instanceof ProjectRole)) {
+                    continue;
+                }
+
+                if ($role->getCode() === $this->getConfiguration(self::CONFIG_PROJECT_ROLE_CODE)) {
+                    $ids = array_column($values, 'user_id');
+                    if ($user->getId() && $user->getName() && !isset($ids[$user->getId()])) {
+                        $values[] = [
+                            'user_id' => $user->getId(),
+                            'user_name' => $user->getName()
+                        ];
+                    }
                 }
             }
+
+            return $values;
+        } catch (\Exception $exception) {
+            $this->logger->error(sprintf(
+                '%s: %s',
+                ESPropertyMappingException::PROPERTY_MAPPING_EXCEPTION,
+                $exception->getMessage()
+            ));
         }
 
-        return $values;
+        return null;
     }
 
     /**

@@ -83,12 +83,9 @@ class AssetPreviewExtension extends AbstractExtension
         return null;
     }
 
-    /**
-     * @return array<int, string|null>|string
-     */
-    public function getAssetExtension(Asset $asset): array|string
+    public function getAssetExtension(Asset $asset): string
     {
-        return pathinfo((string) $asset->getFilename(), PATHINFO_EXTENSION);
+        return (string) pathinfo((string) $asset->getFilename(), PATHINFO_EXTENSION);
     }
 
     /**
@@ -117,15 +114,18 @@ class AssetPreviewExtension extends AbstractExtension
             throw new \Exception('ThumbnailConfig not found');
         }
 
-        if ($asset instanceof Asset\Image) {
-            $thumbnail = $asset->getThumbnail($thumbnailName, false);
-        } elseif ($asset instanceof Asset\Document) {
-            $thumbnail = $asset->getImageThumbnail($thumbnailName);
-        } else {
-            throw new \Exception('Asset not found');
-        }
+        $thumbnail = match ($asset->getType()) {
+            'document' => (fn () => $asset instanceof Asset\Document ? $asset->getImageThumbnail($thumbnailName) : '')(),
+            'image' => (fn () => $asset instanceof Asset\Image ? $asset->getThumbnail($thumbnailName, false) : '')(),
+            'text' => (fn () => $asset instanceof Asset\Text ? $this->rtfToHtmlConverter->convert($asset) : '')(),
+            'unknown' => (string) pathinfo((string) $asset->getFilename(), PATHINFO_EXTENSION),
 
-        $stream = $thumbnail->getStream();
+            default => null
+        };
+
+        $thumbnailResult = !is_string($thumbnail) ? $thumbnail : null;
+
+        $stream = $thumbnailResult?->getStream();
 
         if (!is_resource($stream)) {
             throw new \Exception('Asset not found');

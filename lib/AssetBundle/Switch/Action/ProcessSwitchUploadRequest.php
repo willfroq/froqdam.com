@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Switch\Action;
 
-use Froq\PortalBundle\Api\ValueObject\ValidationError;
+use Froq\AssetBundle\ValueObject\ValidationError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 

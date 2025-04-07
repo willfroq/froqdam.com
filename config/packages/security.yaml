@@ -76,7 +76,7 @@ security:
             provider: members
             guard:
                 authenticators:
-                    - Froq\PortalBundle\Security\ApiKeyAuthenticator
+                    - Froq\PortalBundle\Security\PimtodayApiKeyAuthenticator
 
     access_control:
         # Pimcore admin ACl  // DO NOT CHANGE!

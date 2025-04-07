@@ -12,7 +12,7 @@ use Pimcore\Model\DataObject\QuantityValue\Unit;
 
 final class SetProductContents
 {
-    /** @param array<string, float|int|string|null> $payload */
+    /** @param array<int|string, mixed> $payload */
     public function __invoke(Product $product, array $payload, bool $isNetContent, bool $isUpdate): void
     {
         $keys = array_keys($payload);

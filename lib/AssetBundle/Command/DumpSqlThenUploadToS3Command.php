@@ -41,7 +41,7 @@ final class DumpSqlThenUploadToS3Command extends AbstractCommand
             ],
         ]);
 
-        $bucketName = $_ENV['AWS_S3_BUCKET_NAME'] ?? '';
+        $bucketName = $_ENV['AWS_S3_BUCKET_NAME_DUMP_SQL'] ?? '';
 
         $localTempDirectory = sys_get_temp_dir();
         $dumpFilePath = $localTempDirectory . '/' . $dbName . '-' . date('Y-m-d') . '-dump.sql';

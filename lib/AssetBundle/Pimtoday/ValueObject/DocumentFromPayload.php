@@ -5,54 +5,57 @@ declare(strict_types=1);
 namespace Froq\AssetBundle\Pimtoday\ValueObject;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Webmozart\Assert\Assert as AssertProps;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 final class DocumentFromPayload
 {
     public function __construct(
+        #[NotBlank(message: '$pimTodayId can not be blank.')]
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid {{ type }}.')]
-        public readonly int $documentIdentifier,
-
-        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
-        public readonly string $documentName,
-
-        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
-        public readonly string $documentType,
-
-        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
-        public readonly string $documentFileType,
-
-        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
-        public readonly string $documentExtension,
-
-        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
-        public readonly string $documentStatus,
-
-        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
-        public readonly string $documentSku,
+        public readonly int $pimTodayId,
 
         #[Assert\Type(type: 'integer', message: 'The value {{ value }} is not a valid {{ type }}.')]
-        public readonly int $documentSkuId,
+        public ?int $damId,
+
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
+        public readonly ?string $documentIdentifier,
+
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
+        public readonly ?string $damFilename,
+
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
+        public readonly ?string $damVersion,
+
+        #[NotBlank(message: '$pimTodayId can not be blank.')]
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
+        public readonly ?string $documentName,
+
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
+        public readonly ?string $documentType,
+
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
+        public readonly ?string $documentFileType,
+
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
+        public readonly ?string $documentExtension,
+
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
+        public readonly ?string $documentStatus,
+
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
+        public readonly ?string $documentSku,
+
+        #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
+        public readonly ?string $documentSkuId,
 
         #[Assert\Type(type: 'boolean', message: 'The value {{ value }} is not a valid {{ type }}.')]
-        public readonly bool $documentIsProcessed,
+        public readonly ?bool $documentIsProcessed,
 
         #[Assert\Type(type: 'boolean', message: 'The value {{ value }} is not a valid {{ type }}.')]
-        public readonly bool $documentIsSentToSftp,
+        public readonly ?bool $documentIsSentToSftp,
 
         #[Assert\Type(type: 'boolean', message: 'The value {{ value }} is not a valid {{ type }}.')]
-        public readonly bool $documentIsReplaced,
+        public readonly ?bool $documentIsReplaced,
     ) {
-        AssertProps::integer($this->documentIdentifier, 'Expected "projectNumber" to be a integer, got %s');
-        AssertProps::string($this->documentName, 'Expected "documentName" to be a string, got %s');
-        AssertProps::string($this->documentType, 'Expected "documentType" to be a string, got %s');
-        AssertProps::string($this->documentFileType, 'Expected "documentFileType" to be a string, got %s');
-        AssertProps::string($this->documentExtension, 'Expected "documentExtension" to be a string, got %s');
-        AssertProps::string($this->documentStatus, 'Expected "documentStatus" to be a string, got %s');
-        AssertProps::string($this->documentSku, 'Expected "documentSku" to be a string, got %s');
-        AssertProps::integer($this->documentSkuId, 'Expected "documentSkuId" to be a integer, got %s');
-        AssertProps::boolean($this->documentIsProcessed, 'Expected "documentIsProcessed" to be a boolean, got %s');
-        AssertProps::boolean($this->documentIsSentToSftp, 'Expected "documentIsSentToSftp" to be a boolean, got %s');
-        AssertProps::boolean($this->documentIsReplaced, 'Expected "documentIsReplaced" to be a boolean, got %s');
     }
 }

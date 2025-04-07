@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Froq\PortalBundle\DataTransferObject\Request;
 
-use Froq\PortalBundle\Api\ValueObject\ValidationError;
+use Froq\AssetBundle\ValueObject\ValidationError;
 use Pimcore\Model\DataObject\User;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Webmozart\Assert\Assert as AssertProps;

@@ -1,0 +1,18 @@
+<div class="{{ width }} {{ class }}">
+    <div class="bg-white rounded-lg pt-2">
+        {# Header #}
+        <div class="flex justify-between items-center px-5 py-2">
+            <span class="text-base font-semibold text-gray-900">Filters</span>
+            <button class="text-gray-500 text-sm">Clear</button>
+        </div>
+
+        {# Filter Groups #}
+        {% for filter in filters %}
+            <twig:FilterGroup
+                title="{{ filter.title }}"
+                :items="filter.items"
+                search-placeholder="{{ filter.searchPlaceholder }}"
+            />
+        {% endfor %}
+    </div>
+</div> 

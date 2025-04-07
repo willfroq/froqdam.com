@@ -6,6 +6,7 @@ namespace Froq\PortalBundle\ESPropertyMapping;
 
 use Carbon\Carbon;
 use Froq\PortalBundle\ESPropertyMapping\Traits\NestedFieldMapperTrait;
+use Froq\PortalBundle\Exception\ES\ESPropertyMappingException;
 use Froq\PortalBundle\Helper\AssetResourceHierarchyHelper;
 use Pimcore\Model\DataObject\AssetResource;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,7 +20,7 @@ use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingTrait;
 
-class NestedFieldMapper implements
+class NestedFieldMapper extends AbstractMapper implements
     PropertyMappingInterface,
     ConfigurationAwarePropertyMappingInterface,
     PropertyNameAwarePropertyMappingInterface,
@@ -50,33 +51,43 @@ class NestedFieldMapper implements
      */
     public function translate(object $element): bool|int|float|string|array|null
     {
-        $this->resolveOptions($this->configuration);
+        try {
+            $this->resolveOptions($this->configuration);
 
-        if (!$element instanceof AssetResource) {
-            return null;
-        }
-
-        if ($this->getConfiguration(self::CONFIG_FROM_LATEST_VERSION) === true) {
-            $element = AssetResourceHierarchyHelper::getLatestVersion($element);
-        }
-
-        $values = $this->getNestedFieldValues(
-            $element,
-            $this->propertyName,
-            explode('.', $this->getConfiguration(self::CONFIG_NESTED_FIELD))
-        );
-
-        foreach ($values ?? [] as &$value) {
-            if ($value instanceof Carbon) {
-                $value = $value->timestamp;
+            if (!$element instanceof AssetResource) {
+                return null;
             }
+
+            if ($this->getConfiguration(self::CONFIG_FROM_LATEST_VERSION) === true) {
+                $element = AssetResourceHierarchyHelper::getLatestVersion($element);
+            }
+
+            $values = $this->getNestedFieldValues(
+                $element,
+                $this->propertyName,
+                explode('.', $this->getConfiguration(self::CONFIG_NESTED_FIELD))
+            );
+
+            foreach ($values ?? [] as &$value) {
+                if ($value instanceof Carbon) {
+                    $value = $value->timestamp;
+                }
+            }
+
+            if ($values && count($values) === 1) {
+                return $values[0] instanceof Carbon ? $values[0]->timestamp : $values[0];
+            }
+
+            return $values;
+        } catch (\Exception $exception) {
+            $this->logger->error(sprintf(
+                '%s: %s',
+                ESPropertyMappingException::PROPERTY_MAPPING_EXCEPTION,
+                $exception->getMessage()
+            ));
         }
 
-        if ($values && count($values) === 1) {
-            return $values[0] instanceof Carbon ? $values[0]->timestamp : $values[0];
-        }
-
-        return $values;
+        return null;
     }
 
     /**

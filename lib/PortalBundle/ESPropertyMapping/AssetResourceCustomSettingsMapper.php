@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\ESPropertyMapping;
 
 use Froq\PortalBundle\ESPropertyMapping\Traits\NestedFieldMapperTrait;
+use Froq\PortalBundle\Exception\ES\ESPropertyMappingException;
 use Froq\PortalBundle\Helper\AssetResourceHierarchyHelper;
 use Pimcore\Model\DataObject\AssetResource;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,7 +19,7 @@ use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingTrait;
 
-class AssetResourceCustomSettingsMapper implements
+class AssetResourceCustomSettingsMapper extends AbstractMapper implements
     PropertyMappingInterface,
     ConfigurationAwarePropertyMappingInterface,
     PropertyNameAwarePropertyMappingInterface,
@@ -49,35 +50,45 @@ class AssetResourceCustomSettingsMapper implements
      */
     public function translate(object $element): bool|int|float|string|array|null
     {
-        $this->resolveOptions($this->configuration);
+        try {
+            $this->resolveOptions($this->configuration);
 
-        if (!($element instanceof AssetResource)) {
-            return null;
-        }
-
-        if ($this->getConfiguration(self::CONFIG_FROM_LATEST_VERSION) === true) {
-            $element = AssetResourceHierarchyHelper::getLatestVersion($element);
-        }
-
-        if (!$element->getAsset()) {
-            return null;
-        }
-
-        if (!$keys = explode('.', $this->getConfiguration(self::CONFIG_NESTED_CUSTOM_SETTING))) {
-            return null;
-        }
-
-        $value = $element->getAsset()->getCustomSettings();
-        foreach ($keys as $key) {
-            if (isset($value[$key])) {
-                $value = $value[$key];
-            } else {
-                $value = null;
-                break;
+            if (!($element instanceof AssetResource)) {
+                return null;
             }
+
+            if ($this->getConfiguration(self::CONFIG_FROM_LATEST_VERSION) === true) {
+                $element = AssetResourceHierarchyHelper::getLatestVersion($element);
+            }
+
+            if (!$element->getAsset()) {
+                return null;
+            }
+
+            if (!$keys = explode('.', $this->getConfiguration(self::CONFIG_NESTED_CUSTOM_SETTING))) {
+                return null;
+            }
+
+            $value = $element->getAsset()->getCustomSettings();
+            foreach ($keys as $key) {
+                if (isset($value[$key])) {
+                    $value = $value[$key];
+                } else {
+                    $value = null;
+                    break;
+                }
+            }
+
+            return $value;
+        } catch (\Exception $exception) {
+            $this->logger->error(sprintf(
+                '%s: %s',
+                ESPropertyMappingException::PROPERTY_MAPPING_EXCEPTION,
+                $exception->getMessage()
+            ));
         }
 
-        return $value;
+        return null;
     }
 
     /**

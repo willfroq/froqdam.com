@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\ESPropertyMapping;
 
 use Froq\PortalBundle\ESPropertyMapping\Traits\NestedFieldMapperTrait;
+use Froq\PortalBundle\Exception\ES\ESPropertyMappingException;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\Category;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,7 +19,7 @@ use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingTrait;
 
-class CategoryLevelLabelMapper implements
+class CategoryLevelLabelMapper extends AbstractMapper implements
     PropertyMappingInterface,
     ConfigurationAwarePropertyMappingInterface,
     PropertyNameAwarePropertyMappingInterface,
@@ -49,26 +50,36 @@ class CategoryLevelLabelMapper implements
      */
     public function translate(object $element): bool|int|float|string|array|null
     {
-        $this->resolveOptions($this->configuration);
+        try {
+            $this->resolveOptions($this->configuration);
 
-        if (!$element instanceof AbstractObject) {
-            return null;
-        }
-
-        $categories = $this->getNestedFieldValues(
-            $element,
-            $this->propertyName,
-            explode('.', $this->getConfiguration(self::CONFIG_NESTED_CATEGORIES_FIELD))
-        );
-
-        $values = [];
-        foreach ($categories ?? [] as $category) {
-            if ($category && ($value = $this->getKeyByConfiguredTypes($category))) {
-                $values[] = $value;
+            if (!$element instanceof AbstractObject) {
+                return null;
             }
+
+            $categories = $this->getNestedFieldValues(
+                $element,
+                $this->propertyName,
+                explode('.', $this->getConfiguration(self::CONFIG_NESTED_CATEGORIES_FIELD))
+            );
+
+            $values = [];
+            foreach ($categories ?? [] as $category) {
+                if ($category && ($value = $this->getKeyByConfiguredTypes($category))) {
+                    $values[] = $value;
+                }
+            }
+
+            return array_unique($values);
+        } catch (\Exception $exception) {
+            $this->logger->error(sprintf(
+                '%s: %s',
+                ESPropertyMappingException::PROPERTY_MAPPING_EXCEPTION,
+                $exception->getMessage()
+            ));
         }
 
-        return array_unique($values);
+        return null;
     }
 
     /**
@@ -80,7 +91,7 @@ class CategoryLevelLabelMapper implements
     {
         $configuredLevelLabels = array_map('strtolower', $this->getConfiguration(self::CONFIG_LEVEL_LABEL));
 
-        if (in_array(strtolower((string) $category->getLevelLabel()), $configuredLevelLabels)) {
+        if (in_array(strtolower((string)$category->getLevelLabel()), $configuredLevelLabels)) {
             return $category->getKey();
         }
 

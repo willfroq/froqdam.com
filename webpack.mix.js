@@ -1,5 +1,6 @@
 const mix = require('laravel-mix');
 const glob = require('glob');
+const path = require('path');
 
 /*
  |--------------------------------------------------------------------------
@@ -56,7 +57,11 @@ mix.version();
 mix.options({
     terser: {
         extractComments: false,
-    }
+    },
+    postCss: [
+        require('tailwindcss'),
+        require('autoprefixer'),
+    ],
 });
 
 mix.sass('lib/PortalBundle/Resources/assets/portal/src/_styles.scss',
@@ -69,3 +74,14 @@ mix.js(glob.sync('{lib/PortalBundle/Resources/assets/portal/src/scripts/*.js,lib
 
 mix.copyDirectory('lib/PortalBundle/Resources/assets/portal/media', 'public/build/portal/media');
 mix.copyDirectory('lib/PortalBundle/Resources/assets/portal/lib', 'public/build/portal/lib');
+
+mix.webpackConfig({
+    resolve: {
+        alias: {
+            '@symfony/stimulus-bridge/controllers.json': path.resolve(__dirname, 'lib/PortalBundle/Resources/assets/stimulus/controllers.json'),
+        }
+    }
+});
+
+mix.js('lib/PortalBundle/Resources/assets/stimulus/bootstrap.js', 'public/build/stimulus')
+    .version();

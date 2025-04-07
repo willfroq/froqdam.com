@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\ESPropertyMapping;
 
 use Froq\PortalBundle\ESPropertyMapping\Traits\NestedFieldMapperTrait;
+use Froq\PortalBundle\Exception\ES\ESPropertyMappingException;
 use Froq\PortalBundle\Helper\AssetResourceHierarchyHelper;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Fieldcollection;
@@ -20,7 +21,7 @@ use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingInterface;
 use Youwe\PimcoreElasticsearchBundle\Mapping\Property\PropertyNameAwarePropertyMappingTrait;
 
-class AssetResourceMetadataMapper implements
+class AssetResourceMetadataMapper extends AbstractMapper implements
     PropertyMappingInterface,
     ConfigurationAwarePropertyMappingInterface,
     PropertyNameAwarePropertyMappingInterface,
@@ -52,35 +53,45 @@ class AssetResourceMetadataMapper implements
      */
     public function translate(object $element): bool|int|float|string|array|null
     {
-        $this->resolveOptions($this->configuration);
+        try {
+            $this->resolveOptions($this->configuration);
 
-        if (!$element instanceof AssetResource) {
-            return null;
-        }
-
-        if ($this->getConfiguration(self::CONFIG_FROM_LATEST_VERSION) === true) {
-            $element = AssetResourceHierarchyHelper::getLatestVersion($element);
-        }
-
-        $fieldCollections = $this->getNestedFieldValues(
-            $element,
-            $this->propertyName,
-            explode('.', $this->getConfiguration(self::CONFIG_NESTED_FC_FIELD))
-        );
-
-        $values = [];
-
-        foreach ($fieldCollections ?? [] as $fc) {
-            if (!$fc instanceof Fieldcollection) {
-                continue;
+            if (!$element instanceof AssetResource) {
+                return null;
             }
 
-            if ($value = $this->getMetadataValue($fc)) {
-                $values[] = $value;
+            if ($this->getConfiguration(self::CONFIG_FROM_LATEST_VERSION) === true) {
+                $element = AssetResourceHierarchyHelper::getLatestVersion($element);
             }
+
+            $fieldCollections = $this->getNestedFieldValues(
+                $element,
+                $this->propertyName,
+                explode('.', $this->getConfiguration(self::CONFIG_NESTED_FC_FIELD))
+            );
+
+            $values = [];
+
+            foreach ($fieldCollections ?? [] as $fc) {
+                if (!$fc instanceof Fieldcollection) {
+                    continue;
+                }
+
+                if ($value = $this->getMetadataValue($fc)) {
+                    $values[] = $value;
+                }
+            }
+
+            return array_unique($values);
+        } catch (\Exception $exception) {
+            $this->logger->error(sprintf(
+                '%s: %s',
+                ESPropertyMappingException::PROPERTY_MAPPING_EXCEPTION,
+                $exception->getMessage()
+            ));
         }
 
-        return array_unique($values);
+        return null;
     }
 
     private function getMetadataValue(Fieldcollection $fc): ?string

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Froq\PortalBundle\Action\Request;
 
-use Froq\PortalBundle\Api\ValueObject\ValidationError;
+use Froq\AssetBundle\ValueObject\ValidationError;
 use Froq\PortalBundle\DataTransferObject\Request\DownloadLinksRequest;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject\AssetResource;

@@ -9,16 +9,15 @@ froq_portal_asset_library:
     type: annotation
     prefix: /portal/asset-library
 
+froq_portal_colour_library:
+    resource: '@FroqPortalBundle/Controller/ColourLibrary/'
+    type: annotation
+    prefix: /portal/colour-library
+
 froq_asset:
     resource: '@FroqAssetBundle/Controller/'
     type: annotation
     prefix: /
-
-froq_portal_api:
-    resource: '@FroqPortalBundle/Api/Controller/'
-    type:     annotation
-    prefix:   /portal/api
-    trailing_slash_on_root: false
 
 froq_portal_switch:
     resource: '@FroqAssetBundle/Switch/Controller/'

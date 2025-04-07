@@ -27,7 +27,6 @@ final class PublicPageController extends AbstractController
     public function downloadPublicFile(int $id, string $uuid): StreamedResponse
     {
         $assetBasket = AssetBasket::getByUUID($uuid)?->current(); /** @phpstan-ignore-line */
-
         if (!($assetBasket instanceof AssetBasket)) {
             throw new \Exception(message: 'AssetBasket does not exist.');
         }
