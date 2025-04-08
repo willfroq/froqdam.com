@@ -7,6 +7,7 @@
  * Fields Summary:
  * - Name [input]
  * - Asset [manyToOneRelation]
+ * - pimTodayId [numeric]
  * - validFrom [date]
  * - validUntil [date]
  * - fileCreateDate [datetime]
@@ -35,9 +36,9 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'name' => 'AssetResource',
    'description' => '',
    'creationDate' => 0,
-   'modificationDate' => 1725908605,
+   'modificationDate' => 1741791633,
    'userOwner' => 2,
-   'userModification' => 14,
+   'userModification' => 2,
    'parentClass' => '',
    'implementsInterfaces' => '',
    'listingParentClass' => '',
@@ -166,6 +167,37 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 ),
               )),
               2 => 
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Numeric::__set_state(array(
+                 'name' => 'pimTodayId',
+                 'title' => 'Pim Today Id',
+                 'tooltip' => '',
+                 'mandatory' => false,
+                 'noteditable' => true,
+                 'index' => true,
+                 'locked' => false,
+                 'style' => '',
+                 'permissions' => NULL,
+                 'datatype' => 'data',
+                 'fieldtype' => 'numeric',
+                 'relationType' => false,
+                 'invisible' => false,
+                 'visibleGridView' => false,
+                 'visibleSearch' => false,
+                 'blockedVarsForExport' => 
+                array (
+                ),
+                 'width' => '',
+                 'defaultValue' => NULL,
+                 'integer' => false,
+                 'unsigned' => false,
+                 'minValue' => NULL,
+                 'maxValue' => NULL,
+                 'unique' => false,
+                 'decimalSize' => NULL,
+                 'decimalPrecision' => NULL,
+                 'defaultValueGenerator' => '',
+              )),
+              3 => 
               \Pimcore\Model\DataObject\ClassDefinition\Layout\Fieldcontainer::__set_state(array(
                  'name' => 'Field Container',
                  'type' => NULL,
@@ -243,7 +275,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'labelWidth' => 0,
                  'labelAlign' => 'left',
               )),
-              3 => 
+              4 => 
               \Pimcore\Model\DataObject\ClassDefinition\Layout\Fieldcontainer::__set_state(array(
                  'name' => 'Field Container',
                  'type' => NULL,
@@ -321,7 +353,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'labelWidth' => 0,
                  'labelAlign' => 'left',
               )),
-              4 => 
+              5 => 
               \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
                  'name' => 'AssetType',
                  'title' => 'Asset Type',
@@ -361,7 +393,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 array (
                 ),
               )),
-              5 => 
+              6 => 
               \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                  'name' => 'UploadName',
                  'title' => 'Upload Name',
@@ -392,7 +424,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'showCharCount' => false,
                  'defaultValueGenerator' => '',
               )),
-              6 => 
+              7 => 
               \Pimcore\Model\DataObject\ClassDefinition\Data\Numeric::__set_state(array(
                  'name' => 'AssetVersion',
                  'title' => 'Asset Version',
@@ -423,7 +455,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'decimalPrecision' => NULL,
                  'defaultValueGenerator' => '',
               )),
-              7 => 
+              8 => 
               \Pimcore\Model\DataObject\ClassDefinition\Data\CalculatedValue::__set_state(array(
                  'name' => 'highestVersionNumber',
                  'title' => 'Highest Version Number',
@@ -450,7 +482,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'calculatorClass' => 'Froq\\AssetBundle\\PimcoreAdminProvider\\HighestVersionCalculator',
                  'columnLength' => 190,
               )),
-              8 => 
+              9 => 
               \Pimcore\Model\DataObject\ClassDefinition\Layout\Fieldcontainer::__set_state(array(
                  'name' => 'Field Container',
                  'type' => NULL,

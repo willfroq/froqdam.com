@@ -5,22 +5,21 @@
  * Variants: no
  *
  * Fields Summary:
- * - UUID [input]
- * - PublicUrl [input]
- * - ExpirationDate [datetime]
- * - AssetResources [manyToManyObjectRelation]
- * - User [manyToManyObjectRelation]
+ * - Name [input]
+ * - Uuid [input]
+ * - pimtodayCustomerId [input]
+ * - Organization [manyToOneRelation]
  */
 
 return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'dao' => NULL,
-   'id' => 'AssetBasket',
-   'name' => 'AssetBasket',
+   'id' => 'ApiToken',
+   'name' => 'ApiToken',
    'description' => '',
    'creationDate' => 0,
-   'modificationDate' => 1733838275,
-   'userOwner' => 14,
-   'userModification' => 14,
+   'modificationDate' => 1743592752,
+   'userOwner' => 2,
+   'userModification' => 2,
    'parentClass' => '',
    'implementsInterfaces' => '',
    'listingParentClass' => '',
@@ -83,12 +82,12 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
             array (
               0 => 
               \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
-                 'name' => 'UUID',
-                 'title' => 'UUID',
+                 'name' => 'Name',
+                 'title' => 'Name',
                  'tooltip' => '',
                  'mandatory' => true,
-                 'noteditable' => true,
-                 'index' => false,
+                 'noteditable' => false,
+                 'index' => true,
                  'locked' => false,
                  'style' => '',
                  'permissions' => NULL,
@@ -114,12 +113,12 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
               )),
               1 => 
               \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
-                 'name' => 'PublicUrl',
-                 'title' => 'Public Url',
+                 'name' => 'Uuid',
+                 'title' => 'Uuid',
                  'tooltip' => '',
-                 'mandatory' => false,
+                 'mandatory' => true,
                  'noteditable' => true,
-                 'index' => false,
+                 'index' => true,
                  'locked' => false,
                  'style' => '',
                  'permissions' => NULL,
@@ -139,7 +138,38 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'regexFlags' => 
                 array (
                 ),
-                 'unique' => false,
+                 'unique' => true,
+                 'showCharCount' => false,
+                 'defaultValueGenerator' => '',
+              )),
+              2 => 
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+                 'name' => 'pimtodayCustomerId',
+                 'title' => 'Pimtoday Customer Id',
+                 'tooltip' => '',
+                 'mandatory' => true,
+                 'noteditable' => true,
+                 'index' => true,
+                 'locked' => false,
+                 'style' => '',
+                 'permissions' => NULL,
+                 'datatype' => 'data',
+                 'fieldtype' => 'input',
+                 'relationType' => false,
+                 'invisible' => false,
+                 'visibleGridView' => false,
+                 'visibleSearch' => false,
+                 'blockedVarsForExport' => 
+                array (
+                ),
+                 'width' => '',
+                 'defaultValue' => NULL,
+                 'columnLength' => 190,
+                 'regex' => '',
+                 'regexFlags' => 
+                array (
+                ),
+                 'unique' => true,
                  'showCharCount' => false,
                  'defaultValueGenerator' => '',
               )),
@@ -157,10 +187,10 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
           )),
           1 => 
           \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
-             'name' => 'Dates',
+             'name' => 'Relation',
              'type' => NULL,
              'region' => NULL,
-             'title' => 'Dates',
+             'title' => 'Relation',
              'width' => '',
              'height' => '',
              'collapsible' => false,
@@ -171,71 +201,18 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'children' => 
             array (
               0 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\Datetime::__set_state(array(
-                 'name' => 'ExpirationDate',
-                 'title' => 'Expiration Date',
+              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
+                 'name' => 'Organization',
+                 'title' => 'Organization',
                  'tooltip' => '',
                  'mandatory' => true,
-                 'noteditable' => true,
-                 'index' => false,
+                 'noteditable' => false,
+                 'index' => true,
                  'locked' => false,
                  'style' => '',
                  'permissions' => NULL,
                  'datatype' => 'data',
-                 'fieldtype' => 'datetime',
-                 'relationType' => false,
-                 'invisible' => false,
-                 'visibleGridView' => false,
-                 'visibleSearch' => false,
-                 'blockedVarsForExport' => 
-                array (
-                ),
-                 'queryColumnType' => 'bigint(20)',
-                 'columnType' => 'bigint(20)',
-                 'defaultValue' => NULL,
-                 'useCurrentDate' => false,
-                 'defaultValueGenerator' => '',
-              )),
-            ),
-             'locked' => false,
-             'blockedVarsForExport' => 
-            array (
-            ),
-             'fieldtype' => 'panel',
-             'layout' => NULL,
-             'border' => false,
-             'icon' => '',
-             'labelWidth' => 0,
-             'labelAlign' => 'left',
-          )),
-          2 => 
-          \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
-             'name' => 'Relations',
-             'type' => NULL,
-             'region' => NULL,
-             'title' => 'Relations',
-             'width' => '',
-             'height' => '',
-             'collapsible' => false,
-             'collapsed' => false,
-             'bodyStyle' => '',
-             'datatype' => 'layout',
-             'permissions' => NULL,
-             'children' => 
-            array (
-              0 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyObjectRelation::__set_state(array(
-                 'name' => 'AssetResources',
-                 'title' => 'Asset Resources',
-                 'tooltip' => '',
-                 'mandatory' => true,
-                 'noteditable' => true,
-                 'index' => false,
-                 'locked' => false,
-                 'style' => '',
-                 'permissions' => NULL,
-                 'datatype' => 'data',
-                 'fieldtype' => 'manyToManyObjectRelation',
+                 'fieldtype' => 'manyToOneRelation',
                  'relationType' => true,
                  'invisible' => false,
                  'visibleGridView' => false,
@@ -247,61 +224,19 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 array (
                   0 => 
                   array (
-                    'classes' => 'AssetResource',
+                    'classes' => 'Organization',
                   ),
                 ),
                  'pathFormatterClass' => '',
                  'width' => '',
-                 'height' => '',
-                 'maxItems' => NULL,
-                 'visibleFields' => 
+                 'assetUploadPath' => '',
+                 'objectsAllowed' => true,
+                 'assetsAllowed' => false,
+                 'assetTypes' => 
                 array (
                 ),
-                 'allowToCreateNewObject' => false,
-                 'optimizedAdminLoading' => false,
-                 'enableTextSelection' => false,
-                 'visibleFieldDefinitions' => 
-                array (
-                ),
-              )),
-              1 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyObjectRelation::__set_state(array(
-                 'name' => 'User',
-                 'title' => 'User',
-                 'tooltip' => '',
-                 'mandatory' => true,
-                 'noteditable' => true,
-                 'index' => false,
-                 'locked' => false,
-                 'style' => '',
-                 'permissions' => NULL,
-                 'datatype' => 'data',
-                 'fieldtype' => 'manyToManyObjectRelation',
-                 'relationType' => true,
-                 'invisible' => false,
-                 'visibleGridView' => false,
-                 'visibleSearch' => false,
-                 'blockedVarsForExport' => 
-                array (
-                ),
-                 'classes' => 
-                array (
-                  0 => 
-                  array (
-                    'classes' => 'User',
-                  ),
-                ),
-                 'pathFormatterClass' => '',
-                 'width' => '',
-                 'height' => '',
-                 'maxItems' => NULL,
-                 'visibleFields' => 
-                array (
-                ),
-                 'allowToCreateNewObject' => false,
-                 'optimizedAdminLoading' => false,
-                 'enableTextSelection' => false,
-                 'visibleFieldDefinitions' => 
+                 'documentsAllowed' => false,
+                 'documentTypes' => 
                 array (
                 ),
               )),
