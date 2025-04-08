@@ -8,6 +8,7 @@
  * - SKU [input]
  * - Name [input]
  * - EAN [input]
+ * - pimTodayId [numeric]
  * - Attributes [fieldcollections]
  * - netContentStatement [input]
  * - netContents [fieldcollections]
@@ -17,15 +18,15 @@
  * - Supplier [manyToOneRelation]
  */
 
-return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
+return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'dao' => NULL,
    'id' => 'Product',
    'name' => 'Product',
    'description' => '',
    'creationDate' => 0,
-   'modificationDate' => 1709570270,
+   'modificationDate' => 1741773767,
    'userOwner' => 0,
-   'userModification' => 14,
+   'userModification' => 2,
    'parentClass' => '',
    'implementsInterfaces' => '',
    'listingParentClass' => '',
@@ -42,7 +43,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
   array (
   ),
    'layoutDefinitions' => 
-  Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+  \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
      'name' => 'pimcore_root',
      'type' => NULL,
      'region' => NULL,
@@ -57,7 +58,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
      'children' => 
     array (
       0 => 
-      Pimcore\Model\DataObject\ClassDefinition\Layout\Tabpanel::__set_state(array(
+      \Pimcore\Model\DataObject\ClassDefinition\Layout\Tabpanel::__set_state(array(
          'name' => 'Layout',
          'type' => NULL,
          'region' => NULL,
@@ -72,7 +73,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
          'children' => 
         array (
           0 => 
-          Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+          \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
              'name' => 'General',
              'type' => NULL,
              'region' => NULL,
@@ -87,7 +88,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'children' => 
             array (
               0 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                  'name' => 'SKU',
                  'title' => 'SKU',
                  'tooltip' => '',
@@ -118,7 +119,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'defaultValueGenerator' => '',
               )),
               1 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                  'name' => 'Name',
                  'title' => 'Name',
                  'tooltip' => '',
@@ -149,7 +150,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'defaultValueGenerator' => '',
               )),
               2 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                  'name' => 'EAN',
                  'title' => 'EAN',
                  'tooltip' => '',
@@ -179,6 +180,37 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'showCharCount' => false,
                  'defaultValueGenerator' => '',
               )),
+              3 => 
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Numeric::__set_state(array(
+                 'name' => 'pimTodayId',
+                 'title' => 'Pim Today Id',
+                 'tooltip' => '',
+                 'mandatory' => false,
+                 'noteditable' => true,
+                 'index' => true,
+                 'locked' => false,
+                 'style' => '',
+                 'permissions' => NULL,
+                 'datatype' => 'data',
+                 'fieldtype' => 'numeric',
+                 'relationType' => false,
+                 'invisible' => false,
+                 'visibleGridView' => false,
+                 'visibleSearch' => false,
+                 'blockedVarsForExport' => 
+                array (
+                ),
+                 'width' => '',
+                 'defaultValue' => NULL,
+                 'integer' => false,
+                 'unsigned' => false,
+                 'minValue' => NULL,
+                 'maxValue' => NULL,
+                 'unique' => true,
+                 'decimalSize' => NULL,
+                 'decimalPrecision' => NULL,
+                 'defaultValueGenerator' => '',
+              )),
             ),
              'locked' => false,
              'blockedVarsForExport' => 
@@ -192,7 +224,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'labelAlign' => 'left',
           )),
           1 => 
-          Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+          \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
              'name' => 'Attributes',
              'type' => NULL,
              'region' => NULL,
@@ -207,7 +239,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'children' => 
             array (
               0 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\Fieldcollections::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Fieldcollections::__set_state(array(
                  'name' => 'Attributes',
                  'title' => 'Attributes',
                  'tooltip' => '',
@@ -251,7 +283,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'labelAlign' => 'left',
           )),
           2 => 
-          Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+          \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
              'name' => 'Measurements',
              'type' => NULL,
              'region' => NULL,
@@ -266,7 +298,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'children' => 
             array (
               0 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                  'name' => 'netContentStatement',
                  'title' => 'Net Content Statement',
                  'tooltip' => 'The statement corresponding to the net content descriptions as stated on the packaging (e.g. "4 x 100 gr = 400 gr").',
@@ -297,7 +329,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'defaultValueGenerator' => '',
               )),
               1 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\Fieldcollections::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Fieldcollections::__set_state(array(
                  'name' => 'netContents',
                  'title' => 'Net Contents',
                  'tooltip' => '',
@@ -329,7 +361,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'border' => false,
               )),
               2 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\Fieldcollections::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Fieldcollections::__set_state(array(
                  'name' => 'netUnitContents',
                  'title' => 'Net Unit Contents',
                  'tooltip' => '',
@@ -361,7 +393,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'border' => false,
               )),
               3 => 
-              Pimcore\Model\DataObject\ClassDefinition\Layout\Text::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Layout\Text::__set_state(array(
                  'name' => 'Layout',
                  'type' => NULL,
                  'region' => NULL,
@@ -399,7 +431,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'labelAlign' => 'left',
           )),
           3 => 
-          Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+          \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
              'name' => 'Relations',
              'type' => NULL,
              'region' => NULL,
@@ -414,7 +446,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'children' => 
             array (
               0 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyObjectRelation::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyObjectRelation::__set_state(array(
                  'name' => 'Assets',
                  'title' => 'Assets',
                  'tooltip' => '',
@@ -453,7 +485,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 ),
               )),
               1 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyObjectRelation::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyObjectRelation::__set_state(array(
                  'name' => 'Categories',
                  'title' => 'Categories',
                  'tooltip' => '',
@@ -492,7 +524,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 ),
               )),
               2 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
                  'name' => 'Supplier',
                  'title' => 'Supplier',
                  'tooltip' => '',
