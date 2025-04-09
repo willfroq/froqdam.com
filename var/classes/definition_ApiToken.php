@@ -17,7 +17,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'name' => 'ApiToken',
    'description' => '',
    'creationDate' => 0,
-   'modificationDate' => 1744138957,
+   'modificationDate' => 1744128817,
    'userOwner' => 2,
    'userModification' => 2,
    'parentClass' => '',
