@@ -1,0 +1,13 @@
+<div class="
+    {% if size == 'sm' %}w-8 h-8
+    {% elseif size == 'md' %}w-16 h-16
+    {% elseif size == 'lg' %}w-24 h-24
+    {% endif %}
+    flex-shrink-0 flex items-center justify-center {{ class }}"
+>
+    <img 
+        src="{{ src }}" 
+        alt="{{ alt }}"
+        class="w-full h-full object-{{ objectFit }}"
+    >
+</div> 

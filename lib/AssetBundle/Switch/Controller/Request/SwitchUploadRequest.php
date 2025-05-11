@@ -11,7 +11,7 @@ use Froq\AssetBundle\Switch\Validator\IsJsonMaxOneLevelArray;
 use Froq\AssetBundle\Switch\Validator\IsJsonMaxThreeLevelsDeep;
 use Froq\AssetBundle\Switch\Validator\OrganizationExists;
 use Froq\AssetBundle\Switch\Validator\OrganizationKeyAndNameMustBeEqual;
-use Froq\AssetBundle\ValueObject\ValidationError;
+use Froq\AssetBundle\Switch\ValueObject\ValidationError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotBlank;

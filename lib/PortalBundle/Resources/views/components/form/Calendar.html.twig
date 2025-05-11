@@ -8,7 +8,7 @@
             viewBox="0 0 24 24" 
             stroke="currentColor"
         >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
     </div>
 
@@ -17,11 +17,13 @@
         {# From date #}
         <div class="space-y-1.5">
             <label class="block text-sm font-medium text-dark-600">From</label>
-            <input 
-                type="date" 
-                class="block w-full rounded border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
-                value="{{ fromDate }}"
-            >
+            <label>
+                <input
+                    type="date"
+                    class="block w-full rounded border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                    value="{{ fromDate }}"
+                >
+            </label>
         </div>
 
         {# To date #}

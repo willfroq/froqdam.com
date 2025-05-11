@@ -9,7 +9,10 @@ final class Button
 {
     public string $variant = 'primary';
     public string $size = 'md';
+    public string $label = '';
     public bool $disabled = false;
     public bool $hasIcon = false;
     public string $iconPosition = 'left';
-} 
+    public string $class = '';
+    public ?string $type = 'button';
+}

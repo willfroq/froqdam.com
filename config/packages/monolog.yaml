@@ -1,16 +1,24 @@
 monolog:
     channels: [messenger_audit]
 
+when@prod:
+    monolog:
+        handlers:
+            error_log:
+                type: stream
+                path: php://stderr
+                level: error
+                formatter: monolog.formatter.line
+                include_stacktraces: true
+
 when@dev:
     monolog:
         handlers:
             main:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
-                level: error
+                level: debug
                 channels: ["!event"]
-                formatter: monolog.formatter.line
-                include_stacktraces: true
             messenger:
                 type: stream
                 path: "%kernel.logs_dir%/messenger.log"

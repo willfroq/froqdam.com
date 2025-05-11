@@ -9,4 +9,4 @@ final class Checkbox
 {
     public string $label = '';
     public bool $checked = false;
-} 
+}

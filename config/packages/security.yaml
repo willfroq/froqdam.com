@@ -78,6 +78,14 @@ security:
                 authenticators:
                     - Froq\PortalBundle\Security\PimtodayApiKeyAuthenticator
 
+        export:
+            pattern: ^/export
+            stateless: true
+            provider: members
+            guard:
+                authenticators:
+                    - Froq\PortalBundle\Security\ApiKeyAuthenticator
+
     access_control:
         # Pimcore admin ACl  // DO NOT CHANGE!
         - { path: ^/admin/sso/([ a-z- ]+/)?(login|logout|acs|metadata)$, roles: IS_AUTHENTICATED_ANONYMOUSLY }

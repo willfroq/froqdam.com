@@ -14,6 +14,18 @@ services:
                     key: '%env(AWS_S3_ACCESS_ID)%'
                     secret: '%env(AWS_S3_ACCESS_SECRET)%'
 
+    redis_session:
+        class: Predis\Client
+        arguments:
+            - scheme: '%env(REDIS_SCHEME)%'
+              host: '%env(REDIS_HOST)%'
+              port: '%env(int:REDIS_PORT)%'
+
+    redis_session_handler:
+        class: Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler
+        arguments:
+            - '@redis_session'
+
 parameters:
     secret: 406aa1854639ba3eb7385f06e667b839
     default_portal_dashboard_path: froq_portal.asset_library.search

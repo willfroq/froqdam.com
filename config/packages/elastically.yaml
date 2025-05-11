@@ -1,0 +1,41 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    JoliCode\Elastically\Transport\HttpClientTransport: ~
+    JoliCode\Elastically\Client:
+        arguments:
+            $config:
+                url: '%env(OPENSEARCH_URL)%'
+                transport: '@JoliCode\Elastically\Transport\HttpClientTransport'
+                transportOptions:
+                    ssl:
+                        verify_host: false
+                        verify_peer: false
+                        verify_peer_name: false
+                elastically_mappings_directory: '%kernel.project_dir%/config/opensearch'
+                elastically_index_class_mapping:
+                    colour-guideline-item: Froq\PortalBundle\ColourLibrary\DataTransferObject\ColourGuidelineItem
+                elastically_serializer: '@serializer'
+                elastically_bulk_size: 100
+            $logger: '@logger'
+
+    JoliCode\Elastically\Factory:
+        arguments:
+            $config:
+                transport: '@JoliCode\Elastically\Transport\HttpClientTransport'
+    JoliCode\Elastically\Messenger\DocumentExchangerInterface:
+        alias: App\Elasticsearch\DocumentExchanger
+
+when@test:
+    services:
+        JoliCode\Elastically\Client:
+            arguments:
+                $config:
+                    host: '%env(TEST_OPENSEARCH_HOST)%'
+                    timeout: 60
+                    transport: '@JoliCode\Elastically\Transport\HttpClientTransport'
+                    elastically_mappings_directory: '%kernel.project_dir%/config/opensearch'
+                    elastically_index_class_mapping:
+                        colour-guideline-item: Froq\PortalBundle\ColourLibrary\DataTransferObject\ColourGuidelineItem

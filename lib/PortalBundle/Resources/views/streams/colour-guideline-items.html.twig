@@ -1,0 +1,16 @@
+<turbo-stream action="append" target="colour-guideline-items">
+    <template>
+        {% if colourGuidelineItems is empty %}
+            <div id="empty-colour-guideline-items"></div>
+        {% endif %}
+
+        {% if colourGuidelineItems is not empty %}
+            <div class="flex-grow">
+                <twig:ColourGuidelineCollection
+                        :colourGuidelineItems="colourGuidelineItems"
+                        currentView="{{ app.request.query.get('view', 'grid') }}"
+                />
+            </div>
+        {% endif %}
+    </template>
+</turbo-stream>

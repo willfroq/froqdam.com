@@ -1,0 +1,8 @@
+monolog:
+    handlers:
+        error_log:
+            type: stream
+            path: php://stderr
+            level: error
+            formatter: monolog.formatter.line
+            include_stacktraces: true

@@ -82,7 +82,8 @@ final class CreateAssetResource
 
         $assetResourceVersionOne->save();
 
-        $product = Product::getByPimTodayId($pimtodayUploadRequest->productData->pimTodayId)->current(); /** @phpstan-ignore-line */
+        $product = null;
+
         if (!empty($pimtodayUploadRequest->productData?->pimTodayEan)) {
             $product = (new Product\Listing())
                 ->addConditionParam('EAN = ?', $pimtodayUploadRequest->productData->pimTodayEan)
@@ -160,7 +161,8 @@ final class CreateAssetResource
             throw new Exception(message: $message);
         }
 
-        $project = Project::getByPimTodayId($pimtodayUploadRequest->projectData?->pimTodayId)->current(); /** @phpstan-ignore-line */
+        $project = null;
+
         if (!empty($pimtodayUploadRequest->projectData->froqProjectNumber)) {
             $project = (new Project\Listing())
                 ->addConditionParam('o_key = ?', $pimtodayUploadRequest->projectData->froqProjectNumber)

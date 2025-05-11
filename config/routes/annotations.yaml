@@ -10,7 +10,7 @@ froq_portal_asset_library:
     prefix: /portal/asset-library
 
 froq_portal_colour_library:
-    resource: '@FroqPortalBundle/Controller/ColourLibrary/'
+    resource: '@FroqPortalBundle/ColourLibrary/Controller/'
     type: annotation
     prefix: /portal/colour-library
 
@@ -29,6 +29,12 @@ froq_portal_pimtoday:
     resource: '@FroqAssetBundle/Pimtoday/Controller/'
     type:     annotation
     prefix:   /pimtoday
+    trailing_slash_on_root: false
+
+froq_portal_export:
+    resource: '@FroqAssetBundle/Export/Controller/'
+    type:     annotation
+    prefix:   /export
     trailing_slash_on_root: false
 
 froq_dashboard:

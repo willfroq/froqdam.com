@@ -17,12 +17,6 @@
     </head>
 
     <body>
-        {% block header %}
-            {% if user is defined %}
-                <twig:Navbar :user="user" />
-            {% endif %}
-        {% endblock %}
-
         {% block body %}{% endblock %}
 
         {% block javascripts %}{% endblock %}

@@ -1,0 +1,5 @@
+framework:
+  lock:
+    enabled: true
+    resources:
+      default: '%env(LOCK_DSN)%'

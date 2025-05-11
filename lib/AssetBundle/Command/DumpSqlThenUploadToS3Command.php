@@ -22,11 +22,14 @@ use Symfony\Component\Process\Process;
 )]
 final class DumpSqlThenUploadToS3Command extends AbstractCommand
 {
-    public function __construct(private readonly ApplicationLogger $logger)
+    public function __construct(private readonly ApplicationLogger $logger, private readonly string $s3BucketNameDumpSql)
     {
         parent::__construct();
     }
 
+    /**
+     * @throws \Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $filesystem = new Filesystem();
@@ -34,21 +37,17 @@ final class DumpSqlThenUploadToS3Command extends AbstractCommand
 
         $s3Client = new S3Client([
             'version' => 'latest',
-            'region' => $_ENV['AWS_S3_BUCKET_REGION'] ?? '',
-            'credentials' => [
-                'key' => $_ENV['AWS_S3_ACCESS_ID'] ?? '',
-                'secret' => $_ENV['AWS_S3_ACCESS_SECRET'] ?? '',
-            ],
+            'region' => $_ENV['AWS_S3_BUCKET_REGION'] ?? ''
         ]);
 
-        $bucketName = $_ENV['AWS_S3_BUCKET_NAME_DUMP_SQL'] ?? '';
+        $bucketName = $this->s3BucketNameDumpSql;
 
         $localTempDirectory = sys_get_temp_dir();
         $dumpFilePath = $localTempDirectory . '/' . $dbName . '-' . date('Y-m-d') . '-dump.sql';
         $zipFilePath = $localTempDirectory . '/' . $dbName . '-' . date('Y-m-d') . '-dump.zip';
 
         try {
-            $process = Process::fromShellCommandline("yousqldump > $dumpFilePath");
+            $process = Process::fromShellCommandline("mysqldump > $dumpFilePath");
             $process->setTimeout(1800);
             $process->run();
 

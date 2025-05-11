@@ -1,0 +1,3 @@
+youwe_pimcore_elasticsearch:
+    es_hosts:
+        - '%env(OPENSEARCH_HOST)%'

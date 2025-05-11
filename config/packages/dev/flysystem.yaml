@@ -25,10 +25,3 @@ flysystem:
                 client: 'assets_s3'
                 bucket: 'dam-assets-s3'
                 prefix: 'local-assets'
-        pimcore.asset_cache.storage:
-            adapter: 'aws'
-            visibility: public
-            options:
-                client: 'assets_s3'
-                bucket: 'dam-assets-s3'
-                prefix: 'local-asset-cache'

@@ -8,8 +8,8 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 final class FilterGroup
 {
     public string $title;
+    /** @var array<string> */
     public array $items = [];
-    public bool $isOpen = true;
-    public ?string $searchPlaceholder = null;
-    public array $selected = [];
-} 
+    public ?string $selectedItem = null;
+    public bool $expanded = false;
+}

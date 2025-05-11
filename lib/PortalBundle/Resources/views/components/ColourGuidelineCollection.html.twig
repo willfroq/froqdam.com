@@ -1,0 +1,30 @@
+<div id="colour-guideline-collection" class="w-full mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 !gap-2"
+         data-grid-view-target="gridContainer"
+    >
+        {% for item in colourGuidelineItems %}
+            {% set asset = get_asset_by_id(item.imageId) %}
+            {% set imageSrc = get_asset_thumbnail_hashed_url(asset, 'portal_asset_library_item_grid') %}
+
+            <twig:GridCard
+                    id="{{ item.colourGuidelineId }}"
+                    name="{{ item.name }}"
+                    :markets="item.countries"
+                    imagePath="{{ imageSrc }}"
+            />
+        {% endfor %}
+    </div>
+
+    <div class="space-y-4 hidden"
+         data-grid-view-target="listContainer"
+    >
+        {% for item in colourGuidelineItems %}
+            <twig:ListCard
+                    id="{{ item.colourGuidelineId }}"
+                    name="{{ item.name }}"
+                    :markets="item.countries"
+                    imagePath="{{ mix('build/portal/media/1.jpg') }}"
+            />
+        {% endfor %}
+    </div>
+</div>

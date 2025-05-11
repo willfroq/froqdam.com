@@ -45,7 +45,7 @@ final class GetMetricValue
     {
         return match ($quantityValue->getUnit()?->getAbbreviation()) {
             MetricUnits::Pieces->readable(),
-            MetricUnits::Each->readable() => $quantityValue->getValue() . ' ' . $quantityValue->getUnit()->getAbbreviation(),
+            MetricUnits::Each->readable() => $quantityValue->getValue() . ' ' . MetricUnits::Pieces->readable(),
 
             default => ''
         };

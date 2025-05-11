@@ -7,8 +7,8 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 #[AsTwigComponent(name: 'ListCard', template: '@FroqPortal/components/card/ListCard.html.twig')]
 final class ListCard
 {
-    public string $title;
-    public string $markets;
-    public string $imageUrl;
-    public int $id;
-} 
+    public string $name = '';
+    /** @var array<string> */
+    public array $markets = [];
+    public ?string $imagePath = null;
+}

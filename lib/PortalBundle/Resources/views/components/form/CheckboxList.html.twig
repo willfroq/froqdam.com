@@ -1,0 +1,18 @@
+<div class="space-y-2 {{ class }}">
+    {% for item in items %}
+        {% set itemValue = item is iterable ? item.name|default(item) : item %}
+        <label class="flex items-center space-x-2 cursor-pointer group">
+            <div class="relative flex items-center justify-center">
+                <input
+                    id="sidebar-checkbox"
+                    type="checkbox" 
+                    class="w-4 h-4 border-2 border-[#E4E7EC] rounded text-[#009383] focus:ring-[#009383] focus:ring-offset-0 transition-colors cursor-pointer
+                    checked:bg-[#009383] checked:border-[#009383]"
+                    value="{{ itemValue }}"
+                    {% if itemValue == selectedItem %}checked{% endif %}
+                >
+            </div>
+            <span class="text-14 leading-20 text-[#171B3F]">{{ itemValue }}</span>
+        </label>
+    {% endfor %}
+</div>

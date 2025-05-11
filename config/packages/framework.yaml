@@ -1,12 +1,14 @@
 #### SYMFONY OVERRIDES
 framework:
-    cache:
-        prefix_seed: '%kernel.environment%.pimcore.froq'
+    csrf_protection: true
+    trusted_proxies: "%env(TRUSTED_PROXIES)%"
+    trusted_headers: [ "x-forwarded-for", "x-forwarded-host", "x-forwarded-proto" ]
     session:
         enabled: true
         cookie_secure: true
         cookie_samesite: lax
         cookie_lifetime: 259200
+        handler_id: 'redis_session_handler'
 
 when@test:
     framework:

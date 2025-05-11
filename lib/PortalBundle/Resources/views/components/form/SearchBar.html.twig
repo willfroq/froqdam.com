@@ -1,0 +1,20 @@
+<div class="relative">
+    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+    </div>
+    <label>
+        <input type="text"
+               data-search-target="searchInput"
+               name="query"
+               value="{{ app.request.query.get('query') }}"
+               class="py-2 pl-10 pr-4 block w-full h-46 rounded-lg text-14 leading-26 font-normal outline-none"
+               placeholder="{{ this.placeholder }}"
+               aria-label="Colour Guidelines"
+               style="border: 1px solid #E4E7EC; transition: all 0.2s ease-in-out; outline: none;"
+               onFocus="this.style.border='1px solid #009383'; this.style.boxShadow='0px 0px 0px 4px rgba(0, 147, 131, 0.25)'"
+               onBlur="this.style.border='1px solid #E4E7EC'; this.style.boxShadow='none'"
+        >
+    </label>
+</div>

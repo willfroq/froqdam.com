@@ -1,0 +1,30 @@
+<div data-controller="accordion">
+    <button 
+        class="w-full flex justify-between items-center text-left focus:outline-none"
+        data-accordion-target="button"
+        data-action="accordion#toggle"
+        aria-expanded="{{ expanded ? 'true' : 'false' }}"
+    >
+        <span class="text-18 font-semibold leading-28 tracking-normal text-[#171B3F] font-sans">{{ title }}</span>
+        <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            class="h-5 w-5 text-[#6C757D] transform transition-transform duration-200 ease-in-out {{ expanded ? 'rotate-180' : '' }}"
+            data-accordion-target="icon"
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+        >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </button>
+    
+    <div 
+        class="overflow-hidden transition-all duration-200 ease-in-out"
+        data-accordion-target="content"
+        style="max-height: {{ expanded ? 'none' : '0' }};"
+    >
+        <div class="mt-3 px-1">
+            {{ block('content') }}
+        </div>
+    </div>
+</div>

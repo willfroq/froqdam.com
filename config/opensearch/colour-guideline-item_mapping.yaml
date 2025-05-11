@@ -1,0 +1,88 @@
+settings:
+  number_of_replicas: 0
+  number_of_shards: 5
+  refresh_interval: 60s
+  analysis:
+    normalizer:
+      keyword_norm:
+        type: custom
+        filter: [ "asciifolding", "lowercase" ]
+    analyzer:
+      text_analyzer:
+        type: custom
+        tokenizer: standard
+        filter: [ "asciifolding", "lowercase" ]
+
+mappings:
+  dynamic: true
+  properties:
+    # Will be denormalized into ColourGuidelineItem DTO
+    colourGuidelineId:
+      type: integer
+    name:
+      type: keyword
+    imageId:
+      type: integer
+    countries:
+      type: keyword
+
+    # Put all fields that needed to be searched, filtered, aggregated, filtered, sorted etc.
+    created_at_timestamp:
+      type: date
+      format: 'yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis||epoch_second'
+    updated_at_timestamp:
+      type: date
+      format: 'yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis||epoch_second'
+    description:
+      type: text
+
+    # Aggregate Filters
+    brands:
+      type: keyword
+    markets:
+      type: keyword
+
+    # Relations
+    organization_id:
+      type: integer
+    organization_name:
+      type: keyword
+
+    image_id:
+      type: integer
+    image_filename:
+      type: keyword
+
+    category_id:
+      type: integer
+    category_reporting_type:
+      type: keyword
+    category_level_label:
+      type: keyword
+
+    product_ids:
+      type: integer
+    product_names:
+      type: keyword
+
+    colour_ids:
+      type: integer
+    colour_names:
+      type: keyword
+    colour_fields_keys:
+      type: keyword
+    colour_fields_values:
+      type: keyword
+
+    print_guidelines_ids:
+      type: integer
+    print_guidelines_names:
+      type: keyword
+    print_guidelines_descriptions:
+      type: text
+    print_guidelines_medium_names:
+      type: keyword
+    print_guidelines_substrate_names:
+      type: keyword
+    print_guidelines_printing_technique_names:
+      type: keyword

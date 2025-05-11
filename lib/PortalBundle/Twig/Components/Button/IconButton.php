@@ -10,4 +10,4 @@ final class IconButton
     public string $icon;
     public bool $active = false;
     public string $label;
-} 
+}

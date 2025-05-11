@@ -8,7 +8,7 @@
             viewBox="0 0 24 24" 
             stroke="currentColor"
         >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
     </div>
 
@@ -17,23 +17,27 @@
         {# Minimum #}
         <div class="space-y-1.5">
             <label class="block text-sm font-medium text-dark-600">Minimum</label>
-            <input 
-                type="number" 
-                class="block w-full rounded border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm h-8 p-2"
-                value="{{ minValue }}"
-                placeholder="1000"
-            >
+            <label>
+                <input
+                    type="number"
+                    class="block w-full rounded border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm h-8 p-2"
+                    value="{{ minValue }}"
+                    placeholder="1000"
+                >
+            </label>
         </div>
 
         {# Maximum #}
         <div class="space-y-1.5">
             <label class="block text-sm font-medium text-dark-600">Maximum</label>
-            <input 
-                type="number" 
-                class="block w-full rounded border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm h-8 p-2"
-                value="{{ maxValue }}"
-                placeholder="1000"
-            >
+            <label>
+                <input
+                    type="number"
+                    class="block w-full rounded border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm h-8 p-2"
+                    value="{{ maxValue }}"
+                    placeholder="1000"
+                >
+            </label>
         </div>
     </div>
 </div> 

@@ -1,41 +1,22 @@
-{# Wrapper with horizontal scroll #}
-<div class="bg-white shadow overflow-hidden">
-    <div class="overflow-x-auto">
-        <div class="min-w-[800px]"> {# Minimum width to prevent squishing #}
-            {# List Card Body #}
-            <div class="grid grid-cols-12 items-center w-full py-4 px-6 hover:bg-gray-50 border-b border-gray-200">
-                {# Thumbnail #}
-                <div class="col-span-2">
-                    <div class="w-16 h-16 flex-shrink-0 flex items-center justify-center">
-                        <img 
-                            src="{{ imageUrl }}" 
-                            alt="{{ title }}" 
-                            class="h-16 w-auto object-contain"
-                        >
-                    </div>
+<div class="bg-white rounded-md shadow-sm transition-all duration-200 hover:shadow-md">
+    <div class="p-4 flex">
+        <div class="flex-shrink-0 mr-4 w-24">
+            {% if this.imagePath %}
+                <img 
+                    src="{{ this.imagePath }}" 
+                    alt="{{ this.name }}" 
+                    class="max-h-24 max-w-24 object-contain"
+                >
+            {% else %}
+                <div class="h-24 w-24 bg-gray-100 flex items-center justify-center">
+                    <span class="text-gray-400 text-xs">No image</span>
                 </div>
-
-                {# Title #}
-                <div class="col-span-4 px-4 min-w-[200px]">
-                    <twig:Tooltip label="{{ title }}">
-                        <p class="text-black text-[14px] truncate">{{ title }}</p>
-                    </twig:Tooltip>
-                </div>
-
-                {# Markets #}
-                <div class="col-span-5 px-4">
-                    <p class="text-black text-[14px] truncate">{{ markets }}</p>
-                </div>
-
-                {# Actions #}
-                <div class="col-span-1 flex justify-left">
-                    <button class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
+            {% endif %}
+        </div>
+        
+        <div class="flex-grow">
+            <h5 class="text-lg font-medium text-gray-800 mb-1">{{ this.name }}</h5>
+            <p class="text-xs text-gray-500">{{ this.markets|join(', ') }}</p>
         </div>
     </div>
-</div> 
+</div>

@@ -1,0 +1,17 @@
+<button 
+    class="mt-2 text-blue-600 text-sm hover:text-blue-800 focus:outline-none flex items-center"
+    data-controller="view-all-button"
+    data-action="view-all-button#toggle"
+>
+    <span data-view-all-button-target="text">View all ({{ this.count }})</span>
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        class="h-4 w-4 ml-1 transform transition-transform duration-200"
+        data-view-all-button-target="icon"
+        fill="none" 
+        viewBox="0 0 24 24" 
+        stroke="currentColor"
+    >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+</button>

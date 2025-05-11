@@ -52,9 +52,15 @@ class AssetLibQueryBuilderManager
 
                 $this->aggregationsManager->addAggregations($query, $user);
 
-                $result = $this->assetLibraryElasticsearchClient->searchElements($query);
+                $enabled = false;
 
-                return $this->queryResponseManager->createQueryResponseDto($result);
+                if ($enabled) { /** @phpstan-ignore-line */
+                    $result = $this->assetLibraryElasticsearchClient->searchElements($query);
+
+                    return $this->queryResponseManager->createQueryResponseDto($result);
+                }
+
+                return null;
             } catch (\Exception $ex) {
                 $retryCount++;
 

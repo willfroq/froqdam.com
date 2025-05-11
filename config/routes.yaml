@@ -16,3 +16,7 @@ download_public_file:
 download_all_public_files:
     path: /download-all-public-files/
     controller: Froq\PortalBundle\Controller\AssetLibrary\Basket\PublicPageController::downloadAllPublicFiles
+
+health_check:
+    path: /health-check
+    controller: Froq\PortalBundle\Controller\HealthCheckController::healthCheck

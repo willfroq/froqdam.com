@@ -3,16 +3,79 @@
 {% block title %}Search | Colour Library{% endblock %}
 
 {% block body %}
-    <main class="pt-m pb-xs pl-xl pr-xl">
-        <app-content-loader>
-            {% include '@FroqPortalBundle/partials/colour-library/search_body.html.twig' %}
-        </app-content-loader>
-    </main>
-{% endblock body %}
+    {% if user is defined %}
+        <twig:ColourNavbar :user="user" />
+    {% endif %}
 
-{# {% block javascripts %}
-    {{ parent() }}
-    <script>
-        window.staticListPageSize = {{ page_size }};
-    </script>
-{% endblock %} #}
+    <div class="min-h-screen px-[30px]" data-controller="search" data-search-url-value="{{ path('froq_portal.colour_library.search') }}">
+        <div class="flex flex-wrap items-center gap-6 py-1">
+            <h1 class="font-semibold text-36 text-[#171B3F] w-284">Colour Library</h1>
+
+            <div class="flex-grow">
+                <twig:SearchBar placeholder="Filter by Brand, Market, Platform, Colour, Channel etc." />
+            </div>
+
+            {% block result_count %}
+                <span id="colour-guidelines-result-count" class="text-16 leading-26 font-normal text-[#102717] font-sans">
+                    Result <span class="font-bold">{{ totalCount }}</span> Colour Guidelines
+                </span>
+            {% endblock %}
+
+            <div class="flex items-center gap-2">
+                <twig:Dropdown
+                        id="sort-dropdown"
+                        label="Sort by:"
+                        :options="sortOptions"
+                        selected="Alphabetical"
+                        searchUrl="{{ path('froq_portal.colour_library.dropdown_search', {'type': 'sort'}) }}"
+                        autocomplete="true"
+                        placeholder="Search sorting options..."
+                        data-dropdown-autocomplete-type-value="sort"
+                        data-dropdown-autocomplete-id-value="sort-dropdown"
+                />
+            </div>
+
+            <div>
+                <twig:ViewToggle view="grid" />
+            </div>
+        </div>
+
+        <turbo-frame id="colour-guideline-page" data-search-target="colourGuidelinePage">
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="w-full md:w-280 flex-shrink-0">
+                    <twig:Sidebar
+                            selectedBrand="Amstel"
+                            :brands="brands"
+                            :markets="markets"
+                            :mediums="mediums"
+                    />
+                </div>
+
+                <div class="flex-grow" id="colour-guideline-items"
+                     data-controller="infinite-scroll"
+                     data-infinite-scroll-page-value="{{ paginator.page }}"
+                     data-infinite-scroll-url-value="{{ path('froq_portal.colour_library.search') }}"
+                >
+                    {% if colourGuidelineItems is empty %}
+                        <div class="flex flex-col items-center justify-start p-8 bg-white rounded-md shadow-sm h-[200vh]">
+                            <p class="text-gray-500">No items found</p>
+                        </div>
+                    {% endif %}
+
+                    {% if colourGuidelineItems is not empty %}
+                        <twig:ColourGuidelineCollection
+                                :colourGuidelineItems="colourGuidelineItems"
+                                currentView="{{ app.request.query.get('view', 'grid') }}"
+                        />
+                    {% endif %}
+                </div>
+            </div>
+
+            <turbo-stream action="replace" target="colour-guidelines-result-count">
+                <template>
+                    {{ block('result_count') }}
+                </template>
+            </turbo-stream>
+        </turbo-frame>
+    </div>
+{% endblock %}

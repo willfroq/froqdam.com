@@ -1,0 +1,39 @@
+<div 
+    class="w-full mb-4" 
+    data-controller="product-list"
+    data-product-list-current-view-value="{{ this.currentView }}"
+>
+    {% if this.items is empty %}
+        <div class="flex items-center justify-center p-8 bg-white rounded-md shadow-sm">
+            <p class="text-gray-500">No items found</p>
+        </div>
+    {% else %}
+        <div 
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 !gap-2"
+            data-grid-view-target="gridContainer"
+        >
+            {% for item in this.items %}
+                <twig:GridCard 
+                    id="{{ item.id }}"
+                    name="{{ item.name }}"
+                    :markets="item.markets"
+                    imagePath="{{ mix(item.imagePath) }}"
+                />
+            {% endfor %}
+        </div>
+
+        <div 
+            class="space-y-4 hidden"
+            data-grid-view-target="listContainer"
+        >
+            {% for item in this.items %}
+                <twig:ListCard 
+                    id="{{ item.id }}"
+                    name="{{ item.name }}"
+                    :markets="item.markets"
+                    imagePath="{{ mix(item.imagePath) }}"
+                />
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>

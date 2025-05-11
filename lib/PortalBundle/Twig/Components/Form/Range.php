@@ -11,4 +11,4 @@ final class Range
     public ?string $minValue = null;
     public ?string $maxValue = null;
     public string $class = '';
-} 
+}

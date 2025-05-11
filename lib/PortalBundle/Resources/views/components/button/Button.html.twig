@@ -1,23 +1,52 @@
-<button 
-    {{ attributes }}
-    class="inline-flex items-center justify-center rounded-lg font-semibold
-           {% if variant == 'primary' %}bg-teal-600 text-white hover:bg-teal-700
-           {% elseif variant == 'secondary' %}bg-white text-gray-700 border border-gray-200 hover:bg-gray-50
-           {% endif %}
-           {% if size == 'sm' %}px-3 py-2 text-sm
-           {% elseif size == 'md' %}px-4 py-2.5 text-base
-           {% elseif size == 'lg' %}px-5 py-3 text-lg
-           {% endif %}
-           {% if disabled %}opacity-50 cursor-not-allowed{% endif %}"
-    {% if disabled %}disabled{% endif %}
+<button
+    type="{{ type }}"
+    data-controller="button"
+    data-action="click->button#click"
+    data-variant="{{ variant }}"
+    class="
+        inline-flex items-center justify-center
+        {% if variant == 'primary' %}bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500
+        {% elseif variant == 'secondary' %}bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-gray-500
+        {% elseif variant == 'text' %}bg-transparent text-gray-600 hover:bg-gray-100
+        {% endif %}
+        {% if size == 'sm' %}px-3 py-1.5 text-sm
+        {% elseif size == 'md' %}px-4 py-2 text-base
+        {% elseif size == 'lg' %}px-6 py-3 text-lg
+        {% endif %}
+        rounded-md font-medium
+        focus:outline-none focus:ring-2 focus:ring-offset-2
+        {% if disabled %}opacity-50 cursor-not-allowed{% endif %}
+        transition-colors duration-200
+        {{ class }}"
+    {% if disabled %}
+        disabled
+        data-button-disabled-value="true"
+    {% endif %}
 >
     {% if hasIcon and iconPosition == 'left' %}
-        <span class="mr-2">{{ block('icon') }}</span>
+        <span class="mr-2">
+            {{ block('icon') }}
+        </span>
     {% endif %}
     
-    {{ block('content') }}
+    <span data-button-target="content">
+        {{ label }}
+    </span>
+
+    {# Loading spinner (hidden by default) #}
+    <span 
+        data-button-target="spinner" 
+        class="ml-2 hidden"
+    >
+        <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+    </span>
     
     {% if hasIcon and iconPosition == 'right' %}
-        <span class="ml-2">{{ block('icon') }}</span>
+        <span class="ml-2">
+            {{ block('icon') }}
+        </span>
     {% endif %}
 </button> 

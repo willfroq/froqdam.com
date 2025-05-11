@@ -140,6 +140,41 @@ class AssetLibFormManager
             }
         }
 
+        $netContentsFilterNames = [
+            'net_contents_ml',
+            'net_contents_g',
+            'net_contents_pcs',
+            'net_unit_contents_ml',
+            'net_unit_contents_g',
+        ];
+
+        foreach ($netContentsFilterNames as $netContentsFilterName) {
+            $filterMetadataDto = $filters[$netContentsFilterName] ?? null;
+
+            if (!($filterMetadataDto instanceof FilterMetadataDto)) {
+                continue;
+            }
+
+            $checkboxes = $filterMetadataDto->getAggregationChoices();
+
+            usort($checkboxes, function ($aggregationChoiceDtoPrev, $aggregationChoiceDtoNext) {
+                if (!($aggregationChoiceDtoPrev instanceof AggregationChoiceDto)) {
+                    return 0;
+                }
+
+                if (!($aggregationChoiceDtoNext instanceof AggregationChoiceDto)) {
+                    return 0;
+                }
+
+                $numA = (int) preg_replace('/\D/', '', $aggregationChoiceDtoPrev->getKey());
+                $numB = (int) preg_replace('/\D/', '', $aggregationChoiceDtoNext->getKey());
+
+                return $numA <=> $numB;
+            });
+
+            $filterMetadataDto->setAggregationChoices($checkboxes);
+        }
+
         return $filters;
     }
 

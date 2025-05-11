@@ -1,0 +1,10 @@
+<span 
+    class="inline-flex items-center justify-center
+    {% if size == 'sm' %}w-4 h-4
+    {% elseif size == 'md' %}w-5 h-5
+    {% elseif size == 'lg' %}w-6 h-6
+    {% endif %}
+    {{ class }}"
+>
+    {% include '@FroqPortal/icons/' ~ name ~ '.html.twig' %}
+</span> 

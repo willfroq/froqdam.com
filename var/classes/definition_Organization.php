@@ -14,17 +14,18 @@
  * - Users [reverseObjectRelation]
  * - AssetResourceFolders [manyToManyRelation]
  * - AssetResources [manyToManyRelation]
+ * - ColourGuidelines [manyToManyRelation]
  */
 
-return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
+return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'dao' => NULL,
    'id' => 'Organization',
    'name' => 'Organization',
    'description' => '',
    'creationDate' => 0,
-   'modificationDate' => 1718136821,
+   'modificationDate' => 1746389951,
    'userOwner' => 0,
-   'userModification' => 14,
+   'userModification' => 2,
    'parentClass' => '',
    'implementsInterfaces' => '',
    'listingParentClass' => '',
@@ -41,7 +42,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
   array (
   ),
    'layoutDefinitions' => 
-  Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+  \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
      'name' => 'pimcore_root',
      'type' => NULL,
      'region' => NULL,
@@ -56,7 +57,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
      'children' => 
     array (
       0 => 
-      Pimcore\Model\DataObject\ClassDefinition\Layout\Tabpanel::__set_state(array(
+      \Pimcore\Model\DataObject\ClassDefinition\Layout\Tabpanel::__set_state(array(
          'name' => 'Layout',
          'type' => NULL,
          'region' => NULL,
@@ -71,7 +72,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
          'children' => 
         array (
           0 => 
-          Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+          \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
              'name' => 'General',
              'type' => NULL,
              'region' => NULL,
@@ -86,7 +87,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'children' => 
             array (
               0 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                  'name' => 'Code',
                  'title' => 'Code',
                  'tooltip' => '',
@@ -117,7 +118,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'defaultValueGenerator' => '',
               )),
               1 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                  'name' => 'Name',
                  'title' => 'Name',
                  'tooltip' => '',
@@ -148,7 +149,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'defaultValueGenerator' => '',
               )),
               2 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
                  'name' => 'MainContact',
                  'title' => 'Main Contact',
                  'tooltip' => '',
@@ -184,7 +185,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 ),
               )),
               3 => 
-              Pimcore\Model\DataObject\ClassDefinition\Layout\Fieldcontainer::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Layout\Fieldcontainer::__set_state(array(
                  'name' => 'Field Container',
                  'type' => NULL,
                  'region' => NULL,
@@ -199,7 +200,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'children' => 
                 array (
                   0 => 
-                  Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+                  \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                      'name' => 'ObjectFolder',
                      'title' => 'Object Folder',
                      'tooltip' => '',
@@ -230,7 +231,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                      'defaultValueGenerator' => '',
                   )),
                   1 => 
-                  Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+                  \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                      'name' => 'AssetFolder',
                      'title' => 'Asset Folder',
                      'tooltip' => '',
@@ -272,7 +273,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'labelAlign' => 'left',
               )),
               4 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyRelation::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyRelation::__set_state(array(
                  'name' => 'Products',
                  'title' => 'Products',
                  'tooltip' => '',
@@ -319,7 +320,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'enableTextSelection' => false,
               )),
               5 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\ReverseObjectRelation::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\ReverseObjectRelation::__set_state(array(
                  'name' => 'Users',
                  'title' => 'Users',
                  'tooltip' => '',
@@ -358,7 +359,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'lazyLoading' => true,
               )),
               6 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyRelation::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyRelation::__set_state(array(
                  'name' => 'AssetResourceFolders',
                  'title' => 'Asset Resource Folders',
                  'tooltip' => '',
@@ -401,7 +402,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'enableTextSelection' => false,
               )),
               7 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyRelation::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyRelation::__set_state(array(
                  'name' => 'AssetResources',
                  'title' => 'Asset Resources',
                  'tooltip' => '',
@@ -440,6 +441,10 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'assetsAllowed' => false,
                  'assetTypes' => 
                 array (
+                  0 => 
+                  array (
+                    'assetTypes' => '',
+                  ),
                 ),
                  'documentsAllowed' => false,
                  'documentTypes' => 
@@ -447,6 +452,57 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                   0 => 
                   array (
                     'documentTypes' => 'folder',
+                  ),
+                ),
+                 'enableTextSelection' => false,
+              )),
+              8 => 
+              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyRelation::__set_state(array(
+                 'name' => 'ColourGuidelines',
+                 'title' => 'Colour Guidelines',
+                 'tooltip' => '',
+                 'mandatory' => false,
+                 'noteditable' => false,
+                 'index' => false,
+                 'locked' => false,
+                 'style' => '',
+                 'permissions' => NULL,
+                 'datatype' => 'data',
+                 'fieldtype' => 'manyToManyRelation',
+                 'relationType' => true,
+                 'invisible' => false,
+                 'visibleGridView' => false,
+                 'visibleSearch' => false,
+                 'blockedVarsForExport' => 
+                array (
+                ),
+                 'classes' => 
+                array (
+                  0 => 
+                  array (
+                    'classes' => 'ColourGuideline',
+                  ),
+                ),
+                 'pathFormatterClass' => '',
+                 'width' => '',
+                 'height' => '',
+                 'maxItems' => NULL,
+                 'assetUploadPath' => '',
+                 'objectsAllowed' => true,
+                 'assetsAllowed' => false,
+                 'assetTypes' => 
+                array (
+                  0 => 
+                  array (
+                    'assetTypes' => '',
+                  ),
+                ),
+                 'documentsAllowed' => false,
+                 'documentTypes' => 
+                array (
+                  0 => 
+                  array (
+                    'documentTypes' => '',
                   ),
                 ),
                  'enableTextSelection' => false,

@@ -1,0 +1,40 @@
+framework:
+  csrf_protection: true
+  trusted_proxies: "%env(TRUSTED_PROXIES)%"
+  trusted_headers: [ "x-forwarded-for", "x-forwarded-host", "x-forwarded-proto" ]
+  session:
+    enabled: true
+    cookie_secure: true
+    cookie_samesite: lax
+    cookie_lifetime: 259200
+    handler_id: 'redis_session_handler'
+  cache:
+    app: cache.adapter.redis
+    default_redis_provider: '%env(REDIS_URL)%'
+    prefix_seed: '%kernel.environment%.pimcore.froq'
+    pools:
+      pimcore.cache.pool:
+        public: true
+        tags: true
+        default_lifetime: 31536000  # 1 year
+#        adapter: pimcore.cache.adapter.doctrine_dbal
+#        provider: 'doctrine.dbal.default_connection'
+        adapter: cache.adapter.redis
+
+doctrine:
+  dbal:
+    connections:
+      default:
+        host: '%env(FROQ_DB_HOST)%'
+        port: '%env(FROQ_DB_PORT)%'
+        dbname: '%env(FROQ_DB_NAME)%'
+        user: '%env(FROQ_DB_USER)%'
+        password: '%env(FROQ_DB_PWD)%'
+        mapping_types:
+          enum: string
+          bit: boolean
+        server_version: '%env(FROQ_DB_VERSION)%'
+
+youwe_pimcore_elasticsearch:
+  es_hosts:
+    - '%env(OPENSEARCH_HOST)%'

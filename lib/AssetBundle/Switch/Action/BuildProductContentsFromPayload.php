@@ -27,11 +27,11 @@ final class BuildProductContentsFromPayload
         $netUnitContentKeys = array_keys($netUnitContents);
 
         if (!in_array(needle: 'value', haystack: $netContentKeys) && !in_array(needle: 'attribute', haystack: $netContentKeys)) {
-            $this->createNetContents((array) $netContents, $product);
+            $this->createNetContents($netContents, $product);
         }
 
         if (!in_array(needle: 'value', haystack: $netUnitContentKeys) && !in_array(needle: 'attribute', haystack: $netUnitContentKeys)) {
-            $this->createNetUnitContents((array) $netUnitContents, $product);
+            $this->createNetUnitContents($netUnitContents, $product);
         }
 
         if (in_array(needle: 'value', haystack: $netContentKeys) && in_array(needle: 'attribute', haystack: $netContentKeys)) {

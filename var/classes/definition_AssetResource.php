@@ -8,6 +8,7 @@
  * - Name [input]
  * - Asset [manyToOneRelation]
  * - pimTodayId [numeric]
+ * - NeedsReprocess [checkbox]
  * - validFrom [date]
  * - validUntil [date]
  * - fileCreateDate [datetime]
@@ -30,13 +31,13 @@
  * - Tags [manyToManyObjectRelation]
  */
 
-return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
+return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'dao' => NULL,
    'id' => 'AssetResource',
    'name' => 'AssetResource',
    'description' => '',
    'creationDate' => 0,
-   'modificationDate' => 1741791633,
+   'modificationDate' => 1745838924,
    'userOwner' => 2,
    'userModification' => 2,
    'parentClass' => '',
@@ -55,7 +56,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
   array (
   ),
    'layoutDefinitions' => 
-  \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+  Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
      'name' => 'pimcore_root',
      'type' => NULL,
      'region' => NULL,
@@ -70,7 +71,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
      'children' => 
     array (
       0 => 
-      \Pimcore\Model\DataObject\ClassDefinition\Layout\Tabpanel::__set_state(array(
+      Pimcore\Model\DataObject\ClassDefinition\Layout\Tabpanel::__set_state(array(
          'name' => 'Layout',
          'type' => NULL,
          'region' => NULL,
@@ -85,7 +86,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
          'children' => 
         array (
           0 => 
-          \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+          Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
              'name' => 'General',
              'type' => NULL,
              'region' => NULL,
@@ -100,7 +101,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'children' => 
             array (
               0 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                  'name' => 'Name',
                  'title' => 'Name',
                  'tooltip' => '',
@@ -131,7 +132,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'defaultValueGenerator' => '',
               )),
               1 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
                  'name' => 'Asset',
                  'title' => 'Asset',
                  'tooltip' => '',
@@ -167,7 +168,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 ),
               )),
               2 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\Numeric::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\Numeric::__set_state(array(
                  'name' => 'pimTodayId',
                  'title' => 'Pim Today Id',
                  'tooltip' => '',
@@ -198,7 +199,30 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'defaultValueGenerator' => '',
               )),
               3 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Layout\Fieldcontainer::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\Checkbox::__set_state(array(
+                 'name' => 'NeedsReprocess',
+                 'title' => 'Needs Reprocess',
+                 'tooltip' => '',
+                 'mandatory' => false,
+                 'noteditable' => false,
+                 'index' => false,
+                 'locked' => false,
+                 'style' => '',
+                 'permissions' => NULL,
+                 'datatype' => 'data',
+                 'fieldtype' => 'checkbox',
+                 'relationType' => false,
+                 'invisible' => false,
+                 'visibleGridView' => false,
+                 'visibleSearch' => false,
+                 'blockedVarsForExport' => 
+                array (
+                ),
+                 'defaultValue' => NULL,
+                 'defaultValueGenerator' => '',
+              )),
+              4 => 
+              Pimcore\Model\DataObject\ClassDefinition\Layout\Fieldcontainer::__set_state(array(
                  'name' => 'Field Container',
                  'type' => NULL,
                  'region' => NULL,
@@ -213,7 +237,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'children' => 
                 array (
                   0 => 
-                  \Pimcore\Model\DataObject\ClassDefinition\Data\Date::__set_state(array(
+                  Pimcore\Model\DataObject\ClassDefinition\Data\Date::__set_state(array(
                      'name' => 'validFrom',
                      'title' => 'Valid From',
                      'tooltip' => 'Note: asset with most recent validFrom AND not expired should be available',
@@ -239,7 +263,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                      'defaultValueGenerator' => '',
                   )),
                   1 => 
-                  \Pimcore\Model\DataObject\ClassDefinition\Data\Date::__set_state(array(
+                  Pimcore\Model\DataObject\ClassDefinition\Data\Date::__set_state(array(
                      'name' => 'validUntil',
                      'title' => 'Valid Until',
                      'tooltip' => '',
@@ -275,8 +299,8 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'labelWidth' => 0,
                  'labelAlign' => 'left',
               )),
-              4 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Layout\Fieldcontainer::__set_state(array(
+              5 => 
+              Pimcore\Model\DataObject\ClassDefinition\Layout\Fieldcontainer::__set_state(array(
                  'name' => 'Field Container',
                  'type' => NULL,
                  'region' => NULL,
@@ -291,7 +315,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'children' => 
                 array (
                   0 => 
-                  \Pimcore\Model\DataObject\ClassDefinition\Data\Datetime::__set_state(array(
+                  Pimcore\Model\DataObject\ClassDefinition\Data\Datetime::__set_state(array(
                      'name' => 'fileCreateDate',
                      'title' => 'File Create Date',
                      'tooltip' => '',
@@ -317,7 +341,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                      'defaultValueGenerator' => '',
                   )),
                   1 => 
-                  \Pimcore\Model\DataObject\ClassDefinition\Data\Datetime::__set_state(array(
+                  Pimcore\Model\DataObject\ClassDefinition\Data\Datetime::__set_state(array(
                      'name' => 'fileModifyDate',
                      'title' => 'File Modify Date',
                      'tooltip' => '',
@@ -353,8 +377,8 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'labelWidth' => 0,
                  'labelAlign' => 'left',
               )),
-              5 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
+              6 => 
+              Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
                  'name' => 'AssetType',
                  'title' => 'Asset Type',
                  'tooltip' => '',
@@ -393,8 +417,8 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 array (
                 ),
               )),
-              6 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+              7 => 
+              Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                  'name' => 'UploadName',
                  'title' => 'Upload Name',
                  'tooltip' => '',
@@ -424,8 +448,8 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'showCharCount' => false,
                  'defaultValueGenerator' => '',
               )),
-              7 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\Numeric::__set_state(array(
+              8 => 
+              Pimcore\Model\DataObject\ClassDefinition\Data\Numeric::__set_state(array(
                  'name' => 'AssetVersion',
                  'title' => 'Asset Version',
                  'tooltip' => '',
@@ -455,8 +479,8 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'decimalPrecision' => NULL,
                  'defaultValueGenerator' => '',
               )),
-              8 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\CalculatedValue::__set_state(array(
+              9 => 
+              Pimcore\Model\DataObject\ClassDefinition\Data\CalculatedValue::__set_state(array(
                  'name' => 'highestVersionNumber',
                  'title' => 'Highest Version Number',
                  'tooltip' => '',
@@ -482,8 +506,8 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'calculatorClass' => 'Froq\\AssetBundle\\PimcoreAdminProvider\\HighestVersionCalculator',
                  'columnLength' => 190,
               )),
-              9 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Layout\Fieldcontainer::__set_state(array(
+              10 => 
+              Pimcore\Model\DataObject\ClassDefinition\Layout\Fieldcontainer::__set_state(array(
                  'name' => 'Field Container',
                  'type' => NULL,
                  'region' => NULL,
@@ -521,7 +545,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'labelAlign' => 'left',
           )),
           1 => 
-          \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+          Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
              'name' => 'Metadata',
              'type' => NULL,
              'region' => NULL,
@@ -536,7 +560,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'children' => 
             array (
               0 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\Fieldcollections::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\Fieldcollections::__set_state(array(
                  'name' => 'Metadata',
                  'title' => 'Metadata',
                  'tooltip' => '',
@@ -580,7 +604,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'labelAlign' => 'left',
           )),
           2 => 
-          \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+          Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
              'name' => 'FileContents',
              'type' => NULL,
              'region' => NULL,
@@ -595,7 +619,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'children' => 
             array (
               0 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\Wysiwyg::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\Wysiwyg::__set_state(array(
                  'name' => 'PdfText',
                  'title' => 'Pdf Text',
                  'tooltip' => '',
@@ -621,7 +645,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'maxCharacters' => '',
               )),
               1 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\Wysiwyg::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\Wysiwyg::__set_state(array(
                  'name' => 'EmbeddedMetadata',
                  'title' => 'Embedded Metadata',
                  'tooltip' => '',
@@ -647,7 +671,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'maxCharacters' => '',
               )),
               2 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\Wysiwyg::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\Wysiwyg::__set_state(array(
                  'name' => 'ExifData',
                  'title' => 'Exif Data',
                  'tooltip' => '',
@@ -673,7 +697,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'maxCharacters' => '',
               )),
               3 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\Wysiwyg::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\Wysiwyg::__set_state(array(
                  'name' => 'XmpData',
                  'title' => 'Xmp Data',
                  'tooltip' => '',
@@ -699,7 +723,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'maxCharacters' => '',
               )),
               4 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\Wysiwyg::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\Wysiwyg::__set_state(array(
                  'name' => 'IptcData',
                  'title' => 'Iptc Data',
                  'tooltip' => '',
@@ -737,7 +761,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'labelAlign' => 'left',
           )),
           3 => 
-          \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+          Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
              'name' => 'Relations',
              'type' => NULL,
              'region' => NULL,
@@ -752,7 +776,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'children' => 
             array (
               0 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyObjectRelation::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyObjectRelation::__set_state(array(
                  'name' => 'Contains',
                  'title' => 'Contains',
                  'tooltip' => '',
@@ -791,7 +815,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 ),
               )),
               1 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ReverseObjectRelation::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\ReverseObjectRelation::__set_state(array(
                  'name' => 'UsedIn',
                  'title' => 'Used In',
                  'tooltip' => '',
@@ -830,7 +854,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'lazyLoading' => true,
               )),
               2 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ReverseObjectRelation::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\ReverseObjectRelation::__set_state(array(
                  'name' => 'Projects',
                  'title' => 'Projects',
                  'tooltip' => '',
@@ -869,7 +893,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'lazyLoading' => true,
               )),
               3 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ReverseObjectRelation::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\ReverseObjectRelation::__set_state(array(
                  'name' => 'Products',
                  'title' => 'Products',
                  'tooltip' => '',
@@ -908,7 +932,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'lazyLoading' => true,
               )),
               4 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ReverseObjectRelation::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\ReverseObjectRelation::__set_state(array(
                  'name' => 'Organizations',
                  'title' => 'Organizations',
                  'tooltip' => '',
@@ -947,7 +971,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'lazyLoading' => true,
               )),
               5 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyObjectRelation::__set_state(array(
+              Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyObjectRelation::__set_state(array(
                  'name' => 'Tags',
                  'title' => 'Tags',
                  'tooltip' => '',

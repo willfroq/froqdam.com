@@ -20,7 +20,12 @@
     </app-results-counter>
     {% if next_page %}
         <div class="justify-center flex">
-            <span id="view-more" class="view-more-button">View more</span>
+            <button id="view-more" class="view-more-button flex items-center gap-3">
+                <span id="loading-icon" style="{ display: none }">
+                    {% include '@FroqPortal/icons/loading-icon.html.twig' %}
+                </span>
+                <span>View More</span>
+            </button>
         </div>
     {% endif %}
 </app-static-grid>

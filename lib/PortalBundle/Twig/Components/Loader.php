@@ -10,4 +10,4 @@ final class Loader
     public string $size = 'md';
     public string $color = 'blue';
     public string $class = '';
-} 
+}

@@ -5,6 +5,7 @@ services:
         bind:
             'string $projectDirectory': '%kernel.project_dir%'
             'Psr\Log\LoggerInterface $messengerAuditLogger': '@monolog.logger.messenger_audit'
+            'string $s3BucketNameDumpSql': '%env(AWS_S3_BUCKET_NAME_DUMP_SQL)%'
 
     Froq\AssetBundle\:
         resource: '../../*'

@@ -97,11 +97,11 @@ final class BuildDetailResponse
             );
         }
 
-        if (!($parentAssetResource instanceof AssetResource)) {
-            throw new \Exception(message: "$parentAssetResource must be an instance of AssetResource");
-        }
-
         $products = [];
+
+        if (!($parentAssetResource instanceof AssetResource)) {
+            throw new \Exception('$parentAssetResource must be an instance of AssetResource');
+        }
 
         foreach ($parentAssetResource->getProducts() as $product) {
             if (!($product instanceof Product)) {
@@ -334,6 +334,14 @@ final class BuildDetailResponse
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
             );
+        }
+
+        if ($filePreviewPath instanceof Asset\Image\Thumbnail) {
+            $filePreviewPath = $filePreviewPath->getPath();
+        }
+
+        if (is_array($filePreviewPath)) {
+            $filePreviewPath = current($filePreviewPath);
         }
 
         return new AssetResourceDetailItem(

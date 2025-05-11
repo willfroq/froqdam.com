@@ -4,6 +4,7 @@
 
 <div class="asset-detail-preview__sidebar">
     <app-asset-information class="asset-information">
+        {{ dump(settings) }}
         {% if settings %}
             {% include '@FroqPortalBundle/partials/asset-detail/assetInfoSection.html.twig' with {'settings': settings, 'item': item} %}
 
@@ -16,6 +17,17 @@
             {% include '@FroqPortalBundle/partials/asset-detail/printerSection.html.twig' with {'settings': settings, 'item': item} %}
 
             <div class="asset-information__download-link-wrapper">
+                {% if item.asset %}
+                    <div class="mb-4">
+                        <app-selector-details trigger-id="selector-trigger" class="select-element card-footer-element py-2 mx-auto footer-button"
+                                              state="{{ item.id }}">
+                            <div id="selector-trigger" class="button button-md link-as-button asset-information__download-link w-full cursor-pointer">
+                                Add to Basket
+                            </div>
+                        </app-selector-details>
+                    </div>
+                {% endif %}
+
                 {% if item.asset %}
                     <app-download-asset
                         class="button button-primary button-md link-as-button asset-information__download-link"

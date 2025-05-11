@@ -2,12 +2,9 @@ services:
     assets_s3:
         class: 'Aws\S3\S3Client'
         arguments:
-            -  endpoint: 'https://s3.eu-central-1.amazonaws.com'
+            -  endpoint: 's3://froq-development-dam-assets-s3'
                region: 'eu-central-1'
                version: 'latest'
-               credentials:
-                   key: '%env(YOUWE_S3_STORAGE_KEY)%'
-                   secret: '%env(YOUWE_S3_STORAGE_SECRET)%'
 
 flysystem:
     storages:
@@ -25,17 +22,3 @@ flysystem:
                 client: 'assets_s3'
                 bucket: '%env(AWS_S3_BUCKET_NAME_ASSETS)%'
                 prefix: 'assets'
-        pimcore.asset_cache.storage:
-            adapter: 'aws'
-            visibility: public
-            options:
-                client: 'assets_s3'
-                bucket: '%env(AWS_S3_BUCKET_NAME_ASSETS)%'
-                prefix: 'asset-cache'
-        pimcore.version.storage:
-            adapter: 'aws'
-            visibility: public
-            options:
-                client: 'assets_s3'
-                bucket: '%env(AWS_S3_BUCKET_NAME_ASSETS)%'
-                prefix: 'versions'

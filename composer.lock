@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "46e8dcc7c0b4cae7dba92973b68b44e9",
+    "content-hash": "8146c96454c0c051c636f68cc6165946",
     "packages": [
         {
             "name": "amnuts/opcache-gui",
@@ -124,16 +124,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.342.21",
+            "version": "3.342.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "f4d501414c553ddeea2efc9c77f72e58bd899823"
+                "reference": "3fdb88961cf80775dbaf48a5641c9790d63d1d66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/f4d501414c553ddeea2efc9c77f72e58bd899823",
-                "reference": "f4d501414c553ddeea2efc9c77f72e58bd899823",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/3fdb88961cf80775dbaf48a5641c9790d63d1d66",
+                "reference": "3fdb88961cf80775dbaf48a5641c9790d63d1d66",
                 "shasum": ""
             },
             "require": {
@@ -215,9 +215,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.21"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.35"
             },
-            "time": "2025-04-04T18:20:53+00:00"
+            "time": "2025-04-25T18:09:39+00:00"
         },
         {
             "name": "bacon/bacon-qr-code",
@@ -1199,26 +1199,29 @@
         },
         {
             "name": "doctrine/deprecations",
-            "version": "1.1.4",
+            "version": "1.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/deprecations.git",
-                "reference": "31610dbb31faa98e6b5447b62340826f54fbc4e9"
+                "reference": "459c2f5dd3d6a4633d3b5f46ee2b1c40f57d3f38"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/31610dbb31faa98e6b5447b62340826f54fbc4e9",
-                "reference": "31610dbb31faa98e6b5447b62340826f54fbc4e9",
+                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/459c2f5dd3d6a4633d3b5f46ee2b1c40f57d3f38",
+                "reference": "459c2f5dd3d6a4633d3b5f46ee2b1c40f57d3f38",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1 || ^8.0"
             },
+            "conflict": {
+                "phpunit/phpunit": "<=7.5 || >=13"
+            },
             "require-dev": {
-                "doctrine/coding-standard": "^9 || ^12",
-                "phpstan/phpstan": "1.4.10 || 2.0.3",
+                "doctrine/coding-standard": "^9 || ^12 || ^13",
+                "phpstan/phpstan": "1.4.10 || 2.1.11",
                 "phpstan/phpstan-phpunit": "^1.0 || ^2",
-                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.6 || ^10.5 || ^11.5 || ^12",
                 "psr/log": "^1 || ^2 || ^3"
             },
             "suggest": {
@@ -1238,9 +1241,9 @@
             "homepage": "https://www.doctrine-project.org/",
             "support": {
                 "issues": "https://github.com/doctrine/deprecations/issues",
-                "source": "https://github.com/doctrine/deprecations/tree/1.1.4"
+                "source": "https://github.com/doctrine/deprecations/tree/1.1.5"
             },
-            "time": "2024-12-07T21:18:45+00:00"
+            "time": "2025-04-07T20:06:18+00:00"
         },
         {
             "name": "doctrine/doctrine-bundle",
@@ -2413,16 +2416,16 @@
         },
         {
             "name": "firebase/php-jwt",
-            "version": "v6.11.0",
+            "version": "v6.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "8f718f4dfc9c5d5f0c994cdfd103921b43592712"
+                "reference": "d1e91ecf8c598d073d0995afa8cd5c75c6e19e66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/8f718f4dfc9c5d5f0c994cdfd103921b43592712",
-                "reference": "8f718f4dfc9c5d5f0c994cdfd103921b43592712",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/d1e91ecf8c598d073d0995afa8cd5c75c6e19e66",
+                "reference": "d1e91ecf8c598d073d0995afa8cd5c75c6e19e66",
                 "shasum": ""
             },
             "require": {
@@ -2470,9 +2473,9 @@
             ],
             "support": {
                 "issues": "https://github.com/firebase/php-jwt/issues",
-                "source": "https://github.com/firebase/php-jwt/tree/v6.11.0"
+                "source": "https://github.com/firebase/php-jwt/tree/v6.11.1"
             },
-            "time": "2025-01-23T05:11:06+00:00"
+            "time": "2025-04-09T20:32:01+00:00"
         },
         {
             "name": "friendsofphp/proxy-manager-lts",
@@ -2682,16 +2685,16 @@
         },
         {
             "name": "google/apiclient",
-            "version": "v2.18.2",
+            "version": "v2.18.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client.git",
-                "reference": "d8d201ba8a189a3cd7fb34e4da569f2ed440eee7"
+                "reference": "4eee42d201eff054428a4836ec132944d271f051"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/d8d201ba8a189a3cd7fb34e4da569f2ed440eee7",
-                "reference": "d8d201ba8a189a3cd7fb34e4da569f2ed440eee7",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/4eee42d201eff054428a4836ec132944d271f051",
+                "reference": "4eee42d201eff054428a4836ec132944d271f051",
                 "shasum": ""
             },
             "require": {
@@ -2745,9 +2748,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client/issues",
-                "source": "https://github.com/googleapis/google-api-php-client/tree/v2.18.2"
+                "source": "https://github.com/googleapis/google-api-php-client/tree/v2.18.3"
             },
-            "time": "2024-12-16T22:52:40+00:00"
+            "time": "2025-04-08T21:59:36+00:00"
         },
         {
             "name": "google/apiclient-services",
@@ -3282,6 +3285,75 @@
                 "source": "https://github.com/http-interop/http-factory-guzzle/tree/1.2.0"
             },
             "time": "2021-07-21T13:50:14+00:00"
+        },
+        {
+            "name": "jolicode/elastically",
+            "version": "v1.9.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jolicode/elastically.git",
+                "reference": "6e04fd75a825aff1c5a03b3996fdee2ec9f660ec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jolicode/elastically/zipball/6e04fd75a825aff1c5a03b3996fdee2ec9f660ec",
+                "reference": "6e04fd75a825aff1c5a03b3996fdee2ec9f660ec",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=8.0",
+                "phpdocumentor/reflection-docblock": "^4.4|^5.0",
+                "ruflin/elastica": "^7.0",
+                "symfony/deprecation-contracts": "^2.4 || ^3.0",
+                "symfony/property-access": "^5.4 || ^6.0 || ^7.0",
+                "symfony/property-info": "^5.4 || ^6.0 || ^7.0",
+                "symfony/serializer": "^5.4 || ^6.0 || ^7.0",
+                "symfony/yaml": "^5.4 || ^6.0 || ^7.0"
+            },
+            "conflict": {
+                "nikic/php-parser": "<4.7"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.17.0",
+                "jane-php/json-schema": "^7.4",
+                "jane-php/json-schema-runtime": "^7.4",
+                "phpstan/phpstan": "^1.9",
+                "symfony/browser-kit": "^5.4 || ^6.0",
+                "symfony/framework-bundle": "^5.4.17 || ^6.0 || ^7.0",
+                "symfony/http-client": "^5.4 || ^6.0 || ^7.0",
+                "symfony/http-foundation": "^5.4 || ^6.0 || ^7.0",
+                "symfony/messenger": "^5.4 || ^6.0 || ^7.0",
+                "symfony/phpunit-bridge": "^6.2.3 || ^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JoliCode\\Elastically\\": "./src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Damien Alexandre",
+                    "homepage": "https://jolicode.com/"
+                }
+            ],
+            "description": "Opinionated Elastica based framework to bootstrap PHP and Elasticsearch implementations.",
+            "keywords": [
+                "elastica",
+                "elasticsearch",
+                "search",
+                "symfony"
+            ],
+            "support": {
+                "issues": "https://github.com/jolicode/elastically/issues",
+                "source": "https://github.com/jolicode/elastically/tree/v1.9.2"
+            },
+            "time": "2024-08-12T09:56:26+00:00"
         },
         {
             "name": "knplabs/knp-components",
@@ -4294,63 +4366,6 @@
                 "source": "https://github.com/thephpleague/oauth2-client/tree/2.8.1"
             },
             "time": "2025-02-26T04:37:30+00:00"
-        },
-        {
-            "name": "loophp/phposinfo",
-            "version": "1.8.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/loophp/phposinfo.git",
-                "reference": "9faccbfbf5364fd34fbc230961fa6fc51cc66b8f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/loophp/phposinfo/zipball/9faccbfbf5364fd34fbc230961fa6fc51cc66b8f",
-                "reference": "9faccbfbf5364fd34fbc230961fa6fc51cc66b8f",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^8"
-            },
-            "require-dev": {
-                "drupol/php-conventions": "^5.0.0",
-                "ext-pcov": "*",
-                "friends-of-phpspec/phpspec-code-coverage": "^6",
-                "infection/infection": "^0.26",
-                "infection/phpspec-adapter": "^0.2.0",
-                "phpspec/phpspec": "^7"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "loophp\\phposinfo\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Pol Dellaiera",
-                    "email": "pol.dellaiera@protonmail.com"
-                }
-            ],
-            "description": "Try to guess the host operating system.",
-            "keywords": [
-                "operating system detection"
-            ],
-            "support": {
-                "issues": "https://github.com/loophp/phposinfo/issues",
-                "source": "https://github.com/loophp/phposinfo"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/drupol",
-                    "type": "github"
-                }
-            ],
-            "time": "2022-12-20T20:21:10+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
@@ -5947,6 +5962,181 @@
             "time": "2025-03-24T08:03:00+00:00"
         },
         {
+            "name": "phpdocumentor/reflection-common",
+            "version": "2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpDocumentor/ReflectionCommon.git",
+                "reference": "1d01c49d4ed62f25aa84a747ad35d5a16924662b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionCommon/zipball/1d01c49d4ed62f25aa84a747ad35d5a16924662b",
+                "reference": "1d01c49d4ed62f25aa84a747ad35d5a16924662b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.x": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "phpDocumentor\\Reflection\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jaap van Otterdijk",
+                    "email": "opensource@ijaap.nl"
+                }
+            ],
+            "description": "Common reflection classes used by phpdocumentor to reflect the code structure",
+            "homepage": "http://www.phpdoc.org",
+            "keywords": [
+                "FQSEN",
+                "phpDocumentor",
+                "phpdoc",
+                "reflection",
+                "static analysis"
+            ],
+            "support": {
+                "issues": "https://github.com/phpDocumentor/ReflectionCommon/issues",
+                "source": "https://github.com/phpDocumentor/ReflectionCommon/tree/2.x"
+            },
+            "time": "2020-06-27T09:03:43+00:00"
+        },
+        {
+            "name": "phpdocumentor/reflection-docblock",
+            "version": "5.6.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
+                "reference": "92dde6a5919e34835c506ac8c523ef095a95ed62"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/92dde6a5919e34835c506ac8c523ef095a95ed62",
+                "reference": "92dde6a5919e34835c506ac8c523ef095a95ed62",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/deprecations": "^1.1",
+                "ext-filter": "*",
+                "php": "^7.4 || ^8.0",
+                "phpdocumentor/reflection-common": "^2.2",
+                "phpdocumentor/type-resolver": "^1.7",
+                "phpstan/phpdoc-parser": "^1.7|^2.0",
+                "webmozart/assert": "^1.9.1"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1.3.5 || ~1.6.0",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan": "^1.8",
+                "phpstan/phpstan-mockery": "^1.1",
+                "phpstan/phpstan-webmozart-assert": "^1.2",
+                "phpunit/phpunit": "^9.5",
+                "psalm/phar": "^5.26"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "phpDocumentor\\Reflection\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mike van Riel",
+                    "email": "me@mikevanriel.com"
+                },
+                {
+                    "name": "Jaap van Otterdijk",
+                    "email": "opensource@ijaap.nl"
+                }
+            ],
+            "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
+            "support": {
+                "issues": "https://github.com/phpDocumentor/ReflectionDocBlock/issues",
+                "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/5.6.2"
+            },
+            "time": "2025-04-13T19:20:35+00:00"
+        },
+        {
+            "name": "phpdocumentor/type-resolver",
+            "version": "1.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpDocumentor/TypeResolver.git",
+                "reference": "679e3ce485b99e84c775d28e2e96fade9a7fb50a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/679e3ce485b99e84c775d28e2e96fade9a7fb50a",
+                "reference": "679e3ce485b99e84c775d28e2e96fade9a7fb50a",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/deprecations": "^1.0",
+                "php": "^7.3 || ^8.0",
+                "phpdocumentor/reflection-common": "^2.0",
+                "phpstan/phpdoc-parser": "^1.18|^2.0"
+            },
+            "require-dev": {
+                "ext-tokenizer": "*",
+                "phpbench/phpbench": "^1.2",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan": "^1.8",
+                "phpstan/phpstan-phpunit": "^1.1",
+                "phpunit/phpunit": "^9.5",
+                "rector/rector": "^0.13.9",
+                "vimeo/psalm": "^4.25"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "phpDocumentor\\Reflection\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mike van Riel",
+                    "email": "me@mikevanriel.com"
+                }
+            ],
+            "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
+            "support": {
+                "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.10.0"
+            },
+            "time": "2024-11-09T15:12:26+00:00"
+        },
+        {
             "name": "phpoffice/phpspreadsheet",
             "version": "1.29.10",
             "source": {
@@ -6161,6 +6351,53 @@
                 }
             ],
             "time": "2024-12-14T21:12:59+00:00"
+        },
+        {
+            "name": "phpstan/phpdoc-parser",
+            "version": "1.33.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/phpdoc-parser.git",
+                "reference": "82a311fd3690fb2bf7b64d5c98f912b3dd746140"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/82a311fd3690fb2bf7b64d5c98f912b3dd746140",
+                "reference": "82a311fd3690fb2bf7b64d5c98f912b3dd746140",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "doctrine/annotations": "^2.0",
+                "nikic/php-parser": "^4.15",
+                "php-parallel-lint/php-parallel-lint": "^1.2",
+                "phpstan/extension-installer": "^1.0",
+                "phpstan/phpstan": "^1.5",
+                "phpstan/phpstan-phpunit": "^1.1",
+                "phpstan/phpstan-strict-rules": "^1.0",
+                "phpunit/phpunit": "^9.5",
+                "symfony/process": "^5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PHPStan\\PhpDocParser\\": [
+                        "src/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPDoc parser with support for nullable, intersection and generic types",
+            "support": {
+                "issues": "https://github.com/phpstan/phpdoc-parser/issues",
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.33.0"
+            },
+            "time": "2024-10-13T11:25:22+00:00"
         },
         {
             "name": "pimcore/compatibility-bridge-v10",
@@ -6547,6 +6784,67 @@
                 "wiki": "https://pimcore.com/docs/latest/"
             },
             "time": "2023-08-21T15:00:30+00:00"
+        },
+        {
+            "name": "predis/predis",
+            "version": "v2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/predis/predis.git",
+                "reference": "bac46bfdb78cd6e9c7926c697012aae740cb9ec9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/predis/predis/zipball/bac46bfdb78cd6e9c7926c697012aae740cb9ec9",
+                "reference": "bac46bfdb78cd6e9c7926c697012aae740cb9ec9",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.3",
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpunit": "^8.0 || ^9.4"
+            },
+            "suggest": {
+                "ext-relay": "Faster connection with in-memory caching (>=0.6.2)"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Predis\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Till Krüss",
+                    "homepage": "https://till.im",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "A flexible and feature-complete Redis client for PHP.",
+            "homepage": "http://github.com/predis/predis",
+            "keywords": [
+                "nosql",
+                "predis",
+                "redis"
+            ],
+            "support": {
+                "issues": "https://github.com/predis/predis/issues",
+                "source": "https://github.com/predis/predis/tree/v2.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/tillkruss",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-11-21T20:00:02+00:00"
         },
         {
             "name": "presta/sitemap-bundle",
@@ -7685,16 +7983,16 @@
         },
         {
             "name": "sabre/vobject",
-            "version": "4.5.6",
+            "version": "4.5.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/vobject.git",
-                "reference": "900266bb3bd448a9f7f41f82344ad0aba237cb27"
+                "reference": "ff22611a53782e90c97be0d0bc4a5f98a5c0a12c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/vobject/zipball/900266bb3bd448a9f7f41f82344ad0aba237cb27",
-                "reference": "900266bb3bd448a9f7f41f82344ad0aba237cb27",
+                "url": "https://api.github.com/repos/sabre-io/vobject/zipball/ff22611a53782e90c97be0d0bc4a5f98a5c0a12c",
+                "reference": "ff22611a53782e90c97be0d0bc4a5f98a5c0a12c",
                 "shasum": ""
             },
             "require": {
@@ -7704,7 +8002,7 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "~2.17.1",
-                "phpstan/phpstan": "^0.12 || ^1.11",
+                "phpstan/phpstan": "^0.12 || ^1.12 || ^2.0",
                 "phpunit/php-invoker": "^2.0 || ^3.1",
                 "phpunit/phpunit": "^7.5 || ^8.5 || ^9.6"
             },
@@ -7785,7 +8083,7 @@
                 "issues": "https://github.com/sabre-io/vobject/issues",
                 "source": "https://github.com/fruux/sabre-vobject"
             },
-            "time": "2024-10-14T11:53:54+00:00"
+            "time": "2025-04-17T09:22:48+00:00"
         },
         {
             "name": "sabre/xml",
@@ -7973,70 +8271,6 @@
                 "source": "https://github.com/scheb/2fa-google-authenticator/tree/v5.13.2"
             },
             "time": "2022-01-03T10:21:24+00:00"
-        },
-        {
-            "name": "seld/jsonlint",
-            "version": "1.11.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Seldaek/jsonlint.git",
-                "reference": "1748aaf847fc731cfad7725aec413ee46f0cc3a2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/1748aaf847fc731cfad7725aec413ee46f0cc3a2",
-                "reference": "1748aaf847fc731cfad7725aec413ee46f0cc3a2",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.3 || ^7.0 || ^8.0"
-            },
-            "require-dev": {
-                "phpstan/phpstan": "^1.11",
-                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.0 || ^8.5.13"
-            },
-            "bin": [
-                "bin/jsonlint"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Seld\\JsonLint\\": "src/Seld/JsonLint/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jordi Boggiano",
-                    "email": "j.boggiano@seld.be",
-                    "homepage": "https://seld.be"
-                }
-            ],
-            "description": "JSON Linter",
-            "keywords": [
-                "json",
-                "linter",
-                "parser",
-                "validator"
-            ],
-            "support": {
-                "issues": "https://github.com/Seldaek/jsonlint/issues",
-                "source": "https://github.com/Seldaek/jsonlint/tree/1.11.0"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/Seldaek",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/seld/jsonlint",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2024-07-11T14:55:45+00:00"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -15390,170 +15624,6 @@
             "time": "2020-12-03T10:09:09+00:00"
         },
         {
-            "name": "vaimo/composer-patches",
-            "version": "5.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/vaimo/composer-patches.git",
-                "reference": "ad249f8851902a71f0bdd2f03a89bb8956049ec5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/vaimo/composer-patches/zipball/ad249f8851902a71f0bdd2f03a89bb8956049ec5",
-                "reference": "ad249f8851902a71f0bdd2f03a89bb8956049ec5",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.0 || ^2.0",
-                "composer-runtime-api": "^1.0 || ^2.0",
-                "ext-json": "*",
-                "loophp/phposinfo": "^1.6",
-                "php": ">=7.0.0",
-                "seld/jsonlint": "^1.7.1",
-                "vaimo/topological-sort": "^1.0"
-            },
-            "conflict": {
-                "cweagans/composer-patches": "*"
-            },
-            "require-dev": {
-                "composer/composer": "^1.0 || ^2.0",
-                "phpcompatibility/php-compatibility": ">=9.1.1",
-                "phpmd/phpmd": ">=2.6.0",
-                "sebastian/phpcpd": ">=1.4.3",
-                "squizlabs/php_codesniffer": ">=2.9.2",
-                "vaimo/composer-changelogs": "^1.0.0",
-                "vaimo/composer-patches-proxy": "1.0.0"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "Vaimo\\ComposerPatches\\Plugin",
-                "changelog": {
-                    "output": {
-                        "md": "CHANGELOG.md"
-                    },
-                    "source": "changelog.json"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Vaimo\\ComposerPatches\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Allan Paiste",
-                    "email": "allan.paiste@vaimo.com"
-                }
-            ],
-            "description": "Applies a patch from a local or remote file to any package that is part of a given composer project. Patches can be defined both on project and on package level. Optional support for patch versioning, sequencing, custom patch applier configuration and patch command for testing/troubleshooting added patches.",
-            "keywords": [
-                "Fixes",
-                "back-ports",
-                "backports",
-                "bulk patches",
-                "bundled patches",
-                "composer command",
-                "composer plugin",
-                "configurable patch applier",
-                "development patches",
-                "downloaded patches",
-                "environment flags",
-                "hot-fixes",
-                "hotfixes",
-                "indirect restrictions",
-                "maintenance",
-                "maintenance tools",
-                "multi-version patches",
-                "multiple formats",
-                "os-specific config",
-                "package bug-fix",
-                "package patches",
-                "patch branching",
-                "patch command",
-                "patch description",
-                "patch exclusion",
-                "patch header",
-                "patch meta-data",
-                "patch resolve",
-                "patch search",
-                "patch skipping",
-                "patcher",
-                "patching",
-                "plugin",
-                "remote patch files",
-                "resolve patches",
-                "skipped packages",
-                "tools",
-                "utilities",
-                "utility",
-                "utils",
-                "version restriction"
-            ],
-            "support": {
-                "docs": "https://github.com/vaimo/composer-patches",
-                "issues": "https://github.com/vaimo/composer-patches/issues",
-                "source": "https://github.com/vaimo/composer-patches"
-            },
-            "time": "2024-04-18T10:12:28+00:00"
-        },
-        {
-            "name": "vaimo/topological-sort",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/vaimo/topological-sort.git",
-                "reference": "e19b93df2bac0e995ecd4b982ec4ea2fb1131e64"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/vaimo/topological-sort/zipball/e19b93df2bac0e995ecd4b982ec4ea2fb1131e64",
-                "reference": "e19b93df2bac0e995ecd4b982ec4ea2fb1131e64",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3"
-            },
-            "require-dev": {
-                "codeclimate/php-test-reporter": "dev-master",
-                "phpcompatibility/php-compatibility": "^9.1.1",
-                "phpmd/phpmd": "^2.6.0",
-                "phpunit/phpunit": "~4.0",
-                "squizlabs/php_codesniffer": "^2.9.2",
-                "symfony/console": "~2.5 || ~3.0 || ~4.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Vaimo\\TopSort\\": "src/",
-                    "Vaimo\\TopSort\\Tests\\": "tests/Tests/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Marc J. Schmidt",
-                    "email": "marc@marcjschmidt.de"
-                }
-            ],
-            "description": "High-Performance TopSort/Dependency resolving algorithm (compatibility version to work with 5.3)",
-            "keywords": [
-                "dependency resolving",
-                "topological sort",
-                "topsort"
-            ],
-            "support": {
-                "source": "https://github.com/vaimo/topological-sort/tree/1.0.0"
-            },
-            "time": "2019-04-13T14:15:06+00:00"
-        },
-        {
             "name": "vrana/adminer",
             "version": "v4.17.1",
             "source": {
@@ -15959,43 +16029,6 @@
             "time": "2024-07-02T14:35:14+00:00"
         },
         {
-            "name": "youwe/pimcore-composer-patches",
-            "version": "1.20.0",
-            "source": {
-                "type": "git",
-                "url": "ssh://git@source.youwe.nl:7999/pim/composer-patches.git",
-                "reference": "716ccbb0b803ba30fed43f238acc36267ce850f5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://youwe:open@packages.youwe.nl/dist/youwe/pimcore-composer-patches/youwe-pimcore-composer-patches-1.20.0-853d0b.zip",
-                "reference": "716ccbb0b803ba30fed43f238acc36267ce850f5",
-                "shasum": "e3a5fd18a7e2d1c75e5ff8a307dce05f3e7afe3e"
-            },
-            "require": {
-                "vaimo/composer-patches": "^5.2"
-            },
-            "require-dev": {
-                "composer/semver": "^3.3",
-                "ext-curl": "*",
-                "ext-json": "*",
-                "ext-zip": "*",
-                "php": "^7.4||^8.0",
-                "phpunit/phpunit": "^9.5",
-                "symfony/config": "^5.4",
-                "symfony/dependency-injection": "^5.4",
-                "symfony/yaml": "^5.4"
-            },
-            "type": "library",
-            "autoload-dev": {
-                "psr-4": {
-                    "Youwe\\PimcoreComposerPatches\\Test\\": "tests/"
-                }
-            },
-            "description": "Composer patches with fixes in upcoming Pimcore releases",
-            "time": "2024-09-02T13:37:41+00:00"
-        },
-        {
             "name": "youwe/pimcore-elasticsearch-bundle",
             "version": "3.1.0",
             "source": {
@@ -16135,6 +16168,98 @@
                 "source": "https://github.com/minkphp/Mink/tree/v1.12.0"
             },
             "time": "2024-10-30T18:48:14+00:00"
+        },
+        {
+            "name": "brianium/paratest",
+            "version": "v6.11.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paratestphp/paratest.git",
+                "reference": "78e297a969049ca7cc370e80ff5e102921ef39a3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paratestphp/paratest/zipball/78e297a969049ca7cc370e80ff5e102921ef39a3",
+                "reference": "78e297a969049ca7cc370e80ff5e102921ef39a3",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "ext-pcre": "*",
+                "ext-reflection": "*",
+                "ext-simplexml": "*",
+                "fidry/cpu-core-counter": "^0.4.1 || ^0.5.1 || ^1.0.0",
+                "jean85/pretty-package-versions": "^2.0.5",
+                "php": "^7.3 || ^8.0",
+                "phpunit/php-code-coverage": "^9.2.25",
+                "phpunit/php-file-iterator": "^3.0.6",
+                "phpunit/php-timer": "^5.0.3",
+                "phpunit/phpunit": "^9.6.4",
+                "sebastian/environment": "^5.1.5",
+                "symfony/console": "^5.4.28 || ^6.3.4 || ^7.0.0",
+                "symfony/process": "^5.4.28 || ^6.3.4 || ^7.0.0"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^12.0.0",
+                "ext-pcov": "*",
+                "ext-posix": "*",
+                "infection/infection": "^0.27.6",
+                "squizlabs/php_codesniffer": "^3.7.2",
+                "symfony/filesystem": "^5.4.25 || ^6.3.1 || ^7.0.0",
+                "vimeo/psalm": "^5.7.7"
+            },
+            "bin": [
+                "bin/paratest",
+                "bin/paratest.bat",
+                "bin/paratest_for_phpstorm"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ParaTest\\": [
+                        "src/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Brian Scaturro",
+                    "email": "scaturrob@gmail.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Filippo Tessarotto",
+                    "email": "zoeslam@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Parallel testing for PHP",
+            "homepage": "https://github.com/paratestphp/paratest",
+            "keywords": [
+                "concurrent",
+                "parallel",
+                "phpunit",
+                "testing"
+            ],
+            "support": {
+                "issues": "https://github.com/paratestphp/paratest/issues",
+                "source": "https://github.com/paratestphp/paratest/tree/v6.11.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/Slamdunk",
+                    "type": "github"
+                },
+                {
+                    "url": "https://paypal.me/filippotessarotto",
+                    "type": "paypal"
+                }
+            ],
+            "time": "2024-03-13T06:54:29+00:00"
         },
         {
             "name": "clue/ndjson-react",
@@ -16693,6 +16818,66 @@
             "time": "2025-03-31T18:40:42+00:00"
         },
         {
+            "name": "jean85/pretty-package-versions",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Jean85/pretty-package-versions.git",
+                "reference": "4d7aa5dab42e2a76d99559706022885de0e18e1a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Jean85/pretty-package-versions/zipball/4d7aa5dab42e2a76d99559706022885de0e18e1a",
+                "reference": "4d7aa5dab42e2a76d99559706022885de0e18e1a",
+                "shasum": ""
+            },
+            "require": {
+                "composer-runtime-api": "^2.1.0",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.2",
+                "jean85/composer-provided-replaced-stub-package": "^1.0",
+                "phpstan/phpstan": "^2.0",
+                "phpunit/phpunit": "^7.5|^8.5|^9.6",
+                "rector/rector": "^2.0",
+                "vimeo/psalm": "^4.3 || ^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Jean85\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alessandro Lai",
+                    "email": "alessandro.lai85@gmail.com"
+                }
+            ],
+            "description": "A library to get pretty versions strings of installed dependencies",
+            "keywords": [
+                "composer",
+                "package",
+                "release",
+                "versions"
+            ],
+            "support": {
+                "issues": "https://github.com/Jean85/pretty-package-versions/issues",
+                "source": "https://github.com/Jean85/pretty-package-versions/tree/2.1.1"
+            },
+            "time": "2025-03-19T14:43:43+00:00"
+        },
+        {
             "name": "nikic/php-parser",
             "version": "v4.19.4",
             "source": {
@@ -16916,16 +17101,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.23",
+            "version": "1.12.25",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "29201e7a743a6ab36f91394eab51889a82631428"
+                "reference": "e310849a19e02b8bfcbb63147f495d8f872dd96f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/29201e7a743a6ab36f91394eab51889a82631428",
-                "reference": "29201e7a743a6ab36f91394eab51889a82631428",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e310849a19e02b8bfcbb63147f495d8f872dd96f",
+                "reference": "e310849a19e02b8bfcbb63147f495d8f872dd96f",
                 "shasum": ""
             },
             "require": {
@@ -16970,7 +17155,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-23T14:57:32+00:00"
+            "time": "2025-04-27T12:20:45+00:00"
         },
         {
             "name": "phpstan/phpstan-doctrine",

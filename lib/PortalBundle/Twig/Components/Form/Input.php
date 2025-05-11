@@ -15,4 +15,4 @@ final class Input
     public ?string $errorMessage = null;
     public bool $required = false;
     public string $class = '';
-} 
+}

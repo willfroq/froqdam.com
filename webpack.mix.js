@@ -1,6 +1,6 @@
 const mix = require('laravel-mix');
 const glob = require('glob');
-const path = require('path');
+const path = require("path")
 
 /*
  |--------------------------------------------------------------------------
@@ -78,7 +78,11 @@ mix.copyDirectory('lib/PortalBundle/Resources/assets/portal/lib', 'public/build/
 mix.webpackConfig({
     resolve: {
         alias: {
-            '@symfony/stimulus-bridge/controllers.json': path.resolve(__dirname, 'lib/PortalBundle/Resources/assets/stimulus/controllers.json'),
+            '@symfony/stimulus-bridge/controllers.json': path.resolve(
+                __dirname,
+                'lib/PortalBundle/Resources/assets/stimulus/controllers.json'
+            ),
+            extensions: ['.js', '.jsx', '.json'],
         }
     }
 });

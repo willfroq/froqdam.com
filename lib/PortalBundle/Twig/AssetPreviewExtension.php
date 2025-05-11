@@ -35,6 +35,7 @@ class AssetPreviewExtension extends AbstractExtension
             new TwigFunction('get_asset_extension', [$this, 'getAssetExtension']),
             new TwigFunction('get_asset_thumbnail_hashed_url', [$this, 'getAssetThumbnailHashedURL']),
             new TwigFunction('get_public_thumbnail_link', [$this, 'getPublicThumbnailLink']),
+            new TwigFunction('get_asset_by_id', [$this, 'getAssetById']),
         ];
     }
 
@@ -83,19 +84,26 @@ class AssetPreviewExtension extends AbstractExtension
         return null;
     }
 
-    public function getAssetExtension(Asset $asset): string
+    /**
+     * @return array<int, string|null>|string
+     */
+    public function getAssetExtension(Asset $asset): array|string
     {
-        return (string) pathinfo((string) $asset->getFilename(), PATHINFO_EXTENSION);
+        return pathinfo((string) $asset->getFilename(), PATHINFO_EXTENSION);
     }
 
     /**
-     * @param Asset $asset
+     * @param ?Asset $asset
      * @param string $thumbnailName
      *
      * @return string
      */
-    public function getAssetThumbnailHashedURL(Asset $asset, string $thumbnailName): string
+    public function getAssetThumbnailHashedURL(?Asset $asset, string $thumbnailName): string
     {
+        if (!($asset instanceof Asset)) {
+            return '';
+        }
+
         return $this->router->generate('froq_portal.asset_thumbnail.asset_hashed', [
             'thumbnailName' => $thumbnailName,
             'assetID' => $asset->getId(),
@@ -114,18 +122,15 @@ class AssetPreviewExtension extends AbstractExtension
             throw new \Exception('ThumbnailConfig not found');
         }
 
-        $thumbnail = match ($asset->getType()) {
-            'document' => (fn () => $asset instanceof Asset\Document ? $asset->getImageThumbnail($thumbnailName) : '')(),
-            'image' => (fn () => $asset instanceof Asset\Image ? $asset->getThumbnail($thumbnailName, false) : '')(),
-            'text' => (fn () => $asset instanceof Asset\Text ? $this->rtfToHtmlConverter->convert($asset) : '')(),
-            'unknown' => (string) pathinfo((string) $asset->getFilename(), PATHINFO_EXTENSION),
+        if ($asset instanceof Asset\Image) {
+            $thumbnail = $asset->getThumbnail($thumbnailName, false);
+        } elseif ($asset instanceof Asset\Document) {
+            $thumbnail = $asset->getImageThumbnail($thumbnailName);
+        } else {
+            throw new \Exception('Asset not found');
+        }
 
-            default => null
-        };
-
-        $thumbnailResult = !is_string($thumbnail) ? $thumbnail : null;
-
-        $stream = $thumbnailResult?->getStream();
+        $stream = $thumbnail->getStream();
 
         if (!is_resource($stream)) {
             throw new \Exception('Asset not found');
@@ -141,5 +146,10 @@ class AssetPreviewExtension extends AbstractExtension
             ]),
             '+20 minutes'
         )->getUri();
+    }
+
+    public function getAssetById(int $id): ?Asset
+    {
+        return Asset::getById($id);
     }
 }

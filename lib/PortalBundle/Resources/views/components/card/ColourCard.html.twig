@@ -1,0 +1,23 @@
+{% set textColour = colour.textColour|default('text-white') %}
+
+<div {{ attributes }}
+        class="relative rounded-md overflow-hidden"
+        style="{% if colour.backgroundColour == '#FFFFFF'  %} {{ 'border-width: 1px; border-style: solid; border-color: #000000;' }} {% endif %}"
+>
+    <div class="p-[16px] flex flex-col items-start min-h-[280px]" style="background-color: {{ colour.backgroundColour }};">
+        <p class="text-24 font-semibold mb-4 leading-24 {{ textColour }}">{{ colour.name }}</p>
+        
+        <table class="w-full">
+            <div class="w-full">
+            {% if this.specs is not empty %}
+                {% for spec in this.specs %}
+                    <div class=" flex gap-[34px]">
+                        <div class="py-2 text-16 leading-16 font-semibold text-right {{ textColour }}" style="width: calc(50% - 17px);">{{ spec.key }}</div>
+                        <div class="py-2 text-16 leading-16 font-normal {{ textColour }}">{{ spec.value }}</div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        </table>
+    </div>
+</div>

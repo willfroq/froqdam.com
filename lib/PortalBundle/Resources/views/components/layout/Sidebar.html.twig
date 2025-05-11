@@ -1,18 +1,33 @@
-<div class="{{ width }} {{ class }}">
-    <div class="bg-white rounded-lg pt-2">
-        {# Header #}
-        <div class="flex justify-between items-center px-5 py-2">
-            <span class="text-base font-semibold text-gray-900">Filters</span>
-            <button class="text-gray-500 text-sm">Clear</button>
-        </div>
-
-        {# Filter Groups #}
-        {% for filter in filters %}
-            <twig:FilterGroup
-                title="{{ filter.title }}"
-                :items="filter.items"
-                search-placeholder="{{ filter.searchPlaceholder }}"
-            />
-        {% endfor %}
+<div class="bg-white rounded-lg pt-2 w-280 min-h-[200px] max-h-[760px] h-full" data-controller="sidebar">
+    <div class="flex justify-between items-center px-5 py-2 h-12">
+        <span class="text-22 font-semibold leading-28 tracking-normal text-[#171B3F] font-sans">Filters</span>
+        <button class="text-18 leading-26 font-normal tracking-normal text-[#8A939A] font-sans">Clear</button>
     </div>
-</div> 
+
+    <div class="flex-1 overflow-y-auto h-[calc(100%-48px)] [&::-webkit-scrollbar]:w-[4px] [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-[4px] [&::-webkit-scrollbar-track]:bg-gray-200">
+        <div>
+            <twig:FilterGroup
+                title="Brand" 
+                :items="brands" 
+                selectedItem="Amstel"
+                expanded="true"
+            />
+        </div>
+        
+        <div>
+            <twig:FilterGroup 
+                title="Market" 
+                :items="markets"
+                expanded="true"
+            />
+        </div>
+        
+        <div>
+            <twig:FilterGroup 
+                title="Medium" 
+                :items="mediums"
+                expanded="true"
+            />
+        </div>
+    </div>
+</div>
