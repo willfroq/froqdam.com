@@ -2,7 +2,7 @@ monolog:
     handlers:
         error_log:
             type: stream
-            path: php://stderr
+            path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: error
             formatter: monolog.formatter.line
             include_stacktraces: true
