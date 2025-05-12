@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Froq\AssetBundle\Pimtoday\Action\Upload\Builder;
 
+use Froq\AssetBundle\Pimtoday\Action\Upload\Base64ToUploadedFile;
 use Froq\AssetBundle\Pimtoday\Controller\Request\PimtodayUploadRequest;
 use Froq\AssetBundle\Pimtoday\ValueObject\DocumentFromPayload;
 use Froq\AssetBundle\Pimtoday\ValueObject\ProductFromPayload;
@@ -21,6 +22,7 @@ final class BuildPimtodayUploadRequest
     public function __construct(
         private readonly ValidatorInterface $validator,
         private readonly SerializerInterface $serializer,
+        private readonly Base64ToUploadedFile $base64ToUploadedFile,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -116,10 +118,20 @@ final class BuildPimtodayUploadRequest
             $errors[] = new ValidationError(propertyPath: 'organization', message: 'Dam organization does not exist');
         }
 
-        $uploadedFile = $request->files->get('fileContents');
+        $fileBase64 = (string) $request->files->get('fileBase64');
+
+        $uploadedFile = null;
+
+        if (!empty($fileBase64)) {
+            $uploadedFile = ($this->base64ToUploadedFile)($fileBase64, (string) $fileName);
+        }
 
         if (!($uploadedFile instanceof UploadedFile)) {
-            $errors[] = new ValidationError(propertyPath: 'file', message: 'No file.');
+            $uploadedFile = $request->files->get('fileContents');
+        }
+
+        if (!($uploadedFile instanceof UploadedFile)) {
+            $errors[] = new ValidationError(propertyPath: 'file', message: 'FILE ERROR! Make sure file is not corrupted!.');
         }
 
         $pimtodayUploadRequest = new PimtodayUploadRequest(
