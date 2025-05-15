@@ -7,11 +7,9 @@
  * Fields Summary:
  * - Name [input]
  * - Description [textarea]
+ * - CompositeIds [input]
  * - Image [manyToOneRelation]
  * - ColourGuideline [manyToOneRelation]
- * - Medium [manyToOneRelation]
- * - Substrate [manyToOneRelation]
- * - PrintingTechnique [manyToOneRelation]
  */
 
 return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
@@ -20,7 +18,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'name' => 'PrintGuideline',
    'description' => '',
    'creationDate' => 0,
-   'modificationDate' => 1746392006,
+   'modificationDate' => 1747221877,
    'userOwner' => 2,
    'userModification' => 2,
    'parentClass' => '',
@@ -140,6 +138,38 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'showCharCount' => false,
                  'excludeFromSearchIndex' => false,
               )),
+              2 => 
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+                 'name' => 'CompositeIds',
+                 'title' => 'Composite Ids',
+                 'tooltip' => 'Composite ids of Medium-Substrate-PrintingTechnique
+For example:  1-2-3 is MediumID-SubstrateID-PrintingTechniqueID',
+                 'mandatory' => false,
+                 'noteditable' => false,
+                 'index' => true,
+                 'locked' => false,
+                 'style' => '',
+                 'permissions' => NULL,
+                 'datatype' => 'data',
+                 'fieldtype' => 'input',
+                 'relationType' => false,
+                 'invisible' => false,
+                 'visibleGridView' => false,
+                 'visibleSearch' => false,
+                 'blockedVarsForExport' => 
+                array (
+                ),
+                 'width' => '',
+                 'defaultValue' => NULL,
+                 'columnLength' => 190,
+                 'regex' => '',
+                 'regexFlags' => 
+                array (
+                ),
+                 'unique' => true,
+                 'showCharCount' => false,
+                 'defaultValueGenerator' => '',
+              )),
             ),
              'locked' => false,
              'blockedVarsForExport' => 
@@ -228,126 +258,6 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                   0 => 
                   array (
                     'classes' => 'ColourGuideline',
-                  ),
-                ),
-                 'pathFormatterClass' => '',
-                 'width' => '',
-                 'assetUploadPath' => '',
-                 'objectsAllowed' => true,
-                 'assetsAllowed' => false,
-                 'assetTypes' => 
-                array (
-                ),
-                 'documentsAllowed' => false,
-                 'documentTypes' => 
-                array (
-                ),
-              )),
-              2 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
-                 'name' => 'Medium',
-                 'title' => 'Medium',
-                 'tooltip' => '',
-                 'mandatory' => false,
-                 'noteditable' => false,
-                 'index' => false,
-                 'locked' => false,
-                 'style' => '',
-                 'permissions' => NULL,
-                 'datatype' => 'data',
-                 'fieldtype' => 'manyToOneRelation',
-                 'relationType' => true,
-                 'invisible' => false,
-                 'visibleGridView' => false,
-                 'visibleSearch' => false,
-                 'blockedVarsForExport' => 
-                array (
-                ),
-                 'classes' => 
-                array (
-                  0 => 
-                  array (
-                    'classes' => 'Medium',
-                  ),
-                ),
-                 'pathFormatterClass' => '',
-                 'width' => '',
-                 'assetUploadPath' => '',
-                 'objectsAllowed' => true,
-                 'assetsAllowed' => false,
-                 'assetTypes' => 
-                array (
-                ),
-                 'documentsAllowed' => false,
-                 'documentTypes' => 
-                array (
-                ),
-              )),
-              3 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
-                 'name' => 'Substrate',
-                 'title' => 'Substrate',
-                 'tooltip' => '',
-                 'mandatory' => false,
-                 'noteditable' => false,
-                 'index' => false,
-                 'locked' => false,
-                 'style' => '',
-                 'permissions' => NULL,
-                 'datatype' => 'data',
-                 'fieldtype' => 'manyToOneRelation',
-                 'relationType' => true,
-                 'invisible' => false,
-                 'visibleGridView' => false,
-                 'visibleSearch' => false,
-                 'blockedVarsForExport' => 
-                array (
-                ),
-                 'classes' => 
-                array (
-                  0 => 
-                  array (
-                    'classes' => 'Substrate',
-                  ),
-                ),
-                 'pathFormatterClass' => '',
-                 'width' => '',
-                 'assetUploadPath' => '',
-                 'objectsAllowed' => true,
-                 'assetsAllowed' => false,
-                 'assetTypes' => 
-                array (
-                ),
-                 'documentsAllowed' => false,
-                 'documentTypes' => 
-                array (
-                ),
-              )),
-              4 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
-                 'name' => 'PrintingTechnique',
-                 'title' => 'Printing Technique',
-                 'tooltip' => '',
-                 'mandatory' => false,
-                 'noteditable' => false,
-                 'index' => false,
-                 'locked' => false,
-                 'style' => '',
-                 'permissions' => NULL,
-                 'datatype' => 'data',
-                 'fieldtype' => 'manyToOneRelation',
-                 'relationType' => true,
-                 'invisible' => false,
-                 'visibleGridView' => false,
-                 'visibleSearch' => false,
-                 'blockedVarsForExport' => 
-                array (
-                ),
-                 'classes' => 
-                array (
-                  0 => 
-                  array (
-                    'classes' => 'PrintingTechnique',
                   ),
                 ),
                  'pathFormatterClass' => '',

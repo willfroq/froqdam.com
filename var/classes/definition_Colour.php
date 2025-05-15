@@ -9,16 +9,16 @@
  * - TextColour [input]
  * - BackgroundColour [input]
  * - ColourFieldCollection [fieldcollections]
- * - ColourGuideline [manyToOneRelation]
+ * - ColourGuideline [manyToManyRelation]
  */
 
-return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
+return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'dao' => NULL,
    'id' => 'Colour',
    'name' => 'Colour',
    'description' => '',
    'creationDate' => 0,
-   'modificationDate' => 1746871250,
+   'modificationDate' => 1747233811,
    'userOwner' => 2,
    'userModification' => 2,
    'parentClass' => '',
@@ -37,7 +37,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
   array (
   ),
    'layoutDefinitions' => 
-  Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+  \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
      'name' => 'pimcore_root',
      'type' => NULL,
      'region' => NULL,
@@ -52,7 +52,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
      'children' => 
     array (
       0 => 
-      Pimcore\Model\DataObject\ClassDefinition\Layout\Tabpanel::__set_state(array(
+      \Pimcore\Model\DataObject\ClassDefinition\Layout\Tabpanel::__set_state(array(
          'name' => 'Layout',
          'type' => NULL,
          'region' => NULL,
@@ -67,7 +67,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
          'children' => 
         array (
           0 => 
-          Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+          \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
              'name' => 'General',
              'type' => NULL,
              'region' => NULL,
@@ -82,7 +82,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'children' => 
             array (
               0 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                  'name' => 'Name',
                  'title' => 'Name',
                  'tooltip' => '',
@@ -113,7 +113,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'defaultValueGenerator' => '',
               )),
               1 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                  'name' => 'TextColour',
                  'title' => 'Text Colour',
                  'tooltip' => '',
@@ -144,10 +144,10 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'defaultValueGenerator' => '',
               )),
               2 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
                  'name' => 'BackgroundColour',
                  'title' => 'Background Colour',
-                 'tooltip' => '',
+                 'tooltip' => 'Put hex of the colour here:',
                  'mandatory' => false,
                  'noteditable' => false,
                  'index' => false,
@@ -175,7 +175,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'defaultValueGenerator' => '',
               )),
               3 => 
-              Pimcore\Model\DataObject\ClassDefinition\Layout\Text::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Layout\Text::__set_state(array(
                  'name' => 'ColourDocumentation',
                  'type' => NULL,
                  'region' => 'center',
@@ -195,7 +195,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 array (
                 ),
                  'fieldtype' => 'text',
-                 'html' => '<div><b><br></b></div><b><div><b><br></b></div><div><b><br></b></div><div><b>Colour documentation :</b></div></b><div><br></div><div><div>See<a href="https://tailwindcss.com/docs/colors">&nbsp;https://tailwindcss.com/docs/colors</a>&nbsp;for more details.</div></div>',
+                 'html' => '<div><b><br></b></div><div style="font-weight: bold;"><b>Colour documentation :</b></div><div style="">Choose hex or tailwind class of colours.</div><div><br></div><div><br></div><div><br></div><div><b>Colour Picker:</b></div><div>Choose hex of colours.<b></b></div><div><a href="https://g.co/kgs/3JsUFZi">https://g.co/kgs/3JsUFZi</a><br></div><div><br></div><div><br></div><div><b>Colour Tailwind Class:</b></div><div>Choose Tailwind class of colours.</div><div>See<a href="https://tailwindcss.com/docs/colors">&nbsp;https://tailwindcss.com/docs/colors</a>&nbsp;for more details.</div>',
                  'renderingClass' => '',
                  'renderingData' => '',
                  'border' => false,
@@ -213,7 +213,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'labelAlign' => 'left',
           )),
           1 => 
-          Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+          \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
              'name' => 'Fields',
              'type' => NULL,
              'region' => NULL,
@@ -228,7 +228,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'children' => 
             array (
               0 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\Fieldcollections::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Fieldcollections::__set_state(array(
                  'name' => 'ColourFieldCollection',
                  'title' => 'Colour Field Collection',
                  'tooltip' => '',
@@ -272,7 +272,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'labelAlign' => 'left',
           )),
           2 => 
-          Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+          \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
              'name' => 'Relations',
              'type' => NULL,
              'region' => NULL,
@@ -287,7 +287,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'children' => 
             array (
               0 => 
-              Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyRelation::__set_state(array(
                  'name' => 'ColourGuideline',
                  'title' => 'Colour Guideline',
                  'tooltip' => '',
@@ -298,7 +298,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'style' => '',
                  'permissions' => NULL,
                  'datatype' => 'data',
-                 'fieldtype' => 'manyToOneRelation',
+                 'fieldtype' => 'manyToManyRelation',
                  'relationType' => true,
                  'invisible' => false,
                  'visibleGridView' => false,
@@ -315,6 +315,8 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 ),
                  'pathFormatterClass' => '',
                  'width' => '',
+                 'height' => '',
+                 'maxItems' => NULL,
                  'assetUploadPath' => '',
                  'objectsAllowed' => true,
                  'assetsAllowed' => false,
@@ -325,6 +327,7 @@ return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'documentTypes' => 
                 array (
                 ),
+                 'enableTextSelection' => false,
               )),
             ),
              'locked' => false,

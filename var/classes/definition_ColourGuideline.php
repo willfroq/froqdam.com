@@ -9,7 +9,7 @@
  * - Description [textarea]
  * - Organization [manyToOneRelation]
  * - Image [manyToOneRelation]
- * - Category [manyToOneRelation]
+ * - Categories [manyToManyRelation]
  * - Colours [manyToManyRelation]
  * - PrintGuidelines [manyToManyRelation]
  */
@@ -20,7 +20,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'name' => 'ColourGuideline',
    'description' => '',
    'creationDate' => 0,
-   'modificationDate' => 1746561252,
+   'modificationDate' => 1747237416,
    'userOwner' => 2,
    'userModification' => 2,
    'parentClass' => '',
@@ -244,9 +244,9 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 ),
               )),
               2 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
-                 'name' => 'Category',
-                 'title' => 'Category',
+              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyRelation::__set_state(array(
+                 'name' => 'Categories',
+                 'title' => 'Categories',
                  'tooltip' => '',
                  'mandatory' => false,
                  'noteditable' => false,
@@ -255,7 +255,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'style' => '',
                  'permissions' => NULL,
                  'datatype' => 'data',
-                 'fieldtype' => 'manyToOneRelation',
+                 'fieldtype' => 'manyToManyRelation',
                  'relationType' => true,
                  'invisible' => false,
                  'visibleGridView' => false,
@@ -272,16 +272,27 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 ),
                  'pathFormatterClass' => '',
                  'width' => '',
+                 'height' => '',
+                 'maxItems' => NULL,
                  'assetUploadPath' => '',
                  'objectsAllowed' => true,
                  'assetsAllowed' => false,
                  'assetTypes' => 
                 array (
+                  0 => 
+                  array (
+                    'assetTypes' => '',
+                  ),
                 ),
                  'documentsAllowed' => false,
                  'documentTypes' => 
                 array (
+                  0 => 
+                  array (
+                    'documentTypes' => '',
+                  ),
                 ),
+                 'enableTextSelection' => false,
               )),
               3 => 
               \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyRelation::__set_state(array(
@@ -438,9 +449,9 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'deletedDataComponents' => 
   array (
     0 => 
-    \Pimcore\Model\DataObject\ClassDefinition\Data\Multiselect::__set_state(array(
-       'name' => 'Countries',
-       'title' => 'Countries',
+    \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyRelation::__set_state(array(
+       'name' => 'Category',
+       'title' => 'Category',
        'tooltip' => '',
        'mandatory' => false,
        'noteditable' => false,
@@ -449,46 +460,37 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
        'style' => '',
        'permissions' => NULL,
        'datatype' => 'data',
-       'fieldtype' => 'multiselect',
-       'relationType' => false,
+       'fieldtype' => 'manyToManyRelation',
+       'relationType' => true,
        'invisible' => false,
        'visibleGridView' => false,
        'visibleSearch' => false,
        'blockedVarsForExport' => 
       array (
       ),
-       'options' => 
+       'classes' => 
       array (
         0 => 
         array (
-          'key' => 'Global',
-          'value' => 'Global',
-        ),
-        1 => 
-        array (
-          'key' => 'Brasil',
-          'value' => 'Brasil',
-        ),
-        2 => 
-        array (
-          'key' => 'India',
-          'value' => 'India',
-        ),
-        3 => 
-        array (
-          'key' => 'South Africa',
-          'value' => 'South Africa',
+          'classes' => 'Category',
         ),
       ),
+       'pathFormatterClass' => '',
        'width' => '',
        'height' => '',
        'maxItems' => NULL,
-       'renderType' => 'list',
-       'optionsProviderClass' => '',
-       'optionsProviderData' => '',
+       'assetUploadPath' => '',
        'queryColumnType' => 'text',
-       'columnType' => 'text',
-       'dynamicOptions' => false,
+       'objectsAllowed' => true,
+       'assetsAllowed' => false,
+       'assetTypes' => 
+      array (
+      ),
+       'documentsAllowed' => false,
+       'documentTypes' => 
+      array (
+      ),
+       'enableTextSelection' => false,
     )),
   ),
    'blockedVarsForExport' => 

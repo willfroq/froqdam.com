@@ -48,7 +48,6 @@ final class SearchController extends AbstractController
 
         $templateParams = array_merge(
             [
-                'user' => $user,
                 'brands' => $brands,
                 'markets' => $markets,
                 'mediums' => $mediums,

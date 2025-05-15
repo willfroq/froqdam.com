@@ -22,8 +22,11 @@ final class GetAvailableSorts
             'updated_at_timestamp',
             'description',
 
-            'brands',
-            'markets',
+            'brand_names',
+            'market_names',
+            'medium_names',
+            'substrate_names',
+            'printing_technique_names',
 
             'organization_id',
             'organization_name',
@@ -31,8 +34,7 @@ final class GetAvailableSorts
             'image_id',
             'image_filename',
 
-            'product_ids',
-            'product_names',
+            'category_ids',
 
             'colour_ids',
             'colour_names',
@@ -42,9 +44,7 @@ final class GetAvailableSorts
             'print_guidelines_ids',
             'print_guidelines_names',
             'print_guidelines_descriptions',
-            'print_guidelines_medium_names',
-            'print_guidelines_substrate_names',
-            'print_guidelines_printing_technique_names',
+            'print_guidelines_composite_ids',
         ];
     }
 }

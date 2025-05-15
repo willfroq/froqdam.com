@@ -52,7 +52,9 @@ final class GetSearchResultSet
         ($this->buildSortQuery)($query, $searchRequest, $user);
         ($this->paginateQuery)($query, $searchRequest);
 
-        ($this->buildAggregation)($query, $searchRequest, $user);
+        if ($searchRequest->hasAggregation) {
+            ($this->buildAggregation)($query, $searchRequest, $user);
+        }
 
         $maxRetries = 3;
         $retryCount = 0;

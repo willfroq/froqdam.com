@@ -35,9 +35,9 @@ final class BuildAggregation
         }
 
         foreach ($searchRequest->aggregationNames as $aggregationName) {
-            $termsAggregation = new TermsAggregation((string) $aggregationName);
+            $termsAggregation = new TermsAggregation($aggregationName);
 
-            $termsAggregation->setField((string) $aggregationName);
+            $termsAggregation->setField($aggregationName);
             $termsAggregation->setSize(100);
 
             $query->addAggregation($termsAggregation);

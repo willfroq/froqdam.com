@@ -37,35 +37,14 @@ final class DetailController extends AbstractController
             throw $this->createNotFoundException(message: 'Page not found.');
         }
 
-        $mediums = array_map(
-            fn (Medium $medium) => $medium->getName(),
-            (new Medium\Listing())
-//            ->addConditionParam('o_key = ?', 'Customers')
-//            ->addConditionParam('o_path = ?', '/')
-            ->getObjects());
-
-        $substrates = array_map(
-            fn (Substrate $substrate) => $substrate->getName(),
-            (new Substrate\Listing())
-//            ->addConditionParam('o_key = ?', 'Customers')
-//            ->addConditionParam('o_path = ?', '/')
-            ->getObjects());
-
-        $printingTechniques = array_map(
-            fn (PrintingTechnique $printingTechnique) => $printingTechnique->getName(),
-            (new PrintingTechnique\Listing())
-//            ->addConditionParam('o_key = ?', 'Customers')
-//            ->addConditionParam('o_path = ?', '/')
-            ->getObjects());
-
         return $this->render(
             '@FroqPortalBundle/colour-library/detail.html.twig',
             [
-                'user' => $user,
                 'colourGuideline' => $colourGuideline,
-                'mediums' => $mediums,
-                'substrates' => $substrates,
-                'printingTechniques' => $printingTechniques,
+                'mediums' => array_values(array_unique(array_map(fn (Medium $medium) => $medium->getName(), $organization->getMediums()))),
+                'substrates' => array_values(array_unique(array_map(fn (Substrate $substrate) => $substrate->getName(), $organization->getSubstrates()))),
+                'printingTechniques' => array_values(array_unique(array_map(fn (PrintingTechnique $printingTechnique) => $printingTechnique->getName(), $organization->getPrintingTechniques()))),
+                'printGuidelines' => $colourGuideline->getPrintGuidelines(),
             ]
         );
     }

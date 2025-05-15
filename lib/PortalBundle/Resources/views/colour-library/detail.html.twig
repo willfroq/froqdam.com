@@ -5,9 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    {% if user is defined %}
-        <twig:ColourNavbar :user="user" />
-    {% endif %}
+    <twig:ColourNavbar :user="app.user" />
 
     <div class="mx-auto px-6 pb-12">
         <twig:Breadcrumb text="< {{ colourGuideline.name }}" />
@@ -30,7 +28,7 @@
             </div>
         </div>
 
-        {% for printGuideline in colourGuideline.printGuidelines %}
+        {% for printGuideline in printGuidelines %}
             <div class="flex gap-6 mb-6">
                 <div>
                     <label class="block text-16 font-medium text-[#333333] leading-[100%] mb-2">Medium</label>
@@ -38,7 +36,7 @@
                             id="medium-dropdown"
                             label=""
                             width="280px"
-                            value="{{ printGuideline.medium.name|default('') }}"
+                            value=""
                             :options="mediums"
                     />
                 </div>
@@ -49,7 +47,7 @@
                             id="substrate-dropdown"
                             label=""
                             width="280px"
-                            value="{{ printGuideline.substrate.name|default('') }}"
+                            value=""
                             :options="substrates"
                     />
                 </div>
@@ -60,7 +58,7 @@
                             id="printing-technique-dropdown"
                             label=""
                             width="280px"
-                            value="{{ printGuideline.printingTechnique.name|default('') }}"
+                            value=""
                             :options="printingTechniques"
                     />
                 </div>

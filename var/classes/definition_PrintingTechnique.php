@@ -6,7 +6,7 @@
  *
  * Fields Summary:
  * - Name [input]
- * - PrintingGuideline [manyToManyRelation]
+ * - Organizations [manyToManyRelation]
  */
 
 return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
@@ -15,7 +15,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'name' => 'PrintingTechnique',
    'description' => '',
    'creationDate' => 0,
-   'modificationDate' => 1746391974,
+   'modificationDate' => 1747242970,
    'userOwner' => 2,
    'userModification' => 2,
    'parentClass' => '',
@@ -111,8 +111,8 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
               )),
               1 => 
               \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyRelation::__set_state(array(
-                 'name' => 'PrintingGuideline',
-                 'title' => 'Printing Guideline',
+                 'name' => 'Organizations',
+                 'title' => 'Organizations',
                  'tooltip' => '',
                  'mandatory' => false,
                  'noteditable' => false,
@@ -133,7 +133,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 array (
                   0 => 
                   array (
-                    'classes' => 'PrintGuideline',
+                    'classes' => 'Organization',
                   ),
                 ),
                  'pathFormatterClass' => '',
@@ -145,10 +145,18 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'assetsAllowed' => false,
                  'assetTypes' => 
                 array (
+                  0 => 
+                  array (
+                    'assetTypes' => '',
+                  ),
                 ),
                  'documentsAllowed' => false,
                  'documentTypes' => 
                 array (
+                  0 => 
+                  array (
+                    'documentTypes' => '',
+                  ),
                 ),
                  'enableTextSelection' => false,
               )),

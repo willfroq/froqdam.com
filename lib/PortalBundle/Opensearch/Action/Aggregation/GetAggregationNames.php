@@ -13,6 +13,13 @@ final class GetAggregationNames
     public function __invoke(#[CurrentUser] User $user): array
     {
         // TODO: This has to be dynamic later. Admin should be able to configure which field a user can sort, query, aggregate, search, filter etc.
-        return [];
+        return [
+            'organization_name',
+            'brand_names',
+            'market_names',
+            'medium_names',
+            'substrate_names',
+            'printing_technique_names'
+        ];
     }
 }

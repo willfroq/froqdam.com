@@ -49,7 +49,7 @@ return \Pimcore\Model\DataObject\Fieldcollection\Definition::__set_state(array(
              'title' => 'Colour Key',
              'tooltip' => '',
              'mandatory' => false,
-             'noteditable' => false,
+             'noteditable' => true,
              'index' => false,
              'locked' => false,
              'style' => '',

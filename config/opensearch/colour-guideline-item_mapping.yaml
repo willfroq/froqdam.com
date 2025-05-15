@@ -37,9 +37,15 @@ mappings:
       type: text
 
     # Aggregate Filters
-    brands:
+    brand_names:
       type: keyword
-    markets:
+    market_names:
+      type: keyword
+    medium_names:
+      type: keyword
+    substrate_names:
+      type: keyword
+    printing_technique_names:
       type: keyword
 
     # Relations
@@ -53,17 +59,8 @@ mappings:
     image_filename:
       type: keyword
 
-    category_id:
+    category_ids:
       type: integer
-    category_reporting_type:
-      type: keyword
-    category_level_label:
-      type: keyword
-
-    product_ids:
-      type: integer
-    product_names:
-      type: keyword
 
     colour_ids:
       type: integer
@@ -80,9 +77,5 @@ mappings:
       type: keyword
     print_guidelines_descriptions:
       type: text
-    print_guidelines_medium_names:
-      type: keyword
-    print_guidelines_substrate_names:
-      type: keyword
-    print_guidelines_printing_technique_names:
+    print_guidelines_composite_ids:
       type: keyword

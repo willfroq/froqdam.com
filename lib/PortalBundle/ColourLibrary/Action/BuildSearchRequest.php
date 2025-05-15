@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\ColourLibrary\Action;
 
 use Froq\PortalBundle\ColourLibrary\DataTransferObject\SearchRequest;
+use Froq\PortalBundle\Opensearch\Action\Aggregation\GetAggregationNames;
 use Froq\PortalBundle\Opensearch\Action\Filter\GetFilterMappingForUser;
 use Froq\PortalBundle\Opensearch\Enum\FilterTypes;
 use Froq\PortalBundle\Opensearch\Enum\IndexNames;
@@ -19,8 +20,10 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 final class BuildSearchRequest
 {
-    public function __construct(private readonly GetFilterMappingForUser $getFilterMappingForUser)
-    {
+    public function __construct(
+        private readonly GetFilterMappingForUser $getFilterMappingForUser,
+        private readonly GetAggregationNames $getAggregationNames,
+    ) {
     }
 
     /**
@@ -80,7 +83,7 @@ final class BuildSearchRequest
             };
         }
 
-        $aggregationNames = ['organization_name', ...array_keys($urlFilters)];
+        $aggregationNames = ($this->getAggregationNames)($user);
 
         return new SearchRequest(
             query: (string) $request->query->get(key: 'query'),
@@ -91,7 +94,7 @@ final class BuildSearchRequest
             filters: $urlFilters,
             filterValueObjects: $filterValueObjects,
             hasErrors: $hasErrors,
-            hasAggregation: count($aggregationNames) > 1,
+            hasAggregation: !empty($aggregationNames),
             aggregationNames: $aggregationNames,
             searchIndex: IndexNames::ColourGuidelineItem->readable(),
         );
