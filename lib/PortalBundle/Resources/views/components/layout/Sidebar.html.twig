@@ -5,29 +5,17 @@
     </div>
 
     <div class="flex-1 overflow-y-auto h-[calc(100%-48px)] [&::-webkit-scrollbar]:w-[4px] [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-[4px] [&::-webkit-scrollbar-track]:bg-gray-200">
-        <div>
-            <twig:FilterGroup
-                title="Brand" 
-                :items="brands" 
-                selectedItem="Amstel"
-                expanded="true"
-            />
-        </div>
-        
-        <div>
-            <twig:FilterGroup 
-                title="Market" 
-                :items="markets"
-                expanded="true"
-            />
-        </div>
-        
-        <div>
-            <twig:FilterGroup 
-                title="Medium" 
-                :items="mediums"
-                expanded="true"
-            />
-        </div>
+        {% for aggregation in this.aggregations %}
+            {% set title = aggregation.fieldName|replace({'_': ' '})|title %}
+
+            <div>
+                <twig:FilterGroup
+                        :title="title"
+                        :items="aggregation.buckets"
+                        selectedItem="Amstel"
+                        expanded="false"
+                />
+            </div>
+        {% endfor %}
     </div>
 </div>

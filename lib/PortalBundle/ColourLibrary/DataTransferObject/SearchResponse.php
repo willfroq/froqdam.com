@@ -22,7 +22,7 @@ final class SearchResponse
 
         /** @var array<int, Aggregation> */
         #[Assert\Type(type: 'array', message: 'Expected "aggregations" to be an array, got %s')]
-        public array $aggregationDtos,
+        public array $aggregations,
 
         /** @var array<string, int> */
         #[Assert\Type(type: 'array', message: 'Expected "paginator" to be a array, got {{ type }}')]
@@ -37,7 +37,7 @@ final class SearchResponse
             'colourGuidelineItems' => $this->colourGuidelineItems,
             'totalCount' => $this->totalCount,
             'aggregationNames' => $this->aggregationNames,
-            'aggregationDtos' => $this->aggregationDtos,
+            'aggregations' => $this->aggregations,
             'paginator' => $this->paginator,
         ];
     }

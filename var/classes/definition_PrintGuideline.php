@@ -6,7 +6,7 @@
  *
  * Fields Summary:
  * - Name [input]
- * - Description [textarea]
+ * - Description [wysiwyg]
  * - CompositeIds [input]
  * - Image [manyToOneRelation]
  * - ColourGuideline [manyToOneRelation]
@@ -18,7 +18,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'name' => 'PrintGuideline',
    'description' => '',
    'creationDate' => 0,
-   'modificationDate' => 1747221877,
+   'modificationDate' => 1747322996,
    'userOwner' => 2,
    'userModification' => 2,
    'parentClass' => '',
@@ -113,7 +113,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'defaultValueGenerator' => '',
               )),
               1 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\Textarea::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Wysiwyg::__set_state(array(
                  'name' => 'Description',
                  'title' => 'Description',
                  'tooltip' => '',
@@ -124,7 +124,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'style' => '',
                  'permissions' => NULL,
                  'datatype' => 'data',
-                 'fieldtype' => 'textarea',
+                 'fieldtype' => 'wysiwyg',
                  'relationType' => false,
                  'invisible' => false,
                  'visibleGridView' => false,
@@ -134,9 +134,9 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 ),
                  'width' => '',
                  'height' => '',
-                 'maxLength' => NULL,
-                 'showCharCount' => false,
+                 'toolbarConfig' => '',
                  'excludeFromSearchIndex' => false,
+                 'maxCharacters' => '',
               )),
               2 => 
               \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(

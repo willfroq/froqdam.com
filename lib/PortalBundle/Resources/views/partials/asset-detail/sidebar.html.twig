@@ -4,7 +4,6 @@
 
 <div class="asset-detail-preview__sidebar">
     <app-asset-information class="asset-information">
-        {{ dump(settings) }}
         {% if settings %}
             {% include '@FroqPortalBundle/partials/asset-detail/assetInfoSection.html.twig' with {'settings': settings, 'item': item} %}
 

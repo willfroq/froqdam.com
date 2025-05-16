@@ -13,13 +13,12 @@
         <div class="bg-white rounded-lg shadow-sm p-[38px] mb-6">
             <div class="flex justify-between items-center mb-6 h-52">
                 <p class="text-36 leading-52 font-semibold text-[#171B3F]">{{ colourGuideline.name }}</p>
-                <twig:EditButton href="{{ path('froq_portal.colour_library.edit', { id: colourGuideline.id }) }}" />
+
+                {# TODO Implement Edit later #}
+{#                <twig:EditButton href="{{ path('froq_portal.colour_library.edit', { id: colourGuideline.id }) }}" />#}
             </div>
             
-            <twig:ColourGuidelineDescription
-                description="{{ colourGuideline.description|default('') }}"
-                additionalDescription="{{ colourGuideline.description|default('') }}"
-            />
+            <twig:ColourGuidelineDescription description="{{ colourGuideline.description|default('') }}" />
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {% for colour in colourGuideline.colours %}
@@ -29,58 +28,11 @@
         </div>
 
         {% for printGuideline in printGuidelines %}
-            <div class="flex gap-6 mb-6">
-                <div>
-                    <label class="block text-16 font-medium text-[#333333] leading-[100%] mb-2">Medium</label>
-                    <twig:Dropdown
-                            id="medium-dropdown"
-                            label=""
-                            width="280px"
-                            value=""
-                            :options="mediums"
-                    />
-                </div>
-
-                <div>
-                    <label class="block text-16 font-medium text-[#333333] leading-[100%] mb-2">Substrate</label>
-                    <twig:Dropdown
-                            id="substrate-dropdown"
-                            label=""
-                            width="280px"
-                            value=""
-                            :options="substrates"
-                    />
-                </div>
-
-                <div>
-                    <label class="block text-16 font-medium text-[#333333] leading-[100%] mb-2">Printing technique</label>
-                    <twig:Dropdown
-                            id="printing-technique-dropdown"
-                            label=""
-                            width="280px"
-                            value=""
-                            :options="printingTechniques"
-                    />
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-sm p-[38px]" data-controller="print-notes">
-                <div class="flex justify-between items-center mb-6">
-                    <p class="text-18 font-bold text-[#171B3F] leading-32">{{ printGuideline.name }}</p>
-                    <twig:EditButton href="#" />
-                </div>
-
-                <twig:PrintInfo description="{{ printGuideline.description }}" />
-
-                <div class="flex flex-col md:flex-row">
-                    <div class="flex flex-col items-center" style="max-width: 600px;">
-                        {% set asset = get_asset_by_id(printGuideline.image.id) %}
-                        {% set imageSrc = get_asset_thumbnail_hashed_url(asset, 'portal_asset_library_item_grid') %}
-
-                        <img src="{{ imageSrc }}" alt="{{ printGuideline.image.filename }}" class="mb-2">
-                    </div>
-                </div>
-            </div>
+            <twig:PrintGuidelineSection :printGuideline="printGuideline"
+                                        :mediums="mediums"
+                                        :substrates="substrates"
+                                        :printingTechniques="printingTechniques"
+            />
         {% endfor %}
     </div>
 {% endblock %}

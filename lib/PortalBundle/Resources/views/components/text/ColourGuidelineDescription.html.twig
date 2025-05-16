@@ -1,7 +1,3 @@
 <div {{ attributes }} class="text-[#171B3F] text-18 font-normal mb-6" style="line-height: 32px;">
-    <p class="mb-6">{{ this.description }}</p>
-
-    {% if this.additionalDescription %}
-        <p>{{ this.additionalDescription }}</p>
-    {% endif %}
+    <p class="mb-6">{{ this.description|raw }}</p>
 </div> 

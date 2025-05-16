@@ -31,7 +31,7 @@ final class BuildSearchResponse
             colourGuidelineItems: $colourGuidelineCollection->items,
             totalCount: $colourGuidelineCollection->totalCount,
             aggregationNames: ($this->getAggregationNames)($user),
-            aggregationDtos: $colourGuidelineCollection->aggregations,
+            aggregations: $colourGuidelineCollection->aggregations,
             paginator: ($this->getPaginator)(
                 requestedPage: (int)$searchRequest->page,
                 requestedSize: (int)$searchRequest->size,

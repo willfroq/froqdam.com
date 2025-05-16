@@ -1,5 +1,5 @@
 <div {{ attributes }} class="mb-6 text-[#171B3F] text-18 leading-32 font-normal" style="line-height: 32px;">
     {% if this.description %}
-        <p class="mt-6">{{ this.description }}</p>
+        <p class="mt-6">{{ this.description|raw }}</p>
     {% endif %}
 </div> 

@@ -6,7 +6,7 @@
  *
  * Fields Summary:
  * - Name [input]
- * - Description [textarea]
+ * - Description [wysiwyg]
  * - Organization [manyToOneRelation]
  * - Image [manyToOneRelation]
  * - Categories [manyToManyRelation]
@@ -20,7 +20,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'name' => 'ColourGuideline',
    'description' => '',
    'creationDate' => 0,
-   'modificationDate' => 1747237416,
+   'modificationDate' => 1747322093,
    'userOwner' => 2,
    'userModification' => 2,
    'parentClass' => '',
@@ -115,7 +115,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'defaultValueGenerator' => '',
               )),
               1 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\Textarea::__set_state(array(
+              \Pimcore\Model\DataObject\ClassDefinition\Data\Wysiwyg::__set_state(array(
                  'name' => 'Description',
                  'title' => 'Description',
                  'tooltip' => '',
@@ -126,7 +126,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'style' => '',
                  'permissions' => NULL,
                  'datatype' => 'data',
-                 'fieldtype' => 'textarea',
+                 'fieldtype' => 'wysiwyg',
                  'relationType' => false,
                  'invisible' => false,
                  'visibleGridView' => false,
@@ -136,9 +136,9 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                 ),
                  'width' => '',
                  'height' => '',
-                 'maxLength' => NULL,
-                 'showCharCount' => false,
+                 'toolbarConfig' => '',
                  'excludeFromSearchIndex' => false,
+                 'maxCharacters' => '',
               )),
             ),
              'locked' => false,
@@ -279,18 +279,10 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'assetsAllowed' => false,
                  'assetTypes' => 
                 array (
-                  0 => 
-                  array (
-                    'assetTypes' => '',
-                  ),
                 ),
                  'documentsAllowed' => false,
                  'documentTypes' => 
                 array (
-                  0 => 
-                  array (
-                    'documentTypes' => '',
-                  ),
                 ),
                  'enableTextSelection' => false,
               )),
@@ -448,50 +440,6 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'enableGridLocking' => false,
    'deletedDataComponents' => 
   array (
-    0 => 
-    \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyRelation::__set_state(array(
-       'name' => 'Category',
-       'title' => 'Category',
-       'tooltip' => '',
-       'mandatory' => false,
-       'noteditable' => false,
-       'index' => false,
-       'locked' => false,
-       'style' => '',
-       'permissions' => NULL,
-       'datatype' => 'data',
-       'fieldtype' => 'manyToManyRelation',
-       'relationType' => true,
-       'invisible' => false,
-       'visibleGridView' => false,
-       'visibleSearch' => false,
-       'blockedVarsForExport' => 
-      array (
-      ),
-       'classes' => 
-      array (
-        0 => 
-        array (
-          'classes' => 'Category',
-        ),
-      ),
-       'pathFormatterClass' => '',
-       'width' => '',
-       'height' => '',
-       'maxItems' => NULL,
-       'assetUploadPath' => '',
-       'queryColumnType' => 'text',
-       'objectsAllowed' => true,
-       'assetsAllowed' => false,
-       'assetTypes' => 
-      array (
-      ),
-       'documentsAllowed' => false,
-       'documentTypes' => 
-      array (
-      ),
-       'enableTextSelection' => false,
-    )),
   ),
    'blockedVarsForExport' => 
   array (

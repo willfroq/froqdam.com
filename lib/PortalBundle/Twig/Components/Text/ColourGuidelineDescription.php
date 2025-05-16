@@ -8,5 +8,4 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 final class ColourGuidelineDescription
 {
     public string $description = '';
-    public string $additionalDescription = '';
 }
