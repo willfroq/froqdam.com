@@ -10,9 +10,7 @@ final class CheckboxList
     /** @var array<int, mixed> */
     public array $items = [];
 
-    /** @var string|null */
-    public ?string $selectedItem = null;
-
-    /** @var string */
     public string $class = '';
+
+    public string $filterName = '';
 }

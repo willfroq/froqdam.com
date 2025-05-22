@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Froq\PortalBundle\ColourLibrary\DataTransferObject;
 
+use Froq\PortalBundle\Opensearch\ValueObject\Aggregation;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class ColourGuidelineCollection

@@ -11,6 +11,11 @@ services:
             'string $s3BucketNameAssets': '%env(AWS_S3_BUCKET_NAME_ASSETS)%'
             'string $projectDirectory': '%kernel.project_dir%'
 
+    Predis\Client:
+        class: Predis\Client
+        arguments:
+            - '%env(REDIS_URL)%'
+
     Froq\PortalBundle\:
         resource: '../../*'
         exclude: '../../{DependencyInjection,Entity,Tests}'

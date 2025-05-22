@@ -37,6 +37,7 @@ final class BuildSearchResponse
                 requestedSize: (int)$searchRequest->size,
                 totalCount: $colourGuidelineCollection->totalCount,
             ),
+            sortOptions: ['Alphabetical', 'Newest', 'Oldest']
         );
     }
 }

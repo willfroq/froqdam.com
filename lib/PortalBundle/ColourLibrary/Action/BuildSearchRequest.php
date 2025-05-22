@@ -64,6 +64,10 @@ final class BuildSearchRequest
                 continue;
             }
 
+            if ($validFiltersForUser[$filterKey]['type'] === 'text') {
+                $hasErrors = !is_string($filterValues);
+            }
+
             $filterValueObjects[$filterKey] = match ($validFiltersForUser[$filterKey]['type']) {
                 FilterTypes::Keyword->readable() => new MultiselectCheckboxFilter((array) $filterValues),
 

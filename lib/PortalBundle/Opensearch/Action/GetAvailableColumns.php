@@ -22,14 +22,20 @@ final class GetAvailableColumns
             'updated_at_timestamp',
             'description',
 
-            'brand_names',
-            'market_names',
-            'medium_names',
-            'substrate_names',
-            'printing_technique_names',
+            'brands',
+            'markets',
+            'mediums',
+            'substrates',
+            'printing_techniques',
+
+            'brands_text',
+            'markets_text',
+            'mediums_text',
+            'substrates_text',
+            'printing_techniques_text',
 
             'organization_id',
-            'organization_name',
+            'organizations',
 
             'image_id',
             'image_filename',

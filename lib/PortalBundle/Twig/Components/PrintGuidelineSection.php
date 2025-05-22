@@ -15,12 +15,36 @@ final class PrintGuidelineSection
 {
     public PrintGuideline $printGuideline;
 
-    /** @var array<int, Medium > */
+    /** @var array<int, Medium> */
     public array $mediums;
 
-    /** @var array<int, Substrate > */
+    /** @var array<int, Substrate> */
     public array $substrates;
 
-    /** @var array<int, PrintingTechnique > */
+    /** @var array<int, PrintingTechnique> */
     public array $printingTechniques;
+
+    /** @var array<int, Medium|Substrate|PrintingTechnique> */
+    public array $requiredSpecs;
+
+    public function mount(PrintGuideline $printGuideline): void
+    {
+        $ids = explode('-', (string) $printGuideline->getCompositeIds());
+
+        $specs = [];
+
+        foreach ($ids as $key => $id) {
+            $specs[$key] = (function () use ($key, $id) {
+                return match($key) {
+                    0 => Medium::getById($id),
+                    1 => Substrate::getById($id),
+                    2 => PrintingTechnique::getById($id),
+
+                    default => null
+                };
+            })();
+        }
+
+        $this->requiredSpecs = array_filter($specs);
+    }
 }

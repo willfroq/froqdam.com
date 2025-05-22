@@ -1,21 +1,26 @@
-<div class="space-y-2 {{ class }}">
-    {% for item in items %}
-        {% set itemValue = item.key %}
-        {% set count = item.doc_count %}
+<div id="checkbox-list" class="space-y-2 {{ class }}">
+    {% for index, bucket in buckets %}
+        {% set value = bucket.key %}
+        {% set count = bucket.docCount %}
+        {% set isSelected = bucket.isSelected %}
 
         <label class="flex items-center space-x-2 cursor-pointer group">
             <div class="relative flex items-center justify-center">
                 <input
                     id="sidebar-checkbox"
-                    type="checkbox" 
+                    type="checkbox"
+                    data-action="change->search#toggle"
+                    data-search-target="sidebarCheckbox"
+                    data-filtername="{{ filterName }}"
+                    data-index="{{ index }}"
                     class="w-4 h-4 border-2 border-[#E4E7EC] rounded text-[#009383] focus:ring-[#009383] focus:ring-offset-0 transition-colors cursor-pointer
                     checked:bg-[#009383] checked:border-[#009383]"
-                    value="{{ itemValue }}"
-                    {% if itemValue == selectedItem %}checked{% endif %}
+                    value="{{ value }}"
+                    {% if isSelected %}checked{% endif %}
                 >
             </div>
 
-            <span class="text-14 leading-20 text-[#171B3F]">{{ itemValue }} ({{ count }})</span>
+            <span class="text-14 leading-20 text-[#171B3F]">{{ value }} ({{ count }})</span>
         </label>
     {% endfor %}
 </div>

@@ -5,7 +5,10 @@
 {% block body %}
     <twig:ColourNavbar :user="app.user" />
 
-    <div class="min-h-screen px-[30px]" data-controller="search" data-search-url-value="{{ path('froq_portal.colour_library.search') }}">
+    <div class="min-h-screen px-[30px]"
+         data-controller="search"
+         data-search-url-value="{{ path('froq_portal.colour_library.search') }}"
+    >
         <div class="flex flex-wrap items-center gap-6 py-1">
             <h1 class="font-semibold text-36 text-[#171B3F] w-284">Colour Library</h1>
 
@@ -41,13 +44,7 @@
         <turbo-frame id="colour-guideline-page" data-search-target="colourGuidelinePage">
             <div class="flex flex-col md:flex-row gap-6">
                 <div class="w-full md:w-280 flex-shrink-0">
-                    <twig:Sidebar
-                            selectedBrand="Amstel"
-                            :brands="brands"
-                            :markets="markets"
-                            :mediums="mediums"
-                            :aggregations="aggregations"
-                    />
+                    <twig:Sidebar :aggregations="aggregations" />
                 </div>
 
                 <div class="flex-grow" id="colour-guideline-items"

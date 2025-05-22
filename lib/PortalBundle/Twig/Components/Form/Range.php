@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Froq\PortalBundle\Twig\Components\Form;
 
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;

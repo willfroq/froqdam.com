@@ -55,9 +55,10 @@ final class BuildColourGuidelineItemMapper
             'description' => (string) $colourGuideline->getDescription(),
 
             // Aggregate Filters
-            'brand_names' => ($this->getCategoryNames)($colourGuideline, 'brand'),
-            'market_names' => ($this->getCategoryNames)($colourGuideline, 'market'),
-            'medium_names' => array_values(array_unique(array_map(
+            // keyword
+            'brands' => ($this->getCategoryNames)($colourGuideline, 'brand'),
+            'markets' => ($this->getCategoryNames)($colourGuideline, 'market'),
+            'mediums' => array_values(array_unique(array_map(
                 fn (Medium $medium) => $medium->getName(),
                 (array) (function () use ($colourGuideline) {
                     $organization = Organization::getById((int) $colourGuideline->getOrganization()?->getId());
@@ -69,7 +70,7 @@ final class BuildColourGuidelineItemMapper
                     return $organization->getMediums();
                 })()
             ))),
-            'substrate_names' => array_values(array_unique(array_map(
+            'substrates' => array_values(array_unique(array_map(
                 fn (Substrate $substrate) => $substrate->getName(),
                 (array) (function () use ($colourGuideline) {
                     $organization = Organization::getById((int) $colourGuideline->getOrganization()?->getId());
@@ -81,7 +82,47 @@ final class BuildColourGuidelineItemMapper
                     return $organization->getSubstrates();
                 })()
             ))),
-            'printing_technique_names' => array_values(array_unique(array_map(
+            'printing_techniques' => array_values(array_unique(array_map(
+                fn (PrintingTechnique $printingTechnique) => $printingTechnique->getName(),
+                (array) (function () use ($colourGuideline) {
+                    $organization = Organization::getById((int) $colourGuideline->getOrganization()?->getId());
+
+                    if (!($organization instanceof Organization)) {
+                        return null;
+                    }
+
+                    return $organization->getPrintingTechniques();
+                })()
+            ))),
+
+            // text
+            'brands_text' => ($this->getCategoryNames)($colourGuideline, 'brand'),
+            'markets_text' => ($this->getCategoryNames)($colourGuideline, 'market'),
+            'mediums_text' => array_values(array_unique(array_map(
+                fn (Medium $medium) => $medium->getName(),
+                (array) (function () use ($colourGuideline) {
+                    $organization = Organization::getById((int) $colourGuideline->getOrganization()?->getId());
+
+                    if (!($organization instanceof Organization)) {
+                        return null;
+                    }
+
+                    return $organization->getMediums();
+                })()
+            ))),
+            'substrates_text' => array_values(array_unique(array_map(
+                fn (Substrate $substrate) => $substrate->getName(),
+                (array) (function () use ($colourGuideline) {
+                    $organization = Organization::getById((int) $colourGuideline->getOrganization()?->getId());
+
+                    if (!($organization instanceof Organization)) {
+                        return null;
+                    }
+
+                    return $organization->getSubstrates();
+                })()
+            ))),
+            'printing_techniques_text' => array_values(array_unique(array_map(
                 fn (PrintingTechnique $printingTechnique) => $printingTechnique->getName(),
                 (array) (function () use ($colourGuideline) {
                     $organization = Organization::getById((int) $colourGuideline->getOrganization()?->getId());
@@ -96,7 +137,7 @@ final class BuildColourGuidelineItemMapper
 
             // Relations
             'organization_id' => (int) $colourGuideline->getOrganization()?->getId(),
-            'organization_name' => (string) $colourGuideline->getOrganization()?->getKey(),
+            'organizations' => (string) $colourGuideline->getOrganization()?->getKey(),
 
             'image_id' => (int) $colourGuideline->getImage()?->getId(),
             'image_filename' => (string) $colourGuideline->getImage()?->getFilename(),

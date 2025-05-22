@@ -39,6 +39,7 @@ final class BuildAggregation
 
             $termsAggregation->setField($aggregationName);
             $termsAggregation->setSize(100);
+            $termsAggregation->setOrder('_term', 'asc');
 
             $query->addAggregation($termsAggregation);
         }

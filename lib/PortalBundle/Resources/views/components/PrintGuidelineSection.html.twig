@@ -1,11 +1,16 @@
 <div class="flex gap-6 mb-6">
+
+    {% set medium = requiredSpecs[0]|default(null) %}
+    {% set substrate = requiredSpecs[1]|default(null) %}
+    {% set printingTechnique = requiredSpecs[2]|default(null) %}
+
     <div>
         <label class="block text-16 font-medium text-[#333333] leading-[100%] mb-2">Medium</label>
         <twig:Dropdown
                 id="medium-dropdown"
                 label=""
                 width="280px"
-                value=""
+                :selected="medium.name"
                 :options="mediums"
         />
     </div>
@@ -16,7 +21,7 @@
                 id="substrate-dropdown"
                 label=""
                 width="280px"
-                value=""
+                :selected="substrate.name"
                 :options="substrates"
         />
     </div>
@@ -27,7 +32,7 @@
                 id="printing-technique-dropdown"
                 label=""
                 width="280px"
-                value=""
+                :selected="printingTechnique.name"
                 :options="printingTechniques"
         />
     </div>

@@ -37,21 +37,32 @@ mappings:
       type: text
 
     # Aggregate Filters
-    brand_names:
+    brands:
       type: keyword
-    market_names:
+    markets:
       type: keyword
-    medium_names:
+    mediums:
       type: keyword
-    substrate_names:
+    substrates:
       type: keyword
-    printing_technique_names:
+    printing_techniques:
       type: keyword
+
+    brands_text:
+      type: text
+    markets_text:
+      type: text
+    mediums_text:
+      type: text
+    substrates_text:
+      type: text
+    printing_techniques_text:
+      type: text
 
     # Relations
     organization_id:
       type: integer
-    organization_name:
+    organizations:
       type: keyword
 
     image_id:

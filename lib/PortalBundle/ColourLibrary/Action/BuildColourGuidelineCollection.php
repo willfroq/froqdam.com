@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Froq\PortalBundle\ColourLibrary\Action;
 
-use Froq\PortalBundle\ColourLibrary\DataTransferObject\Aggregation;
 use Froq\PortalBundle\ColourLibrary\DataTransferObject\ColourGuidelineCollection;
 use Froq\PortalBundle\ColourLibrary\DataTransferObject\ColourGuidelineItem;
 use Froq\PortalBundle\ColourLibrary\DataTransferObject\SearchRequest;
 use Froq\PortalBundle\Opensearch\Action\GetSearchResultSet;
 use Froq\PortalBundle\Opensearch\Enum\IndexNames;
+use Froq\PortalBundle\Opensearch\ValueObject\Aggregation;
+use Froq\PortalBundle\Opensearch\ValueObject\Bucket;
 use JoliCode\Elastically\Result;
 use Pimcore\Model\DataObject\User;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -48,16 +49,37 @@ final class BuildColourGuidelineCollection
         $responseAggregations = $resultSet?->getAggregations() ?? [];
 
         if (!empty($responseAggregations) && $searchRequest->hasAggregation) {
-            foreach ($responseAggregations as $aggregationName => $aggregation) {
-                if (!in_array(needle: $aggregationName, haystack: $searchRequest->aggregationNames)) {
+            foreach ($responseAggregations as $fieldName => $aggregation) {
+                if (!in_array(needle: $fieldName, haystack: $searchRequest->aggregationNames)) {
                     continue;
                 }
 
+                $buckets = $aggregation['buckets'] ?? [];
+
                 $aggregations[] = new Aggregation(
-                    fieldName: (string) $aggregationName,
+                    fieldName: (string) $fieldName,
                     hasError: (bool) $aggregation['doc_count_error_upper_bound'],
                     sumOfDocCount: (int) $aggregation['sum_other_doc_count'],
-                    buckets: $aggregation['buckets'] ?? []
+                    shouldExpand: in_array(needle: $fieldName, haystack: array_keys((array) $searchRequest->filters)),
+                    buckets: array_map(
+                        fn (mixed $item) =>  new Bucket(
+                            key: $item['key'] ?? '',
+                            docCount: $item['doc_count'] ?? 0,
+                            isSelected: (
+                                function () use ($searchRequest, $fieldName, $item) {
+                                    $key = $item['key'] ?? '';
+
+                                    foreach ($searchRequest->filters ?? [] as $index => $filterNames) {
+                                        if ($index === $fieldName && in_array(needle: $key, haystack: (array) $filterNames)) {
+                                            return true;
+                                        }
+                                    }
+
+                                    return false;
+                                }
+                            )(),
+                        ), $buckets
+                    )
                 );
             }
         }
