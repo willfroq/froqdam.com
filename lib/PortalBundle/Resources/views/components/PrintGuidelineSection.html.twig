@@ -1,59 +1,19 @@
-<div class="flex gap-6 mb-6">
-
-    {% set medium = requiredSpecs[0]|default(null) %}
-    {% set substrate = requiredSpecs[1]|default(null) %}
-    {% set printingTechnique = requiredSpecs[2]|default(null) %}
-
-    <div>
-        <label class="block text-16 font-medium text-[#333333] leading-[100%] mb-2">Medium</label>
-        <twig:Dropdown
-                id="medium-dropdown"
-                label=""
-                width="280px"
-                :selected="medium.name"
-                :options="mediums"
-        />
-    </div>
-
-    <div>
-        <label class="block text-16 font-medium text-[#333333] leading-[100%] mb-2">Substrate</label>
-        <twig:Dropdown
-                id="substrate-dropdown"
-                label=""
-                width="280px"
-                :selected="substrate.name"
-                :options="substrates"
-        />
-    </div>
-
-    <div>
-        <label class="block text-16 font-medium text-[#333333] leading-[100%] mb-2">Printing technique</label>
-        <twig:Dropdown
-                id="printing-technique-dropdown"
-                label=""
-                width="280px"
-                :selected="printingTechnique.name"
-                :options="printingTechniques"
-        />
-    </div>
-</div>
-
-<div class="bg-white rounded-lg shadow-sm p-[38px]" data-controller="print-notes">
+<div id="print-expert-notes-section-{{ printGuideline.id }}" class="print-expert-notes-section bg-white rounded-lg shadow-sm p-[38px]">
     <div class="flex justify-between items-center mb-6">
-        <p class="text-18 font-bold text-[#171B3F] leading-32">{{ printGuideline.name }}</p>
-
-        {# TODO Implement Edit later #}
-        {#                    <twig:EditButton href="#" />#}
+        <p class="text-18 font-bold text-[#171B3F] leading-32">{{ printGuideline.key }}</p>
     </div>
 
     <twig:PrintInfo description="{{ printGuideline.description }}" />
 
-    <div class="flex flex-col md:flex-row">
-        <div class="flex flex-col items-center" style="max-width: 600px;">
-            {% set asset = get_asset_by_id(printGuideline.image.id) %}
-            {% set imageSrc = get_asset_thumbnail_hashed_url(asset, 'portal_asset_library_item_grid') %}
+    {% for attachmentFile in this.attachmentFiles %}
+        {% if attachmentFile is not empty %}
+            <div class="flex flex-col md:flex-row">
+                <div class="flex flex-col items-center" style="max-width: 600px;">
+                    {% set imageSrc = get_asset_thumbnail_hashed_url(attachmentFile, 'portal_asset_library_item_grid') %}
 
-            <img src="{{ imageSrc }}" alt="{{ printGuideline.image.filename }}" class="mb-2">
-        </div>
-    </div>
+                    <img src="{{ imageSrc }}" alt="{{ attachmentFile.filename }}" class="mb-2">
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
 </div>

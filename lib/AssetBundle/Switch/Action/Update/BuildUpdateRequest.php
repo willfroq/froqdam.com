@@ -61,16 +61,12 @@ final class BuildUpdateRequest
 
         $projectData = (array) json_decode((string) $request->request->get('projectData'), true);
 
-        if (!empty($projectData)) {
-            if (empty($projectData['projectName'])) {
-                $errors[] = new ValidationError(propertyPath: 'projectName', message: 'projectName in %s can not be blank.');
-            }
+        if (!isset($projectData['projectName'])) {
+            $errors[] = new ValidationError(propertyPath: 'projectName', message: 'projectName in %s can not be blank.');
         }
 
-        if (!empty($projectData)) {
-            if (empty($projectData['froqName'])) {
-                $errors[] = new ValidationError(propertyPath: 'froqName', message: 'projectName in %s can not be blank.');
-            }
+        if (!isset($projectData['froqName'])) {
+            $errors[] = new ValidationError(propertyPath: 'froqName', message: 'froqName in %s can not be blank.');
         }
 
         $validParentAssetResource = $parentAssetResource instanceof AssetResource ? $parentAssetResource : null;

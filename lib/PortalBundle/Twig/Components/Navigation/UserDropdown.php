@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Froq\PortalBundle\Twig\Components\Navigation;
 
 use Pimcore\Model\DataObject\User;
@@ -12,12 +14,13 @@ final class UserDropdown
 
     public function getFullname(): string
     {
-        return $this->user->getName() ?? '';
+        return $this->user->getUserName() ?? '';
     }
 
     public function getInitials(): string
     {
         $name = $this->getFullname();
+
         if (empty($name)) {
             return '';
         }

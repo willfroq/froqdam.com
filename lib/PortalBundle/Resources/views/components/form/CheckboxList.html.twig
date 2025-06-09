@@ -1,26 +1,52 @@
-<div id="checkbox-list" class="space-y-2 {{ class }}">
+<div id="checkbox-list"
+     class="space-y-2 {{ class }}"
+     data-controller="checkbox-list"
+     data-checkbox-list-total-count-value="{{ buckets|length }}"
+     data-checkbox-list-initial-count-value="5">
+
     {% for index, bucket in buckets %}
         {% set value = bucket.key %}
         {% set count = bucket.docCount %}
         {% set isSelected = bucket.isSelected %}
 
-        <label class="flex items-center space-x-2 cursor-pointer group">
+        <label class="flex items-center space-x-2 cursor-pointer group checkbox-item{% if index >= 5 %} hidden{% endif %}"
+               data-checkbox-list-target="item"
+               data-index="{{ index }}"
+        >
             <div class="relative flex items-center justify-center">
                 <input
-                    id="sidebar-checkbox"
-                    type="checkbox"
-                    data-action="change->search#toggle"
-                    data-search-target="sidebarCheckbox"
-                    data-filtername="{{ filterName }}"
-                    data-index="{{ index }}"
-                    class="w-4 h-4 border-2 border-[#E4E7EC] rounded text-[#009383] focus:ring-[#009383] focus:ring-offset-0 transition-colors cursor-pointer
-                    checked:bg-[#009383] checked:border-[#009383]"
-                    value="{{ value }}"
-                    {% if isSelected %}checked{% endif %}
+                        id="sidebar-checkbox-{{ filterName }}-{{ index }}"
+                        type="checkbox"
+                        data-action="change->search#toggle"
+                        data-search-target="sidebarCheckbox"
+                        data-filtername="{{ filterName }}"
+                        data-index="{{ index }}"
+                        class="w-4 h-4 border-2 border-[#E4E7EC] rounded text-[#009383] focus:ring-[#009383] focus:ring-offset-0 transition-colors cursor-pointer checked:bg-[#009383] checked:border-[#009383]"
+                        value="{{ value }}"
+                        {% if isSelected %}checked{% endif %}
                 >
             </div>
 
             <span class="text-14 leading-20 text-[#171B3F]">{{ value }} ({{ count }})</span>
         </label>
     {% endfor %}
+
+    {% if buckets|length > 5 %}
+        <button class="mt-3 flex items-center text-[#009383] text-14 font-semibold leading-20 hover:text-[#007A6D] transition-colors duration-200 checkbox-list-view-all-button"
+                data-checkbox-list-target="viewAllButton"
+                data-action="click->checkbox-list#toggle"
+        >
+            <span data-checkbox-list-target="viewAllText">View all ({{ buckets|length }})</span>
+
+            <svg class="ml-1 w-4 h-4 transform transition-transform duration-200"
+                 data-checkbox-list-target="viewAllIcon"
+                 xmlns="http://www.w3.org/2000/svg"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor"
+            >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+        </button>
+    {% endif %}
 </div>

@@ -19,4 +19,6 @@ final class Sidebar
 
     /** @var array<int, Aggregation> */
     public array $aggregations = [];
+
+    public bool $hasSelectedFilters = false;
 }

@@ -27,12 +27,22 @@
             </div>
         </div>
 
-        {% for printGuideline in printGuidelines %}
-            <twig:PrintGuidelineSection :printGuideline="printGuideline"
-                                        :mediums="mediums"
-                                        :substrates="substrates"
-                                        :printingTechniques="printingTechniques"
-            />
-        {% endfor %}
+        {% if colourGuideline.printGuidelines is not empty %}
+            <div class="flex gap-6 mb-6">
+                <div>
+                    <label class="block text-16 font-medium text-[#333333] leading-[100%] mb-2">Print expert notes</label>
+
+                    <twig:PrintingExpertNotesDropdown
+                            id="printing-expert-notes-dropdown"
+                            keyLabel="Search print expert notes..."
+                            :printGuidelines="colourGuideline.printGuidelines"
+                    />
+                </div>
+            </div>
+
+            {% for printGuideline in printGuidelines %}
+                <twig:PrintGuidelineSection :printGuideline="printGuideline" />
+            {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}

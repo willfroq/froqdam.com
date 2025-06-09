@@ -1,23 +1,51 @@
-{% set textColour = colour.textColour|default('text-white') %}
+{% set textColour = colour.fontColour|default('#FFFFFF') %}
 
 <div {{ attributes }}
         class="relative rounded-md overflow-hidden"
-        style="{% if colour.backgroundColour == '#FFFFFF'  %} {{ 'border-width: 1px; border-style: solid; border-color: #000000;' }} {% endif %}"
+        style="{% if colour.backgoundColour == '#FFFFFF' or colour.backgoundColour == '#ffffffff'  %} {{ 'border-width: 1px; border-style: solid; border-color: #000000;' }} {% endif %}"
 >
-    <div class="p-[16px] flex flex-col items-start min-h-[280px]" style="background-color: {{ colour.backgroundColour }};">
-        <p class="text-24 font-semibold mb-4 leading-24 {{ textColour }}">{{ colour.name }}</p>
+    <div class="p-[16px] flex flex-col items-start min-h-[280px]" style="background-color: {{ colour.backgoundColour }};">
+        <p class="text-24 font-semibold mb-4 leading-24" style="color: {{ textColour }}">{{ colour.name }}</p>
         
         <table class="w-full">
             <div class="w-full">
-            {% if this.specs is not empty %}
-                {% for spec in this.specs %}
-                    <div class=" flex gap-[34px]">
-                        <div class="py-2 text-16 leading-16 font-semibold text-right {{ textColour }}" style="width: calc(50% - 17px);">{{ spec.key }}</div>
-                        <div class="py-2 text-16 leading-16 font-normal {{ textColour }}">{{ spec.value }}</div>
+                <div class=" flex gap-[34px]">
+                    <div class="py-2 text-16 leading-16 font-semibold text-right {{ textColour }}" style="width: calc(50% - 17px); color: {{ textColour }}">Pantone</div>
+                    <div class="py-2 text-16 leading-16 font-normal" style="color: {{ textColour }}">{{ colour.pantone }}</div>
+                </div>
+
+                <div class=" flex gap-[34px]">
+                    <div class="py-2 text-16 leading-16 font-semibold text-right {{ textColour }}" style="width: calc(50% - 17px); color: {{ textColour }}">Process Colour</div>
+                    <div class="py-2 text-16 leading-16 font-normal" style="color: {{ textColour }}">{{ colour.processColour }}</div>
+                </div>
+
+                <div class=" flex gap-[34px]">
+                    <div class="py-2 text-16 leading-16 font-semibold text-right {{ textColour }}" style="width: calc(50% - 17px); color: {{ textColour }}">sRGB</div>
+                    <div class="py-2 text-16 leading-16 font-normal" style="color: {{ textColour }}">{{ colour.srgb }}</div>
+                </div>
+
+                <div class=" flex gap-[34px]">
+                    <div class="py-2 text-16 leading-16 font-semibold text-right {{ textColour }}" style="width: calc(50% - 17px); color: {{ textColour }}">Textile</div>
+                    <div class="py-2 text-16 leading-16 font-normal" style="color: {{ textColour }}">{{ colour.textile }}</div>
+                </div>
+
+                <div class=" flex gap-[34px]">
+                    <div class="py-2 text-16 leading-16 font-semibold text-right {{ textColour }}" style="width: calc(50% - 17px); color: {{ textColour }}">Paint</div>
+                    <div class="py-2 text-16 leading-16 font-normal" style="color: {{ textColour }}">{{ colour.paint }}</div>
+                </div>
+
+                <div class=" flex gap-[34px]">
+                    <div class="py-2 text-16 leading-16 font-semibold text-right {{ textColour }}" style="width: calc(50% - 17px); color: {{ textColour }}">
+                        CxF
                     </div>
-                {% endfor %}
-            {% endif %}
-        </div>
+
+                    {% if colour.attachment is not empty %}
+                        <a href="{{ path('froq_portal.colour_library.asset.file',  { id: colour.attachment.id }) }}" class="py-2 text-16 leading-16 font-normal" style="color: {{ textColour }}">
+                            Download
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
         </table>
     </div>
 </div>

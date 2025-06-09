@@ -42,7 +42,7 @@ class ColourGuidelineIndexingSubscriber implements EventSubscriberInterface
             return;
         }
 
-        ($this->createColourGuidelineDocument)($colourGuideline);
+        ($this->updateColourGuidelineDocument)($colourGuideline);
     }
 
     /**
@@ -56,7 +56,7 @@ class ColourGuidelineIndexingSubscriber implements EventSubscriberInterface
             return;
         }
 
-        ($this->updateColourGuidelineDocument)($colourGuideline);
+        ($this->createColourGuidelineDocument)($colourGuideline);
     }
 
     /**

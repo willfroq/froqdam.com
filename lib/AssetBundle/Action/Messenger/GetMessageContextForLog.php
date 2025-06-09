@@ -6,6 +6,7 @@ namespace Froq\AssetBundle\Action\Messenger;
 
 use Froq\AssetBundle\Message\GenerateAssetThumbnailsMessage;
 use Froq\AssetBundle\Switch\Message\UploadFromSwitch;
+use Froq\PortalBundle\Scheduler\Message\SupervisorHealthCheckMessage;
 use Symfony\Component\Mailer\Messenger\SendEmailMessage;
 use Youwe\PimcoreElasticsearchBundle\Message\DeleteElementMessage;
 use Youwe\PimcoreElasticsearchBundle\Message\UpdateElementMessage;
@@ -16,6 +17,11 @@ final class GetMessageContextForLog
     public function __invoke(mixed $messageClass): array
     {
         return match (true) {
+            $messageClass instanceof SupervisorHealthCheckMessage => [
+                'name' => $messageClass->name,
+                'messageClass' => SupervisorHealthCheckMessage::class,
+                'queueName' => 'supervisor_health_check'
+            ],
             $messageClass instanceof UploadFromSwitch => [
                 'customerCode' => $messageClass->customerCode,
                 'filename' => $messageClass->filename,

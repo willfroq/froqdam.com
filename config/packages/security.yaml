@@ -61,6 +61,9 @@ security:
                 invalidate_session: false
                 target: froq_portal.auth.login
             user_checker: MembersBundle\Security\UserChecker
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 2592000 # 30 days
 
         switch:
             pattern: ^/switch

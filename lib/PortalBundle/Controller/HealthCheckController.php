@@ -5,22 +5,28 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\Controller;
 
 use Doctrine\DBAL\Connection;
+use Froq\PortalBundle\Scheduler\Message\SupervisorHealthCheckMessage;
 use MembersBundle\Controller\AbstractController;
+use Predis\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-class HealthCheckController extends AbstractController
+final class HealthCheckController extends AbstractController
 {
-    use TargetPathTrait;
-
     #[Route(path: '/health-check', name: 'health_check', methods: [Request::METHOD_GET])]
-    public function healthCheck(Connection $connection, KernelInterface $kernel, LoggerInterface $logger, AdapterInterface $cache): JsonResponse
-    {
+    public function healthCheck(
+        Connection $connection,
+        KernelInterface $kernel,
+        LoggerInterface $logger,
+        AdapterInterface $cache,
+        string $redisUrl,
+        MessageBusInterface $messageBus
+    ): JsonResponse {
         $status = 'ok';
         $details = [];
 
@@ -37,6 +43,9 @@ class HealthCheckController extends AbstractController
 
         // Check cache connection
         try {
+            $redis = new Client($redisUrl);
+            $redis->set('test-key', 'ok');
+
             $item = $cache->getItem('health_check');
 
             $item->set('ok');
@@ -44,14 +53,9 @@ class HealthCheckController extends AbstractController
 
             $fetched = $cache->getItem('health_check');
 
-            if ($fetched->isHit() && $fetched->get() === 'ok') {
+            if ($fetched->isHit() && $fetched->get() === 'ok' && $redis->get('test-key') === 'ok') {
                 $cache->deleteItem('health_check'); // clean up
                 $details['cache'] = 'connected';
-            } else {
-                $status = 'ERROR! Cache unavailable';
-                $details['cache'] = 'unavailable';
-
-                $logger->error(message: 'REDIS NOT CONNECTED!');
             }
         } catch (\Throwable $e) {
             $status = 'ERROR! Cache unavailable';
@@ -59,6 +63,8 @@ class HealthCheckController extends AbstractController
 
             $logger->error(message: 'REDIS NOT CONNECTED!');
         }
+
+        $messageBus->dispatch(new SupervisorHealthCheckMessage('supervisor_health_check'));
 
         // Basic system info
         $details['php_version'] = PHP_VERSION;

@@ -9,6 +9,7 @@ use Froq\AssetBundle\Switch\Controller\Request\UpdateRequest;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\ProjectFromPayload;
 use Froq\AssetBundle\Utility\AreAllPropsEmptyOrNull;
+use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Organization;
@@ -19,6 +20,7 @@ final class BuildProjectFromPayload
     public function __construct(
         private readonly AreAllPropsEmptyOrNull $allPropsEmptyOrNull,
         private readonly CreateProjectFolder $createProjectFolder,
+        private readonly ApplicationLogger $logger,
     ) {
     }
 
@@ -148,7 +150,13 @@ final class BuildProjectFromPayload
 
         $project->setParentId((int) $parentProjectFolder->getId());
 
-        $project->save();
+        try {
+            $project->save();
+        } catch (\Exception $error) {
+            $this->logger->error(message: $error->getMessage());
+
+            throw new \Exception(message: $error->getMessage());
+        }
     }
 
     /**
@@ -179,6 +187,12 @@ final class BuildProjectFromPayload
 
         $project->setParentId((int) $parentProjectFolder->getId());
 
-        $project->save();
+        try {
+            $project->save();
+        } catch (\Exception $error) {
+            $this->logger->error(message: $error->getMessage());
+
+            throw new \Exception(message: $error->getMessage());
+        }
     }
 }

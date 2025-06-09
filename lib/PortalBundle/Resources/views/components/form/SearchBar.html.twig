@@ -4,12 +4,14 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
         </svg>
     </div>
+
     <label>
         <input type="text"
                data-search-target="searchInput"
+               data-action="input->search#handleInput keyup->search#handleInput"
                name="query"
                value="{{ app.request.query.get('query') }}"
-               class="py-2 pl-10 pr-4 block w-full h-46 rounded-lg text-14 leading-26 font-normal outline-none"
+               class="py-2 pl-10 pr-10 block w-full h-46 rounded-lg text-14 leading-26 font-normal outline-none"
                placeholder="{{ this.placeholder }}"
                aria-label="Colour Guidelines"
                style="border: 1px solid #E4E7EC; transition: all 0.2s ease-in-out; outline: none;"
@@ -17,4 +19,15 @@
                onBlur="this.style.border='1px solid #E4E7EC'; this.style.boxShadow='none'"
         >
     </label>
+
+    <button type="button"
+            data-search-target="clearButton"
+            data-action="click->search#clearSearch"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer transition-opacity duration-200 {% if not app.request.query.get('query') %}opacity-0 pointer-events-none{% else %}opacity-100{% endif %}"
+            aria-label="Clear search"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+    </button>
 </div>

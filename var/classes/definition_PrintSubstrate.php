@@ -5,17 +5,17 @@
  * Variants: no
  *
  * Fields Summary:
- * - Name [input]
- * - Organizations [manyToManyRelation]
+ * - organization [manyToOneRelation]
+ * - name [input]
  */
 
-return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
+return Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
    'dao' => NULL,
-   'id' => 'Medium',
-   'name' => 'Medium',
+   'id' => 'print_substrate',
+   'name' => 'PrintSubstrate',
    'description' => '',
    'creationDate' => 0,
-   'modificationDate' => 1747242941,
+   'modificationDate' => 1749383991,
    'userOwner' => 2,
    'userModification' => 2,
    'parentClass' => '',
@@ -34,7 +34,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
   array (
   ),
    'layoutDefinitions' => 
-  \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+  Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
      'name' => 'pimcore_root',
      'type' => NULL,
      'region' => NULL,
@@ -49,8 +49,8 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
      'children' => 
     array (
       0 => 
-      \Pimcore\Model\DataObject\ClassDefinition\Layout\Tabpanel::__set_state(array(
-         'name' => 'Layout',
+      Pimcore\Model\DataObject\ClassDefinition\Layout\Tabpanel::__set_state(array(
+         'name' => 'General',
          'type' => NULL,
          'region' => NULL,
          'title' => '',
@@ -64,7 +64,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
          'children' => 
         array (
           0 => 
-          \Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
+          Pimcore\Model\DataObject\ClassDefinition\Layout\Panel::__set_state(array(
              'name' => 'General',
              'type' => NULL,
              'region' => NULL,
@@ -79,11 +79,51 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
              'children' => 
             array (
               0 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
-                 'name' => 'Name',
+              Pimcore\Model\DataObject\ClassDefinition\Data\ManyToOneRelation::__set_state(array(
+                 'name' => 'organization',
+                 'title' => 'Organization',
+                 'tooltip' => '',
+                 'mandatory' => true,
+                 'noteditable' => false,
+                 'index' => false,
+                 'locked' => false,
+                 'style' => '',
+                 'permissions' => NULL,
+                 'datatype' => 'data',
+                 'fieldtype' => 'manyToOneRelation',
+                 'relationType' => true,
+                 'invisible' => false,
+                 'visibleGridView' => false,
+                 'visibleSearch' => false,
+                 'blockedVarsForExport' => 
+                array (
+                ),
+                 'classes' => 
+                array (
+                  0 => 
+                  array (
+                    'classes' => 'Organization',
+                  ),
+                ),
+                 'pathFormatterClass' => '',
+                 'width' => '',
+                 'assetUploadPath' => '',
+                 'objectsAllowed' => true,
+                 'assetsAllowed' => false,
+                 'assetTypes' => 
+                array (
+                ),
+                 'documentsAllowed' => false,
+                 'documentTypes' => 
+                array (
+                ),
+              )),
+              1 => 
+              Pimcore\Model\DataObject\ClassDefinition\Data\Input::__set_state(array(
+                 'name' => 'name',
                  'title' => 'Name',
                  'tooltip' => '',
-                 'mandatory' => false,
+                 'mandatory' => true,
                  'noteditable' => false,
                  'index' => false,
                  'locked' => false,
@@ -108,57 +148,6 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
                  'unique' => false,
                  'showCharCount' => false,
                  'defaultValueGenerator' => '',
-              )),
-              1 => 
-              \Pimcore\Model\DataObject\ClassDefinition\Data\ManyToManyRelation::__set_state(array(
-                 'name' => 'Organizations',
-                 'title' => 'Organizations',
-                 'tooltip' => '',
-                 'mandatory' => false,
-                 'noteditable' => false,
-                 'index' => false,
-                 'locked' => false,
-                 'style' => '',
-                 'permissions' => NULL,
-                 'datatype' => 'data',
-                 'fieldtype' => 'manyToManyRelation',
-                 'relationType' => true,
-                 'invisible' => false,
-                 'visibleGridView' => false,
-                 'visibleSearch' => false,
-                 'blockedVarsForExport' => 
-                array (
-                ),
-                 'classes' => 
-                array (
-                  0 => 
-                  array (
-                    'classes' => 'Organization',
-                  ),
-                ),
-                 'pathFormatterClass' => '',
-                 'width' => '',
-                 'height' => '',
-                 'maxItems' => NULL,
-                 'assetUploadPath' => '',
-                 'objectsAllowed' => true,
-                 'assetsAllowed' => false,
-                 'assetTypes' => 
-                array (
-                  0 => 
-                  array (
-                    'assetTypes' => '',
-                  ),
-                ),
-                 'documentsAllowed' => false,
-                 'documentTypes' => 
-                array (
-                  0 => 
-                  array (
-                    'documentTypes' => '',
-                  ),
-                ),
-                 'enableTextSelection' => false,
               )),
             ),
              'locked' => false,
@@ -195,7 +184,7 @@ return \Pimcore\Model\DataObject\ClassDefinition::__set_state(array(
   )),
    'icon' => '',
    'previewUrl' => '',
-   'group' => '',
+   'group' => 'Colour Library',
    'showAppLoggerTab' => false,
    'linkGeneratorReference' => '',
    'previewGeneratorReference' => '',

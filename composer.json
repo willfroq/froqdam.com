@@ -30,9 +30,12 @@
     "symfony/monolog-bundle": "^3.8",
     "symfony/stimulus-bundle": "*",
     "symfony/twig-pack": "*",
+    "symfony/ux-autocomplete": "^2.12",
+    "symfony/ux-live-component": "*",
     "symfony/ux-turbo": "^1.3",
     "symfony/ux-twig-component": "^2.18",
     "symfony/webpack-encore-bundle": "^1.16",
+    "symfonycasts/dynamic-forms": "^0.1.3",
     "thenetworg/oauth2-azure": "^2.2",
     "youwe/pimcore-elasticsearch-bundle": "^3.0",
     "youwe/pimcore-single-sign-on-bundle": "^1.3"

@@ -35,7 +35,6 @@ final class PimtodayUploadRequest
 
         public readonly ?UploadedFile $fileContents,
 
-        #[NotBlank(message: '$organization can not be blank.')]
         public readonly ?Organization $organization,
 
         /** @var array<int, ValidationError> $errors */

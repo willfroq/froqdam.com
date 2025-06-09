@@ -28,6 +28,7 @@ final class BuildSortQuery
         $sortDirection = !empty($searchRequest->sortDirection) ? $searchRequest->sortDirection : SortNames::Desc->readable();
 
         $sortMappingForUser = ($this->getSortMappingForUser)($user, $searchRequest->searchIndex);
+
         $sortableFields = array_values(
             array_intersect(
                 array_keys($sortMappingForUser),

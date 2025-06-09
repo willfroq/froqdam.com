@@ -1,10 +1,10 @@
-<label class="flex items-center px-2 h-8 hover:bg-gray-50 rounded-lg group cursor-pointer">
-    <input 
-        type="checkbox"
-        {{ checked ? 'checked' : '' }}
-        class="w-4 h-4 rounded border-gray-300 text-teal-600 
-               focus:ring-teal-600"
-        {{ attributes }}
+<label class="flex items-center px-2 h-8 hover:bg-gray-50 rounded-lg group cursor-pointer checkbox-label {{ checked ? 'checkbox-checked' : '' }} transition-all duration-200 ease-in-out">
+    <input
+            type="checkbox"
+            {{ checked ? 'checked' : '' }}
+            class="w-4 h-4 rounded border-gray-300 text-teal-600
+               focus:ring-teal-600 transition-all duration-200 ease-in-out"
+            {{ attributes }}
     >
-    <span class="ml-2 text-sm text-gray-700">{{ label }}</span>
+    <span class="ml-2 text-sm text-gray-700 {{ checked ? 'font-medium text-gray-900' : '' }}">{{ label }}</span>
 </label> 

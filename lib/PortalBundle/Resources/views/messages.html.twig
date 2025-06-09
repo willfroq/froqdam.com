@@ -3,6 +3,8 @@
 {% block title %} Messenger Queues {% endblock %}
 
 {% block body %}
+    <twig:ColourNavbar :user="app.user" />
+
     <main class="pt-m pb-xs pl-xl pr-xl">
         <div class="main-content flex gap-5 ">
             <section class="grow ">
@@ -21,6 +23,9 @@
 
                             <div class="sort-button__list-wrapper">
                                 <ul class="sort-button__list" data-role="sort_button_list">
+                                    <li data-role="sort_button_list_item">
+                                        <a href="{{ path('froq_dashboard.messenger', { queue_name: 'supervisor_health_check' }) }}">supervisor_health_check</a>
+                                    </li>
                                     <li data-role="sort_button_list_item">
                                         <a href="{{ path('froq_dashboard.messenger', { queue_name: 'generate_asset_thumbnail' }) }}">generate_asset_thumbnail</a>
                                     </li>
@@ -44,6 +49,9 @@
                                     </li>
                                     <li data-role="sort_button_list_item">
                                         <a href="{{ path('froq_dashboard.messenger', { queue_name: 'youwe_es_indexing' }) }}">youwe_es_indexing</a>
+                                    </li>
+                                    <li data-role="sort_button_list_item">
+                                        <a href="{{ path('froq_dashboard.messenger', { queue_name: 'supervisor_health_check_failed' }) }}">supervisor_health_check_failed</a>
                                     </li>
                                     <li data-role="sort_button_list_item">
                                         <a href="{{ path('froq_dashboard.messenger', { queue_name: 'generate_asset_thumbnail_failed' }) }}">generate_asset_thumbnail_failed</a>

@@ -12,18 +12,20 @@ final class GetCategoryNames
     /**
      * @return array<int, string>
      */
-    public function __invoke(ColourGuideline $colourGuideline, string $reportingType): array
+    public function __invoke(ColourGuideline $colourGuideline, string $type): array
     {
         $names = [];
 
-        $categories = $colourGuideline->getCategories();
+        $categories = match ($type) {
+            'markets' => $colourGuideline->getMarkets(),
+            'brands' => $colourGuideline->getBrands(),
+            'campaigns' => $colourGuideline->getCampaigns(),
+
+            default => []
+        };
 
         foreach ($categories as $category) {
             if (!($category instanceof Category)) {
-                continue;
-            }
-
-            if (strtolower((string) $category->getReportingType()) !== $reportingType) {
                 continue;
             }
 

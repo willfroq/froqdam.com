@@ -1,20 +1,32 @@
-<div class="flex rounded-[50px] border border-[#E4E7EC] bg-white p-1 h-46 overflow-hidden gap-1 {{ class }}" 
+<div class="flex rounded-[50px] border border-[#E4E7EC] bg-white p-1 h-46 overflow-hidden gap-1 {{ class }}"
      style="border:1px solid #E4E7EC;"
-     data-view="{{ view }}">
-    <twig:IconButton
-        icon="grid-icon"
-        label="Grid view"
-        :active="view == 'grid'"
-        class="transition-all duration-200 pt-1 w-34 h-34 {{ view == 'grid' ? 'bg-[#009383] rounded-full' : 'bg-white' }}"
-        data-action="view-toggle#toggle"
-        data-view-toggle-view-param="grid"
-    />
-    <twig:IconButton
-        icon="list-icon"
-        label="List view"
-        :active="view == 'list'"
-        class="transition-all duration-200 pt-1 w-34 h-34 {{ view == 'list' ? 'bg-[#009383] rounded-full' : 'bg-white' }}"
-        data-action="view-toggle#toggle"
-        data-view-toggle-view-param="list"
-    />
+     data-controller="view-toggle"
+     data-view="{{ view }}"
+     data-view-toggle-current-view-value="{{ view }}">
+
+    <!-- Grid View Button -->
+    <button
+            class="flex items-center justify-center w-34 h-34 rounded-full transition-all duration-200 {{ view == 'grid' ? 'bg-[#009383]' : 'bg-white hover:bg-gray-50' }}"
+            aria-label="Grid view"
+            data-action="view-toggle#toggle"
+            data-view-toggle-view-param="grid"
+            data-view-toggle-target="gridButton"
+    >
+        <span class="flex items-center justify-center w-5 h-5 {{ view == 'grid' ? 'text-white' : 'text-[#009383]' }}">
+            {% include '@FroqPortal/icons/grid-icon.html.twig' %}
+        </span>
+    </button>
+
+    <!-- List View Button -->
+    <button
+            class="flex items-center justify-center w-34 h-34 rounded-full transition-all duration-200 {{ view == 'list' ? 'bg-[#009383]' : 'bg-white hover:bg-gray-50' }}"
+            aria-label="List view"
+            data-action="view-toggle#toggle"
+            data-view-toggle-view-param="list"
+            data-view-toggle-target="listButton"
+    >
+        <span class="flex items-center justify-center w-5 h-5 {{ view == 'list' ? 'text-white' : 'text-[#009383]' }}">
+            {% include '@FroqPortal/icons/list-icon.html.twig' %}
+        </span>
+    </button>
 </div>

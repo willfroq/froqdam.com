@@ -10,11 +10,18 @@ services:
             $thumbnailEncryptionSecret: '%env(THUMBNAIL_ENCRYPTION_SECRET)%'
             'string $s3BucketNameAssets': '%env(AWS_S3_BUCKET_NAME_ASSETS)%'
             'string $projectDirectory': '%kernel.project_dir%'
+            'string $redisUrl': '%env(REDIS_URL)%'
 
-    Predis\Client:
+    custom_redis_provider:
         class: Predis\Client
         arguments:
             - '%env(REDIS_URL)%'
+
+    redis_session_handler:
+        class: Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler
+        arguments:
+            - '@custom_redis_provider'
+            - { prefix: 'sess_', ttl: 3600 }
 
     Froq\PortalBundle\:
         resource: '../../*'

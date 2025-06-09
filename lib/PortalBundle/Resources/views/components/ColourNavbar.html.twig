@@ -1,14 +1,12 @@
 <header class="pl-0 pr-4 py-0">
     <div class="flex items-center">
-        <twig:IconButton icon="hamburger-icon" label="" active="false" class="h-80 w-56 justify-center flex items-center border-r border-r-[#E4E7EC]" />
-        <div class="w-100 h-80 content-center">
+        <a class="w-100 h-80 content-center cursor-pointer" href="{{ path('froq_portal.colour_library.search') }}">
             <twig:Image src="{{ mix('build/portal/media/logo-froq-brandservices.png') }}" alt="Logo" class="h-40 w-80 float-right" />
-        </div>
+        </a>
+
         <div class="absolute right-0">
             <div class="flex justify-end p-4">
-                <twig:UserDropdown
-                    :user="user"
-                />
+                <twig:UserDropdown :user="user" />
             </div>
         </div>
     </div>

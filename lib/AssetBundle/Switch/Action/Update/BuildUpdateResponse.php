@@ -10,7 +10,6 @@ use Froq\AssetBundle\Switch\Controller\Request\UpdateRequest;
 use Froq\AssetBundle\Switch\Controller\Request\UpdateResponse;
 use Froq\AssetBundle\Switch\Enum\AssetResourceOrganizationFolderNames;
 use Froq\AssetBundle\Switch\ValueObject\TagFromPayload;
-use Froq\PortalBundle\Repository\TagRepository;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Fieldcollection;
@@ -21,7 +20,6 @@ use Pimcore\Model\DataObject\Tag;
 final class BuildUpdateResponse
 {
     public function __construct(
-        private readonly TagRepository $tagRepository,
         private readonly BuildProductFromPayload $buildProductFromPayload,
         private readonly BuildProjectFromPayload $buildProjectFromPayload,
         private readonly CreateTagFolder $createTagFolder,
@@ -132,21 +130,20 @@ final class BuildUpdateResponse
 
                 $tagFromPayload = new TagFromPayload(code: (string) $tagDatum['code'], name: $tagDatum['name'] ?? '');
 
-                if ($this->tagRepository->isTagExists((string) $tagFromPayload->code)) {
-                    $tag = $this->tagRepository->getTagByCode((string) $tagFromPayload->code);
+                $tagObjectFromPayload = Tag::getByCode((string) $tagFromPayload->code)?->current(); /** @phpstan-ignore-line */
+                if ($tagObjectFromPayload instanceof Tag) {
+                    $tagObjectFromPayload->setCode($tagFromPayload->code);
+                    $tagObjectFromPayload->setName($tagFromPayload->name);
+                    $tagObjectFromPayload->setParentId((int) $parentTagFolder->getId());
+                    $tagObjectFromPayload->setKey((string) $tagFromPayload->code);
+                    $tagObjectFromPayload->setPublished(true);
 
-                    if ($tag instanceof Tag) {
-                        $tag->setCode($tagFromPayload->code);
-                        $tag->setName($tagFromPayload->name);
-                        $tag->setParentId((int) $parentTagFolder->getId());
-                        $tag->setKey((string) $tagFromPayload->code);
-                        $tag->setPublished(true);
+                    $tagObjectFromPayload->save();
 
-                        $tag->save();
-                    }
+                    $tag = $tagObjectFromPayload;
                 }
 
-                if (!$this->tagRepository->isTagExists((string) $tagFromPayload->code)) {
+                if (!($tag instanceof Tag)) {
                     $tag = new Tag();
 
                     $tag->setCode($tagFromPayload->code);

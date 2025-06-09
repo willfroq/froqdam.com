@@ -28,29 +28,18 @@ final class GetColourGuidelineItemFilterNames implements GetFilterNamesInterface
             'substrates',
             'printing_techniques',
 
-            'brands_text',
-            'markets_text',
-            'mediums_text',
-            'substrates_text',
-            'printing_techniques_text',
-
             'organization_id',
             'organizations',
 
             'image_id',
             'image_filename',
 
-            'category_ids',
-
             'colour_ids',
             'colour_names',
-            'colour_fields_keys',
-            'colour_fields_values',
 
             'print_guidelines_ids',
             'print_guidelines_names',
             'print_guidelines_descriptions',
-            'print_guidelines_composite_ids',
         ];
     }
 }

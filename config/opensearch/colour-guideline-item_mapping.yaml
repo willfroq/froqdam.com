@@ -41,23 +41,16 @@ mappings:
       type: keyword
     markets:
       type: keyword
+    campaigns:
+      type: keyword
     mediums:
       type: keyword
     substrates:
       type: keyword
+    medium_types:
+      type: keyword
     printing_techniques:
       type: keyword
-
-    brands_text:
-      type: text
-    markets_text:
-      type: text
-    mediums_text:
-      type: text
-    substrates_text:
-      type: text
-    printing_techniques_text:
-      type: text
 
     # Relations
     organization_id:
@@ -70,16 +63,9 @@ mappings:
     image_filename:
       type: keyword
 
-    category_ids:
-      type: integer
-
     colour_ids:
       type: integer
     colour_names:
-      type: keyword
-    colour_fields_keys:
-      type: keyword
-    colour_fields_values:
       type: keyword
 
     print_guidelines_ids:
@@ -88,5 +74,3 @@ mappings:
       type: keyword
     print_guidelines_descriptions:
       type: text
-    print_guidelines_composite_ids:
-      type: keyword

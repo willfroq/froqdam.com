@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\ColourLibrary\DataTransferObject;
 
 use Froq\PortalBundle\Opensearch\ValueObject\Aggregation;
+use Froq\PortalBundle\Opensearch\ValueObject\SortOption;
 
 final class SearchResponse
 {
@@ -23,8 +24,12 @@ final class SearchResponse
         /** @var array<string, int> */
         public array $paginator,
 
-        /** @var array<int, string> */
+        /** @var array<int, SortOption> */
         public array $sortOptions,
+
+        public bool $hasSelectedFilters,
+
+        public ?SortOption $selectedSortOption
     ) {
     }
 
@@ -37,7 +42,9 @@ final class SearchResponse
             'aggregationNames' => $this->aggregationNames,
             'aggregations' => $this->aggregations,
             'paginator' => $this->paginator,
-            'sortOptions' => $this->sortOptions
+            'sortOptions' => $this->sortOptions,
+            'hasSelectedFilters' => $this->hasSelectedFilters,
+            'selectedSortOption' => $this->selectedSortOption,
         ];
     }
 }

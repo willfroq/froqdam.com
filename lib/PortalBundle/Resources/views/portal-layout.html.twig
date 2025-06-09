@@ -11,7 +11,7 @@
         {% endblock %}
 
         {% block javascript_head %}
-            {%  if app.request.get('_route') == 'froq_portal.asset_library.search' or app.request.get('_route') == 'froq_portal.asset_library.detail' %}
+            {%  if app.request.get('_route') == 'froq_portal.asset_library.search' or app.request.get('_route') == 'froq_portal.asset_library.detail' or app.request.get('_route') == 'froq_dashboard.messenger' %}
                 <script type="text/javascript" src="{{ mix('build/portal/dist/bundle.js') }}"></script>
             {% endif %}
 

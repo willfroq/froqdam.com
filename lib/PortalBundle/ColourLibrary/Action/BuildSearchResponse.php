@@ -8,6 +8,7 @@ use Froq\PortalBundle\ColourLibrary\DataTransferObject\SearchRequest;
 use Froq\PortalBundle\ColourLibrary\DataTransferObject\SearchResponse;
 use Froq\PortalBundle\Opensearch\Action\Aggregation\GetAggregationNames;
 use Froq\PortalBundle\Opensearch\Action\GetPaginator;
+use Froq\PortalBundle\Opensearch\ValueObject\SortOption;
 use Pimcore\Model\DataObject\User;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -27,17 +28,52 @@ final class BuildSearchResponse
     {
         $colourGuidelineCollection = ($this->buildColourGuidelineCollection)($searchRequest, $user);
 
+        $hasSelectedFilters = false;
+
+        foreach ($colourGuidelineCollection->aggregations as $aggregation) {
+            if (empty($aggregation->buckets)) {
+                continue;
+            }
+
+            foreach ($aggregation->buckets as $bucket) {
+                if (!$bucket->isSelected) {
+                    continue;
+                }
+
+                $hasSelectedFilters = $bucket->isSelected;
+            }
+        }
+
+        // TODO: This has to be dynamic later. Admin should be able to configure which field a user can sort, query, aggregate, search, filter etc.
+        $sortOptions = [
+            new SortOption(label: 'Name', filterName: 'name', sortDirection: 'asc'),
+            new SortOption(label: 'Name', filterName: 'name', sortDirection: 'desc'),
+            new SortOption(label: 'Newest', filterName: 'created_at_timestamp', sortDirection: 'desc'),
+            new SortOption(label: 'Oldest', filterName: 'created_at_timestamp', sortDirection: 'asc'),
+        ];
+
+        $selectedSortOption = null;
+
+        foreach ($sortOptions as $sortOption) {
+            if ($sortOption->filterName === $searchRequest->sortBy && $sortOption->sortDirection === $searchRequest->sortDirection) {
+                $selectedSortOption = $sortOption;
+                break;
+            }
+        }
+
         return new SearchResponse(
             colourGuidelineItems: $colourGuidelineCollection->items,
             totalCount: $colourGuidelineCollection->totalCount,
             aggregationNames: ($this->getAggregationNames)($user),
             aggregations: $colourGuidelineCollection->aggregations,
             paginator: ($this->getPaginator)(
-                requestedPage: (int)$searchRequest->page,
-                requestedSize: (int)$searchRequest->size,
+                requestedPage: (int) $searchRequest->page,
+                requestedSize: (int) $searchRequest->size,
                 totalCount: $colourGuidelineCollection->totalCount,
             ),
-            sortOptions: ['Alphabetical', 'Newest', 'Oldest']
+            sortOptions: $sortOptions,
+            hasSelectedFilters: $hasSelectedFilters,
+            selectedSortOption: $selectedSortOption
         );
     }
 }

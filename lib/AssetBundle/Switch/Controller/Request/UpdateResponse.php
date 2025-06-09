@@ -19,13 +19,13 @@ final class UpdateResponse
         /** @var array<int, string> $actions */
         public array $actions,
     ) {
-        Assert::string($this->eventName, 'Expected "filename" to be a string, got %s');
+        Assert::string($this->eventName, 'Expected "eventName" to be a string, got %s');
         Assert::string($this->date, 'Expected "date" to be a string, got %s');
         Assert::string($this->filename, 'Expected "filename" to be a string, got %s');
         Assert::integer($this->parentAssetResourceId, 'Expected "parentAssetResourceId" to be a int, got %s');
         Assert::integer($this->latestAssetResourceId, 'Expected "latestAssetResourceId" to be a int, got %s');
         Assert::integer($this->status, 'Expected "status" to be a int, got %s');
-        Assert::string($this->message, 'Expected "message" to be a status, got %s');
+        Assert::string($this->message, 'Expected "message" to be a string, got %s');
         Assert::isArray($this->actions, 'Expected "actions" to be a array, got %s');
     }
 

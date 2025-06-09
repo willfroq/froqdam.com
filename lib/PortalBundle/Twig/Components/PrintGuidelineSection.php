@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Froq\PortalBundle\Twig\Components;
 
-use Pimcore\Model\DataObject\Medium;
+use Pimcore\Model\Asset;
+use Pimcore\Model\DataObject\Data\ElementMetadata;
 use Pimcore\Model\DataObject\PrintGuideline;
-use Pimcore\Model\DataObject\PrintingTechnique;
-use Pimcore\Model\DataObject\Substrate;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent(name: 'PrintGuidelineSection', template: '@FroqPortal/components/PrintGuidelineSection.html.twig')]
@@ -15,36 +14,23 @@ final class PrintGuidelineSection
 {
     public PrintGuideline $printGuideline;
 
-    /** @var array<int, Medium> */
-    public array $mediums;
-
-    /** @var array<int, Substrate> */
-    public array $substrates;
-
-    /** @var array<int, PrintingTechnique> */
-    public array $printingTechniques;
-
-    /** @var array<int, Medium|Substrate|PrintingTechnique> */
-    public array $requiredSpecs;
+    /** @var array<int, Asset> */
+    public array $attachmentFiles;
 
     public function mount(PrintGuideline $printGuideline): void
     {
-        $ids = explode('-', (string) $printGuideline->getCompositeIds());
+        foreach ($printGuideline->getAttachments() as $attachment) {
+            if (!($attachment instanceof ElementMetadata)) {
+                continue;
+            }
 
-        $specs = [];
+            $asset = Asset::getById((int) $attachment->getElementId());
 
-        foreach ($ids as $key => $id) {
-            $specs[$key] = (function () use ($key, $id) {
-                return match($key) {
-                    0 => Medium::getById($id),
-                    1 => Substrate::getById($id),
-                    2 => PrintingTechnique::getById($id),
+            if (!($asset instanceof Asset)) {
+                continue;
+            }
 
-                    default => null
-                };
-            })();
+            $this->attachmentFiles[] = $asset;
         }
-
-        $this->requiredSpecs = array_filter($specs);
     }
 }

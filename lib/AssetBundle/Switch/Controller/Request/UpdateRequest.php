@@ -39,7 +39,7 @@ final class UpdateRequest
         #[NotBlank(message: 'AssetType can not be blank.')]
         #[AssetTypeExists]
         public readonly string $assetType,
-        #[NotBlank(message: 'AssetResourceValidFrom can not be blank.')]
+        #[NotBlank(message: 'AssetResourceMetadataFieldCollection can not be blank.')]
         #[Assert\Json(message: 'AssetResourceMetadataFieldCollection is not a valid JSON')]
         #[IsJsonMaxOneLevelArray]
         public readonly string $assetResourceMetadataFieldCollection,

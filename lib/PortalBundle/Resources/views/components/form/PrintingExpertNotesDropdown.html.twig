@@ -1,0 +1,51 @@
+{% set label = this.selectedSortOption|default(null) is not null ? this.selectedSortOption.label : '' %}
+{% set sortDirection = this.selectedSortOption|default(null) is not null ? this.selectedSortOption.sortDirection : '' %}
+{% set filterName = this.selectedSortOption|default(null) is not null ? this.selectedSortOption.filterName : '' %}
+
+<div class="relative inline-block text-left {{ attributes }}" data-controller="print-expert-notes-dropdown">
+    <button
+        type="button" 
+        class="inline-flex justify-between items-center h-[46px] rounded-lg bg-white text-sm hover:bg-gray-50"
+        style="border: 1px solid #E4E7EC; transition: all 0.2s ease-in-out; {% if this.width %}width: {{ this.width }};{% else %}min-width: 200px;{% endif %}"
+        data-action="print-expert-notes-dropdown#toggle"
+        onFocus="this.style.boxShadow='0px 0px 0px 4px rgba(0, 147, 131, 0.25)'; this.style.border='1px solid #009383';"
+        onBlur="this.style.boxShadow='none'; this.style.border='1px solid #E4E7EC';"
+    >
+        <div class="flex items-center px-4">
+            <span class="text-16 leading-26 font-normal text-[#6C757D] font-sans mr-2"></span>
+
+            <span class="text-16 leading-26 font-semibold text-[#171B3F] font-sans" data-print-expert-notes-dropdown-target="selectedText">
+                {{ label }}
+            </span>
+        </div>
+
+        <div class="pr-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#6C757D]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+        </div>
+    </button>
+
+    <div 
+        class="absolute left-0 mt-2 rounded-lg bg-white shadow-lg focus:outline-none hidden z-10 w-full"
+        style="border: 1px solid #E4E7EC; {% if this.width %}width: {{ this.width }};{% else %}min-width: 100%;{% endif %}"
+        data-print-expert-notes-dropdown-target="menu"
+    >
+        <div class="py-1 max-h-60 overflow-y-auto" data-print-expert-notes-dropdown-target="optionsContainer">
+            <turbo-frame id="dropdown-options-{{ this.id|default('default') }}">
+                {% for id, option in this.sortOptions %}
+                    <a 
+                        href="#" 
+                        class="block px-4 py-2 text-14 leading-26 font-normal text-[#171B3F] hover:bg-[#F8F9FA]"
+                        style="text-decoration: none;"
+                        data-action="print-expert-notes-dropdown#select"
+                        data-option-id="{{ id }}"
+                        data-option="{{ option.label }}"
+                    >
+                        {{ option.label }}
+                    </a>
+                {% endfor %}
+            </turbo-frame>
+        </div>
+    </div>
+</div>
