@@ -1,0 +1,28 @@
+<tr class="bg-white border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors duration-200"
+    onclick="window.location.href='{{ detailPath }}'"
+    style="border-bottom: 1px solid #E4E7EC;">
+    <!-- Thumbnail -->
+    <td class="py-4 px-6">
+        <div class="w-12 h-12 rounded-md overflow-hidden border border-gray-200">
+            {% if this.imagePath %}
+                <img
+                        src="{{ this.imagePath }}"
+                        alt="{{ this.name }}"
+                        loading="lazy"
+                        class="w-full h-full object-cover lazyload"
+                >
+            {% else %}
+                <div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2h4a1 1 0 011 1v1a1 1 0 01-1 1H3a1 1 0 01-1-1V5a1 1 0 011-1h4zM3 8v11a2 2 0 002 2h14a2 2 0 002-2V8H3z"></path>
+                    </svg>
+                </div>
+            {% endif %}
+        </div>
+    </td>
+
+    <!-- Name -->
+    <td class="py-4 px-6">
+        <div class="text-16 font-semibold text-[#171B3F] leading-26 font-sans">{{ this.name }}</div>
+    </td>
+</tr>

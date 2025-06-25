@@ -133,6 +133,20 @@ body {
             &[data-role="pdf_viewer_increase_zoom_button"] {
                 border-bottom-right-radius: 4px;
             }
+
+            &[data-role="pdf_viewer_native_toggle"] {
+                transition: all 0.2s ease;
+                border: 1px solid transparent;
+
+                &.active {
+                    background-color: white !important;
+                    border: 1px solid black !important;
+
+                    .pdf-viewer__native-toggle-icon path {
+                        fill: black !important;
+                    }
+                }
+            }
         }
     }
 
@@ -201,6 +215,20 @@ body {
                     border-top-left-radius: 4px;
                     border-top-right-radius: 4px;
                     display: block;
+                }
+            }
+        }
+    }
+
+    &__rotation-controls {
+        &-wrapper {
+            align-items: center;
+            display: flex;
+            margin-right: $spacing-m;
+
+            button {
+                &:first-child {
+                    margin-right: 4px;
                 }
             }
         }

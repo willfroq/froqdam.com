@@ -1,23 +1,13 @@
-<header>
-    <app-user-dropdown class="user-dropdown"
-                       fullname="{{ user }}"
-                       style="float: right">
-        <div class="user-dropdown__head" role="button" data-role="user_dropdown_selector">
-                <span class="user-dropdown__initials" data-role="user_dropdown_initials">
-                    <!-- JS Content Placeholder -->
-                </span>
-            <span class="user-dropdown__full-name" data-role="user_dropdown_full_name">
-                    <!-- JS Content Placeholder -->
-                </span>
+<header class="pl-0 pr-4 py-0">
+    <div class="flex items-center">
+        <a class="w-100 h-80 content-center cursor-pointer" href="{{ this.logoLink }}">
+            <twig:Image src="{{ mix('build/stimulus/media/logo-froq-brandservices.png') }}" alt="Logo" class="h-40 w-80 float-right" />
+        </a>
+
+        <div class="absolute right-0">
+            <div class="flex justify-end p-4">
+                <twig:UserDropdown :user="user" />
+            </div>
         </div>
-        <div class="user-dropdown__body">
-            <ul>
-                <li>
-                    <a href="{{ path('froq_portal.auth.logout') }}">
-                        <span>Log out</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </app-user-dropdown>
+    </div>
 </header>

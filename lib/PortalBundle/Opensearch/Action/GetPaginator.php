@@ -9,7 +9,7 @@ final class GetPaginator
     /**
      * @return array<string, int>
      */
-    public function __invoke(int $requestedPage, int $requestedSize, int $totalCount, int $defaultPageSize = 12): array
+    public function __invoke(int $requestedPage, int $requestedSize, int $totalCount, int $defaultPageSize = 24): array
     {
         $requestedSize = 0 === $requestedSize ? $defaultPageSize : $requestedSize;
         $totalItems = $totalCount;
@@ -21,7 +21,7 @@ final class GetPaginator
         return [
             'pages' => (int) $maxPages,
             'next_page' => $nextPage,
-            'prev_page' => $prevPage,
+            'prev_page' => empty($prevPage) ? 1 : $prevPage,
             'page_size' => $requestedSize,
             'page' => $requestedPage === 0 ? 1 : $requestedPage
         ];

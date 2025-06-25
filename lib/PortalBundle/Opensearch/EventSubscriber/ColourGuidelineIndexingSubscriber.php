@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\Opensearch\EventSubscriber;
 
 use Elastica\Exception\ExceptionInterface;
-use Froq\PortalBundle\Opensearch\Action\Document\CreateColourGuidelineDocument;
-use Froq\PortalBundle\Opensearch\Action\Document\DeleteColourGuidelineDocument;
-use Froq\PortalBundle\Opensearch\Action\Document\UpdateColourGuidelineDocument;
+use Froq\PortalBundle\ColourLibrary\Document\CreateColourGuidelineDocument;
+use Froq\PortalBundle\ColourLibrary\Document\DeleteColourGuidelineDocument;
+use Froq\PortalBundle\ColourLibrary\Document\UpdateColourGuidelineDocument;
 use Pimcore\Event;
 use Pimcore\Event\Model\ElementEventInterface;
 use Pimcore\Model\DataObject\ColourGuideline;

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\ColourLibrary\DataTransferObject;
 
 use Froq\PortalBundle\Opensearch\ValueObject\Aggregation;
+use Froq\PortalBundle\Opensearch\ValueObject\Column;
+use Froq\PortalBundle\Opensearch\ValueObject\SidebarFilter;
 use Froq\PortalBundle\Opensearch\ValueObject\SortOption;
 
 final class SearchResponse
@@ -21,6 +23,9 @@ final class SearchResponse
         /** @var array<int, Aggregation> */
         public array $aggregations,
 
+        /** @var array<int, SidebarFilter> */
+        public array $sidebarFilters,
+
         /** @var array<string, int> */
         public array $paginator,
 
@@ -29,7 +34,12 @@ final class SearchResponse
 
         public bool $hasSelectedFilters,
 
-        public ?SortOption $selectedSortOption
+        public ?SortOption $selectedSortOption,
+
+        /** @var array<int, Column> */
+        public array $columns,
+
+        public bool $hasMultipleFilterGroups
     ) {
     }
 
@@ -41,10 +51,13 @@ final class SearchResponse
             'totalCount' => $this->totalCount,
             'aggregationNames' => $this->aggregationNames,
             'aggregations' => $this->aggregations,
+            'sidebarFilters' => $this->sidebarFilters,
             'paginator' => $this->paginator,
             'sortOptions' => $this->sortOptions,
             'hasSelectedFilters' => $this->hasSelectedFilters,
             'selectedSortOption' => $this->selectedSortOption,
+            'columns' => $this->columns,
+            'hasMultipleFilterGroups' => $this->hasMultipleFilterGroups,
         ];
     }
 }

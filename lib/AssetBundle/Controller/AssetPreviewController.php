@@ -30,6 +30,7 @@ class AssetPreviewController extends AbstractController
         }
 
         $stream = $previewManager->getDocumentPreviewPdf($asset);
+
         if ($stream) {
             return new StreamedResponse(function () use ($stream) {
                 fpassthru($stream);

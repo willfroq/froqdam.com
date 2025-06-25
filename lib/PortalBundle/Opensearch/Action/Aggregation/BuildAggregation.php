@@ -4,44 +4,57 @@ declare(strict_types=1);
 
 namespace Froq\PortalBundle\Opensearch\Action\Aggregation;
 
+use Elastica\Aggregation\Filter;
+use Elastica\Aggregation\GlobalAggregation;
 use Elastica\Aggregation\Terms as TermsAggregation;
 use Elastica\Query;
-use Froq\PortalBundle\ColourLibrary\DataTransferObject\SearchRequest;
-use Froq\PortalBundle\Opensearch\Action\Factory\GetItemNamesFactory;
-use Froq\PortalBundle\Opensearch\Action\Filter\GetFilterMappingForUser;
+use Elastica\Query\BoolQuery;
+use Elastica\Query\Terms;
+use Froq\PortalBundle\AssetLibrary\DataTransferObject\SearchRequest as AssetSearchRequest;
+use Froq\PortalBundle\ColourLibrary\DataTransferObject\SearchRequest as ColourSearchRequest;
+use Froq\PortalBundle\Opensearch\ValueObject\MultiselectCheckboxFilter;
 use Pimcore\Model\DataObject\User;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 final class BuildAggregation
 {
-    public function __construct(
-        private readonly GetFilterMappingForUser $getFilterMappingForUser,
-        private readonly GetItemNamesFactory $getItemNamesFactory
-    ) {
-    }
-
     /**
      * @throws \Exception
      */
-    public function __invoke(Query $query, SearchRequest $searchRequest, #[CurrentUser] User $user): void
+    public function __invoke(Query $query, ColourSearchRequest|AssetSearchRequest $searchRequest, #[CurrentUser] User $user): void
     {
-        $aggregationNames = array_intersect(
-            array_keys(($this->getFilterMappingForUser)($user, $searchRequest->searchIndex)),
-            (array)($this->getItemNamesFactory->create($searchRequest->searchIndex))()
-        );
-
-        if (count(array_intersect($aggregationNames, $searchRequest->aggregationNames)) <= 1) {
+        if (empty($searchRequest->aggregationNames)) {
             return;
         }
 
         foreach ($searchRequest->aggregationNames as $aggregationName) {
-            $termsAggregation = new TermsAggregation($aggregationName);
-
+            $termsAggregation = new TermsAggregation("facet_$aggregationName");
             $termsAggregation->setField($aggregationName);
             $termsAggregation->setSize(100);
             $termsAggregation->setOrder('_term', 'asc');
 
-            $query->addAggregation($termsAggregation);
+            $selfExcludingQuery = new BoolQuery();
+
+            foreach ($searchRequest->filterValueObjects ?? [] as $filterName => $filterValueObject) {
+                if (!($filterValueObject instanceof MultiselectCheckboxFilter)) {
+                    continue;
+                }
+
+                if (trim((string) $filterName) === trim($aggregationName)) {
+                    continue;
+                }
+
+                $selfExcludingQuery->addFilter(new Terms($filterValueObject->filterName, $filterValueObject->selectedOptions));
+            }
+
+            $globalAggregation = new GlobalAggregation($aggregationName);
+
+            $filterAggregation = new Filter("filtered_{$aggregationName}", $selfExcludingQuery);
+            $filterAggregation->addAggregation($termsAggregation);
+
+            $globalAggregation->addAggregation($filterAggregation);
+
+            $query->addAggregation($globalAggregation);
         }
     }
 }

@@ -8,14 +8,12 @@ enum SortNames: int
 {
     case Asc = 1;
     case Desc = 2;
-    case CreationDate = 3;
 
     public function readable(): string
     {
         return match ($this) {
             self::Asc => 'asc',
             self::Desc => 'desc',
-            self::CreationDate => 'created_at_timestamp',
         };
     }
 }

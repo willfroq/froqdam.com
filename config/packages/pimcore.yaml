@@ -1,6 +1,6 @@
 pimcore:
     admin:
-        session_cookie_lifetime: 0
+        session_cookie_lifetime: 604800 # 7 days in seconds
     assets:
         image:
             max_pixels: 2048000000

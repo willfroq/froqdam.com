@@ -7,6 +7,7 @@ namespace Froq\PortalBundle\ColourLibrary\Controller;
 use Froq\PortalBundle\ColourLibrary\Action\BuildSearchRequest;
 use Froq\PortalBundle\ColourLibrary\Action\BuildSearchResponse;
 use Pimcore\Model\DataObject\User;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +17,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 final class SearchController extends AbstractController
 {
     /**
+     * @throws InvalidArgumentException
      * @throws \Exception
      */
     #[Route('/search', name: 'froq_portal.colour_library.search', methods: [Request::METHOD_GET])]

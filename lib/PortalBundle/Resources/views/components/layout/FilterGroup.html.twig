@@ -1,27 +1,52 @@
 <div id="filter-group" class="px-5 py-3 border-t border-[#E4E7EC]">
-    <twig:Accordion id="accordion-{{ title|lower }}" title="{{ title }}" :expanded="expanded">
-        {# For text filters #}
-        <div class="mb-3">
-{#            Will be implemented later#}
-{#            <twig:SearchSidebar#}
-{#                :filterName="filterName"#}
-{#                placeholder="Look for a {{ title|lower }}"#}
-{#                size="sm"#}
-{#                class="w-full bg-white border border-[#E4E7EC] rounded-lg text-[#8A939A] text-14 leading-20 tracking-normal"#}
-{#            />#}
-        </div>
+    <twig:Accordion id="accordion-{{ title|lower }}" title="{{ title }}" :expanded="expanded" :sidebarFilter="sidebarFilter" >
+        {% if sidebarFilter.type == 'text' %}
+            <div class="mb-3">
+                {% set searchTerm = sidebarFilter.inputFilter is empty ? null : sidebarFilter.inputFilter.text %}
 
-        {# For keyword filters #}
-        <div class="space-y-2">
-            <twig:CheckboxList
-                :filterName="filterName"
-                :buckets="buckets"
-                class="text-[#171B3F] text-14 leading-20"
-            />
-        </div>
+                <twig:SearchSidebar
+                    :filterName="filterName"
+                    :searchTerm="searchTerm"
+                    placeholder="Look for a {{ sidebarFilter.label|lower }}"
+                    size="sm"
+                    class="w-full bg-white border border-[#E4E7EC] rounded-lg text-[#8A939A] text-14 leading-20 tracking-normal"
+                />
+            </div>
+        {% endif %}
 
-        {# For date filters #}
+        {% if sidebarFilter.type == 'keyword' %}
+            <div class="space-y-2">
+                {% set buckets = sidebarFilter.aggregation is empty ? [] : sidebarFilter.aggregation.buckets %}
 
-        {# For range filters #}
+                <twig:CheckboxList
+                    :filterName="filterName"
+                    :buckets="buckets"
+                    class="text-[#171B3F] text-14 leading-20"
+                />
+            </div>
+        {% endif %}
+
+        {% if sidebarFilter.type == 'date' %}
+            {% set startDate = sidebarFilter.dateRangeFilter is empty ? null : sidebarFilter.dateRangeFilter.startDate %}
+            {% set endDate = sidebarFilter.dateRangeFilter is empty ? null : sidebarFilter.dateRangeFilter.endDate %}
+
+            <div class="space-y-2">
+                <twig:Calendar
+                    :label="sidebarFilter.label"
+                    :toDate="startDate"
+                    :fromDate="endDate"
+                    class="text-[#171B3F] text-14 leading-20"
+                />
+            </div>
+        {% endif %}
+
+        {% if sidebarFilter.type == 'integer' %}
+            {% set min = sidebarFilter.numberRangeFilter is empty ? null : sidebarFilter.numberRangeFilter.min %}
+            {% set max = sidebarFilter.numberRangeFilter is empty ? null : sidebarFilter.numberRangeFilter.max %}
+
+            <div class="space-y-2">
+                <twig:Range :minValue="min" :maxValue="max" class="text-[#171B3F] text-14 leading-20" />
+            </div>
+        {% endif %}
     </twig:Accordion>
 </div>

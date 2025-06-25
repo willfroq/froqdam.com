@@ -6,7 +6,8 @@ namespace Froq\PortalBundle\Opensearch\Action;
 
 use Elastica\Query;
 use Elastica\ResultSet;
-use Froq\PortalBundle\ColourLibrary\DataTransferObject\SearchRequest;
+use Froq\PortalBundle\AssetLibrary\DataTransferObject\SearchRequest as AssetSearchRequest;
+use Froq\PortalBundle\ColourLibrary\DataTransferObject\SearchRequest as ColourSearchRequest;
 use Froq\PortalBundle\Opensearch\Action\Aggregation\BuildAggregation;
 use Froq\PortalBundle\Opensearch\Action\Filter\BuildDynamicFilters;
 use Froq\PortalBundle\Opensearch\Action\Query\BuildQuerySearch;
@@ -38,7 +39,7 @@ final class GetSearchResultSet
      *
      * @throws \Exception
      */
-    public function __invoke(SearchRequest $searchRequest, #[CurrentUser] User $user, string $indexName): ?ResultSet
+    public function __invoke(ColourSearchRequest|AssetSearchRequest $searchRequest, #[CurrentUser] User $user, string $indexName): ?ResultSet
     {
         $query = new Query();
 
@@ -47,14 +48,16 @@ final class GetSearchResultSet
         ($this->buildUserOrganizationQuery)($query, $boolQuery, $searchRequest, $user);
 
         ($this->buildQuerySource)($query, $searchRequest, $user);
+
         ($this->buildQuerySearch)($boolQuery, $query, $searchRequest, $user);
+
         ($this->buildDynamicFilters)($boolQuery, $query, $searchRequest);
+
         ($this->buildSortQuery)($query, $searchRequest, $user);
+
         ($this->paginateQuery)($query, $searchRequest);
 
-        if ($searchRequest->hasAggregation) {
-            ($this->buildAggregation)($query, $searchRequest, $user);
-        }
+        ($this->buildAggregation)($query, $searchRequest, $user);
 
         $maxRetries = 3;
         $retryCount = 0;

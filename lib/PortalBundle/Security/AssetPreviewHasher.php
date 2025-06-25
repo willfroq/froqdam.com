@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Froq\PortalBundle\Security;
 
-class AssetPreviewHasher
+final class AssetPreviewHasher
 {
-    public function __construct(private readonly string $thumbnailEncryptionSecret)
-    {
+    public function __construct(
+        private readonly string $thumbnailEncryptionSecret
+    ) {
     }
 
     public function hash(int $assetId): string
     {
-        return hash('md5', $assetId . $this->thumbnailEncryptionSecret);
+        return substr(hash_hmac('sha256', (string) $assetId, $this->thumbnailEncryptionSecret), 0, 16);
     }
 
     public function verify(int $assetId, string $hash): bool

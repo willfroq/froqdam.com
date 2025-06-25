@@ -1,3 +1,6 @@
+indexing:
+    auto_index: false
+
 filter:
     app_autocomplete_filter:
         type: 'edge_ngram'

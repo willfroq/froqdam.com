@@ -19,4 +19,6 @@ final class ColourGuidelineTableRow
     public ?string $imagePath = null;
 
     public int $colourCount = 0;
+
+    public ?string $detailPath = null;
 }

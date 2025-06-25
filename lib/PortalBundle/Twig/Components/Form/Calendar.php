@@ -10,7 +10,12 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 final class Calendar
 {
     public string $label;
+
+    public string $filterName;
+
     public ?string $fromDate = null;
+
     public ?string $toDate = null;
+
     public string $class = '';
 }

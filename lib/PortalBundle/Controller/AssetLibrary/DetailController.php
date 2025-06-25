@@ -14,7 +14,6 @@ use Knp\Component\Pager\Pagination\PaginationInterface;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -24,17 +23,6 @@ class DetailController extends AbstractController
 {
     public function __construct(private readonly AssetResourceRepositoryInterface $assetResourceRepository, private readonly AssetTypeRepository $assetTypeRepo)
     {
-    }
-
-    #[Route('/{id}', name: 'detail', methods: [Request::METHOD_GET])]
-    public function detailAction(int $id): Response
-    {
-        $assetResource = $this->assetResourceRepository->getAssetResourceByIdWithChecks($id);
-
-        return $this->render('@FroqPortalBundle/asset-library/detail.html.twig', [
-            'item' => $assetResource,
-            'user' => $this->getUser(),
-        ]);
     }
 
     #[Route('/load-versions-tab/{id}', name: 'detail.load_versions_tab', methods: ['GET'])]

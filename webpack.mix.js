@@ -75,6 +75,9 @@ mix.js(glob.sync('{lib/PortalBundle/Resources/assets/portal/src/scripts/*.js,lib
 mix.copyDirectory('lib/PortalBundle/Resources/assets/portal/media', 'public/build/portal/media');
 mix.copyDirectory('lib/PortalBundle/Resources/assets/portal/lib', 'public/build/portal/lib');
 
+mix.copyDirectory('lib/PortalBundle/Resources/assets/portal/media', 'public/build/stimulus/media');
+mix.copyDirectory('lib/PortalBundle/Resources/assets/portal/lib', 'public/build/stimulus/lib');
+
 mix.webpackConfig({
     resolve: {
         alias: {

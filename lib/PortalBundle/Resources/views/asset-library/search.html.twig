@@ -3,20 +3,76 @@
 {% block title %} Search | Asset Library{% endblock %}
 
 {% block body %}
-    {% if user is defined %}
-        <twig:Navbar :user="user" />
-    {% endif %}
+    <twig:Navbar logoLink="{{ path('froq_portal.asset_library.search') }}" :user="app.user" />
 
-    <main class="pt-m pb-xs pl-xl pr-xl">
-        <app-content-loader url="{{ url('froq_portal.asset_library.search.fetch_form_and_results') }}">
-            {% include '@FroqPortalBundle/partials/asset-library/search_body.html.twig' %}
-        </app-content-loader>
-    </main>
-{% endblock body %}
+    <div class="min-h-screen px-[30px]"
+         data-controller="search"
+         data-search-url-value="{{ path('froq_portal.asset_library.search') }}"
+    >
+        <div class="flex flex-wrap items-center gap-6 py-1">
+            <h1 class="font-semibold text-36 text-[#171B3F] w-284">Asset Library</h1>
 
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        window.staticListPageSize = {{ page_size }};
-    </script>
+            <div class="flex-grow">
+                <twig:SearchBar placeholder="Search by asset (file)name, project, product or other details" />
+            </div>
+
+            {% block result_count %}
+                <span id="asset-resource-result-count" class="text-16 leading-26 font-normal text-[#102717] font-sans">
+                    Result <span class="font-bold">{{ totalCount }}</span> Assets
+                </span>
+            {% endblock %}
+
+            <div class="flex items-center gap-2">
+                <twig:Dropdown
+                        id="sort-dropdown"
+                        keyLabel="Sort by:"
+                        :sortOptions="sortOptions"
+                        :selectedSortOption="selectedSortOption"
+                        placeholder="Search sorting options..."
+                />
+            </div>
+
+            <div>
+                <twig:ViewToggle view="grid" />
+            </div>
+        </div>
+
+        <turbo-frame id="asset-page" data-search-target="assetPage">
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="w-full md:w-280 flex-shrink-0">
+                    <twig:Sidebar
+                            :sidebarFilters="sidebarFilters"
+                            :hasSelectedFilters="hasSelectedFilters"
+                            homeUrl="{{ path('froq_portal.asset_library.search') }}"
+                    />
+                </div>
+
+                <div class="flex-grow" id="asset-resource-items"
+                     data-controller="infinite-scroll-asset"
+                     data-infinite-scroll-asset-page-value="{{ paginator.page }}"
+                     data-infinite-scroll-asset-url-value="{{ path('froq_portal.asset_library.search') }}"
+                >
+                    {% if assetResourceItems is empty %}
+                        <div class="flex flex-col items-center justify-start p-8 bg-white rounded-md shadow-sm h-[200vh]">
+                            <p class="text-gray-500">No items found</p>
+                        </div>
+                    {% endif %}
+
+                    {% if assetResourceItems is not empty %}
+                        <twig:AssetResourceCollection
+                                :columns="columns"
+                                :assetResourceItems="assetResourceItems"
+                                currentView="{{ app.request.query.get('view', 'grid') }}"
+                        />
+                    {% endif %}
+                </div>
+
+                <turbo-stream action="replace" target="asset-resource-result-count">
+                    <template>
+                        {{ block('result_count') }}
+                    </template>
+                </turbo-stream>
+            </div>
+        </turbo-frame>
+    </div>
 {% endblock %}

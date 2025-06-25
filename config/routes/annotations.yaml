@@ -5,7 +5,7 @@ froq_portal:
     trailing_slash_on_root: false
 
 froq_portal_asset_library:
-    resource: '@FroqPortalBundle/Controller/AssetLibrary/'
+    resource: '@FroqPortalBundle/AssetLibrary/Controller/'
     type: annotation
     prefix: /portal/asset-library
 

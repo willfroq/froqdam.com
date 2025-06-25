@@ -14,4 +14,6 @@ final class SearchSidebar
     public string $size = 'default'; // default, sm
 
     public string $filterName = '';
+
+    public ?string $searchTerm = '';
 }

@@ -62,21 +62,6 @@ final class BuildDetailResponse
             $hasErrors = true;
         }
 
-        $filePreviewPath = match ($asset?->getType()) {
-            'document' => (
-                fn () => $asset instanceof Asset\Document ? $this->assetPreviewExtension->getDocumentPreviewURL($asset) : ''
-            )(),
-            'image' => (
-                fn () => $asset instanceof Asset\Image ? $this->assetPreviewExtension->getImagePreviewURL($asset) : ''
-            )(),
-            'text' => (
-                fn () => $asset instanceof Asset\Text ? $this->assetPreviewExtension->getTextPreviewContent($asset) : ''
-            )(),
-            'unknown' => $this->assetPreviewExtension->getAssetExtension($asset),
-
-            default => $hasErrors = true
-        };
-
         $tags = [];
 
         foreach ($assetResource->getTags() as $id => $tag) {
@@ -281,7 +266,7 @@ final class BuildDetailResponse
 
             $relateds[] = new RelatedItem(
                 id: $id,
-                thumbnail: $domain.$this->assetPreviewExtension->getAssetThumbnailHashedURL($asset, ThumbnailTypes::List->value),
+                thumbnail: $this->assetPreviewExtension->getPublicThumbnailLink($asset, ThumbnailTypes::Grid->value),
                 filename: (string) $asset->getFilename(),
                 productSku: (string) $product?->getSKU(),
                 assetTypeName: (string) $relatedAssetResource->getAssetType()?->getName(),
@@ -323,7 +308,7 @@ final class BuildDetailResponse
 
             $linkedAssetResources[] = new LinkedItem(
                 id: $id,
-                thumbnail: $domain.$this->assetPreviewExtension->getAssetThumbnailHashedURL($asset, ThumbnailTypes::List->value),
+                thumbnail: $this->assetPreviewExtension->getPublicThumbnailLink($asset, ThumbnailTypes::Grid->value),
                 filename: (string) $asset->getFilename(),
                 productSku: (string) $product?->getSKU(),
                 assetTypeName: (string) $contain->getAssetType()?->getName(),
@@ -336,18 +321,12 @@ final class BuildDetailResponse
             );
         }
 
-        if ($filePreviewPath instanceof Asset\Image\Thumbnail) {
-            $filePreviewPath = $filePreviewPath->getPath();
-        }
-
-        if (is_array($filePreviewPath)) {
-            $filePreviewPath = current($filePreviewPath);
-        }
+        $filePreviewPath = $asset instanceof Asset ? $this->assetPreviewExtension->getPublicThumbnailLink($asset, ThumbnailTypes::Preview->value) : '';
 
         return new AssetResourceDetailItem(
             id: (int) $assetResource->getId(),
             filename: (string) $asset?->getFilename(),
-            filePreviewPath: (string) $filePreviewPath,
+            filePreviewPath: $filePreviewPath,
             hasErrors: $hasErrors,
             assetInfoSectionItem: new AssetInfoSectionItem(
                 type: (string) $assetResource->getAssetType()?->getName(),

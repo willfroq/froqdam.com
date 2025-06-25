@@ -2,8 +2,8 @@
      class="space-y-2 {{ class }}"
      data-controller="checkbox-list"
      data-checkbox-list-total-count-value="{{ buckets|length }}"
-     data-checkbox-list-initial-count-value="5">
-
+     data-checkbox-list-initial-count-value="5"
+>
     {% for index, bucket in buckets %}
         {% set value = bucket.key %}
         {% set count = bucket.docCount %}
@@ -27,7 +27,9 @@
                 >
             </div>
 
-            <span class="text-14 leading-20 text-[#171B3F]">{{ value }} ({{ count }})</span>
+            <span class="text-[14px] leading-[20px] text-[#171B3F]">
+                {{ value }} ({{ count }})
+            </span>
         </label>
     {% endfor %}
 

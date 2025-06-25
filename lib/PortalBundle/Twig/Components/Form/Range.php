@@ -10,7 +10,10 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 final class Range
 {
     public string $label;
-    public ?string $minValue = null;
-    public ?string $maxValue = null;
+
+    public ?int $minValue = null;
+
+    public ?int $maxValue = null;
+
     public string $class = '';
 }

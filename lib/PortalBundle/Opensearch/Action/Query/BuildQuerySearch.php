@@ -7,7 +7,8 @@ namespace Froq\PortalBundle\Opensearch\Action\Query;
 use Elastica\Query;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\QueryString;
-use Froq\PortalBundle\ColourLibrary\DataTransferObject\SearchRequest;
+use Froq\PortalBundle\AssetLibrary\DataTransferObject\SearchRequest as AssetSearchRequest;
+use Froq\PortalBundle\ColourLibrary\DataTransferObject\SearchRequest as ColourSearchRequest;
 use Pimcore\Model\DataObject\User;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -16,7 +17,7 @@ final class BuildQuerySearch
     /**
      * @throws \Exception
      */
-    public function __invoke(BoolQuery $boolQuery, Query $query, SearchRequest $searchRequest, #[CurrentUser] User $user): void
+    public function __invoke(BoolQuery $boolQuery, Query $query, ColourSearchRequest|AssetSearchRequest $searchRequest, #[CurrentUser] User $user): void
     {
         $searchTerm = $searchRequest->query;
 

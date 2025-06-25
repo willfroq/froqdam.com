@@ -17,6 +17,7 @@ services:
                 elastically_mappings_directory: '%kernel.project_dir%/config/opensearch'
                 elastically_index_class_mapping:
                     colour-guideline-item: Froq\PortalBundle\ColourLibrary\DataTransferObject\ColourGuidelineItem
+                    asset-resource-item: Froq\PortalBundle\AssetLibrary\DataTransferObject\AssetResourceItem
                 elastically_serializer: '@serializer'
                 elastically_bulk_size: 100
             $logger: '@logger'
@@ -39,3 +40,4 @@ when@test:
                     elastically_mappings_directory: '%kernel.project_dir%/config/opensearch'
                     elastically_index_class_mapping:
                         colour-guideline-item: Froq\PortalBundle\ColourLibrary\DataTransferObject\ColourGuidelineItem
+                        asset-resource-item: Froq\PortalBundle\AssetLibrary\DataTransferObject\AssetResourceItem

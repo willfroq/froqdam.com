@@ -1,0 +1,460 @@
+settings:
+    number_of_replicas: 0
+    number_of_shards: 5
+    refresh_interval: 60s
+    analysis:
+        normalizer:
+            keyword_norm:
+                type: custom
+                filter: [ 'asciifolding', 'lowercase', 'trim' ]
+        filter:
+            custom_word_delimiter_graph:
+                type: word_delimiter_graph
+                preserve_original: true
+            remove_newlines:
+                type: pattern_replace
+                pattern: "\n"
+                replacement: ""
+        analyzer:
+            text_analyzer:
+                type: custom
+                tokenizer: whitespace
+                filter: [ 'asciifolding', 'lowercase', 'custom_word_delimiter_graph', 'trim', 'remove_newlines' ]
+            general_analyzer:
+                type: custom
+                tokenizer: keyword
+                filter: [ 'asciifolding', 'lowercase', 'custom_word_delimiter_graph', 'trim', 'remove_newlines' ]
+
+mappings:
+    dynamic: true
+    properties:
+        # Denormalized AssetResourceItem
+        assetResourceId:
+            type: integer
+        assetId:
+            type: integer
+        filename:
+            type: keyword
+        assetTypeName:
+            type: keyword
+        projectName:
+            type: keyword
+        organizationId:
+            type: integer
+        assetResourceCreationDate:
+            type: keyword
+        assetResourceFileCreateDate:
+            type: keyword
+        assetResourceFileModifyDate:
+            type: keyword
+        assetCreationDate:
+            type: keyword
+        # AssetResource
+        customer:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        asset_creation_date:
+            type: date
+            format: 'epoch_second||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis'
+        file_create_date:
+            type: date
+            format: 'epoch_second||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis'
+        file_modify_date:
+            type: date
+            format: 'epoch_second||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis'
+        organization_id:
+            type: integer
+        asset_resource_name:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        asset_type_name:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        file_name:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        file_name_text:
+            type: text
+            analyzer: text_analyzer
+        upload_name:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        pdf_text:
+            type: text
+            analyzer: text_analyzer
+        # Asset
+        file_size:
+            type: integer
+        creation_date:
+            type: date
+            format: 'epoch_second||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis'
+        # AssetResourceMetaData
+        epsonmaterial:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        gmgflow:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        shape:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        shapes:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        software:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        substrate_material:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        keylinenumber:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        angle:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        packshottype:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        printer_code:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        printingmaterial:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        printing_process:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        printing_workflow:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        materials:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        packtype:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        shapecode:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        shapecode_text:
+            type: text
+            analyzer: text_analyzer
+        packaging:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        packrange:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        packshotquality:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        producttype:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        volumes:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        # Product
+        product_category_brand:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        product_category_campaign:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        product_category_market:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        product_category_segment:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        product_category_platform:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        product_category_brand_text:
+            type: text
+            analyzer: text_analyzer
+        product_category_campaign_text:
+            type: text
+            analyzer: text_analyzer
+        product_category_market_text:
+            type: text
+            analyzer: text_analyzer
+        product_category_segment_text:
+            type: text
+            analyzer: text_analyzer
+        product_category_platform_text:
+            type: text
+            analyzer: text_analyzer
+        grammage:
+            type: integer
+        net_content_statement:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        net_contents_ml:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        net_contents_g:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        net_contents_pcs:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        net_unit_contents_ml:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        net_unit_contents_g:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        product_ean:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        product_name:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        product_sku:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        product_ean_text:
+            type: text
+            analyzer: text_analyzer
+        product_name_text:
+            type: text
+            analyzer: text_analyzer
+        product_sku_text:
+            type: text
+            analyzer: text_analyzer
+        # Project
+        froq_project_owner:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        project_owner:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        project_froq_name:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        project_froq_project_number:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        project_name:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        project_pim_project_number:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        froq_project_owner_text:
+            type: text
+            analyzer: text_analyzer
+        project_owner_text:
+            type: text
+            analyzer: text_analyzer
+        project_froq_name_text:
+            type: text
+            analyzer: text_analyzer
+        project_froq_project_number_text:
+            type: text
+            analyzer: text_analyzer
+        project_name_text:
+            type: text
+            analyzer: text_analyzer
+        project_pim_project_number_text:
+            type: text
+            analyzer: text_analyzer
+        # Tag
+        tags:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        # Custom Settings
+        height:
+            type: integer
+        width:
+            type: integer

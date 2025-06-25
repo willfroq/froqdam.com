@@ -6,6 +6,7 @@ namespace Froq\PortalBundle\Controller;
 
 use Doctrine\DBAL\Connection;
 use Froq\PortalBundle\Scheduler\Message\SupervisorHealthCheckMessage;
+use JoliCode\Elastically\Client as ElasticallyClient;
 use MembersBundle\Controller\AbstractController;
 use Predis\Client;
 use Psr\Log\LoggerInterface;
@@ -20,6 +21,7 @@ final class HealthCheckController extends AbstractController
 {
     #[Route(path: '/health-check', name: 'health_check', methods: [Request::METHOD_GET])]
     public function healthCheck(
+        ElasticallyClient $elasticallyClient,
         Connection $connection,
         KernelInterface $kernel,
         LoggerInterface $logger,
@@ -39,6 +41,24 @@ final class HealthCheckController extends AbstractController
             $details['database'] = 'connection_failed';
 
             $logger->error(message: 'DB NOT CONNECTED!');
+        }
+
+        // Check opensearch connection
+        try {
+            $isConnected = $elasticallyClient->getConnection()->isEnabled();
+
+            if (!$isConnected) {
+                $logger->error(message: 'OPENSEARCH NOT CONNECTED!');
+
+                throw new \RuntimeException('Not connected to Opensearch!');
+            }
+
+            $details['search'] = 'connected';
+        } catch (\Throwable $e) {
+            $status = 'ERROR! search unavailable';
+            $details['search'] = 'unavailable';
+
+            $logger->error(message: 'OPENSEARCH NOT CONNECTED!');
         }
 
         // Check cache connection

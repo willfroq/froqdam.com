@@ -1,0 +1,16 @@
+<turbo-stream action="append" target="asset-resource-items">
+    <template>
+        {% if assetResourceItems is empty %}
+            <div id="empty-asset-resource-items"></div>
+        {% endif %}
+
+        {% if assetResourceItems is not empty %}
+            <div class="flex-grow">
+                <twig:AssetResourceCollection
+                        :assetResourceItems="assetResourceItems"
+                        currentView="{{ app.request.query.get('view', 'grid') }}"
+                />
+            </div>
+        {% endif %}
+    </template>
+</turbo-stream>

@@ -7,7 +7,8 @@ namespace Froq\PortalBundle\Opensearch\Action\Query;
 use Elastica\Query;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\Terms;
-use Froq\PortalBundle\ColourLibrary\DataTransferObject\SearchRequest;
+use Froq\PortalBundle\AssetLibrary\DataTransferObject\SearchRequest as AssetSearchRequest;
+use Froq\PortalBundle\ColourLibrary\DataTransferObject\SearchRequest as ColourSearchRequest;
 use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\User;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -17,7 +18,7 @@ final class BuildUserOrganizationQuery
     public function __invoke(
         Query $query,
         BoolQuery $boolQuery,
-        SearchRequest $searchRequest,
+        ColourSearchRequest|AssetSearchRequest $searchRequest,
         #[CurrentUser] User $user
     ): void {
         $termsQuery = new Terms('organization_id');

@@ -8,14 +8,18 @@
          data-colour-guideline-collection-target="gridContainer">
         {% for item in colourGuidelineItems %}
             {% set asset = get_asset_by_id(item.imageId) %}
-            {% set imageSrc = get_asset_thumbnail_hashed_url(asset, 'portal_asset_library_item_grid') %}
 
-            <twig:GridCard
-                    id="{{ item.colourGuidelineId }}"
-                    name="{{ item.name }}"
-                    :markets="item.countries"
-                    imagePath="{{ imageSrc }}"
-            />
+            {% if item is not empty and asset is not empty %}
+                {% set imageSrc = get_asset_thumbnail_hashed_url(asset, 'portal_asset_library_item_grid') %}
+
+                <twig:GridCard
+                        id="{{ item.colourGuidelineId }}"
+                        name="{{ item.name }}"
+                        :markets="item.countries"
+                        imagePath="{{ imageSrc }}"
+                        detailPath="{{ path('froq_portal.colour_library.detail', { id: item.colourGuidelineId }) }}"
+                />
+            {% endif %}
         {% endfor %}
     </div>
 
@@ -25,28 +29,30 @@
         <table class="w-full" style="border-collapse: separate; border-spacing: 0;">
             <thead id="colour-guideline-header" class="bg-gray-50" style="background-color: #F8F9FA; border-bottom: 1px solid #E4E7EC;">
             <tr>
-                <th class="py-4 px-6 text-left text-xs font-semibold text-black uppercase tracking-wider">
-                    Thumbnail
-                </th>
-                <th class="py-4 px-6 text-left text-xs font-semibold text-black uppercase tracking-wider">
-                    Colour Guideline Name
-                </th>
-                <th class="py-4 px-6 text-left text-xs font-semibold text-black uppercase tracking-wider">
-                    Market
-                </th>
+                {% for column in columns|default([]) %}
+                    {% if column is not empty %}
+                        <th class="py-4 px-6 text-left text-xs font-semibold text-black uppercase tracking-wider">
+                            {{ column.label }}
+                        </th>
+                    {% endif %}
+                {% endfor %}
             </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-100">
             {% for item in colourGuidelineItems %}
                 {% set asset = get_asset_by_id(item.imageId) %}
-                {% set imageSrc = get_asset_thumbnail_hashed_url(asset, 'portal_asset_library_item') %}
 
-                <twig:ColourGuidelineTableRow
-                        id="{{ item.colourGuidelineId }}"
-                        name="{{ item.name }}"
-                        :markets="item.countries"
-                        imagePath="{{ imageSrc }}"
-                />
+                {% if item is not empty and asset is not empty %}
+                    {% set imageSrc = get_asset_thumbnail_hashed_url(asset, 'portal_asset_library_item') %}
+
+                    <twig:ColourGuidelineTableRow
+                            id="{{ item.colourGuidelineId }}"
+                            name="{{ item.name }}"
+                            :markets="item.countries"
+                            imagePath="{{ imageSrc }}"
+                            detailPath="{{ path('froq_portal.colour_library.detail', { id: item.colourGuidelineId }) }}"
+                    />
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>

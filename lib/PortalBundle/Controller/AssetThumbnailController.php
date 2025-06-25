@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\Controller;
 
 use Froq\PortalBundle\Security\AssetPreviewHasher;
+use League\Flysystem\FilesystemOperator;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\Asset;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
@@ -15,8 +16,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AssetThumbnailController extends AbstractController
 {
-    public function __construct(private readonly ApplicationLogger $logger)
-    {
+    public function __construct(
+        private readonly ApplicationLogger $logger,
+        private readonly FilesystemOperator $pimcoreAssetStorage,
+    ) {
     }
 
     /**
@@ -30,51 +33,76 @@ class AssetThumbnailController extends AbstractController
      * @throws \Exception
      */
     #[Route('/asset-thumbnail/{thumbnailName}/{assetID}/{hash}', name: 'froq_portal.asset_thumbnail.asset_hashed', methods: ['GET'])]
-    #[Cache(maxage: 3600)]
+    #[Cache(maxage: 31536000, smaxage: 31536000, public: true)]
     public function assetThumbnailHashedAction(AssetPreviewHasher $hasher, string $thumbnailName, int $assetID, string $hash): Response
     {
         if (!$hasher->verify($assetID, $hash)) {
-            $this->logger->warning(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
-
-            throw $this->createAccessDeniedException('Invalid hash');
+            return $this->logAndThrowAccessDenied($assetID, 'Invalid hash');
         }
 
         $asset = Asset::getById($assetID);
-        if (!$asset) {
-            $this->logger->warning(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
 
-            throw $this->createNotFoundException('Asset not found');
+        if (!($asset instanceof Asset)) {
+            return $this->logAndThrowNotFound($assetID, 'Asset not found');
         }
 
         $thumbnailConfig = Asset\Image\Thumbnail\Config::getByName($thumbnailName);
+
         if (!$thumbnailConfig) {
-            $this->logger->warning(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
-
-            throw $this->createNotFoundException('Thumbnail config not found');
+            return $this->logAndThrowNotFound($assetID, 'Thumbnail config not found');
         }
 
-        if ($asset instanceof Asset\Image) {
-            $thumbnail = $asset->getThumbnail($thumbnailName, false);
-        } elseif ($asset instanceof Asset\Document) {
-            $thumbnail = $asset->getImageThumbnail($thumbnailName);
-        } else {
-            $this->logger->warning(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
+        $stream = match (true) {
+            $asset instanceof Asset\Image => (function () use ($asset, $thumbnailName) {
+                if ($this->pimcoreAssetStorage->fileExists($asset->getFullPath())) {
+                    return $asset->getThumbnail($thumbnailName, false)->getStream();
+                }
 
-            throw $this->createNotFoundException('Unsupported Asset type');
+                return $asset->getThumbnail($thumbnailName)->getStream();
+            })(),
+            $asset instanceof Asset\Document => (function () use ($asset, $thumbnailName) {
+                if ($this->pimcoreAssetStorage->fileExists($asset->getFullPath())) {
+                    return $asset->getImageThumbnail($thumbnailName)->getStream();
+                }
+
+                return $asset->getImageThumbnail($thumbnailName, 1, true)->getStream();
+            })(),
+
+            default => $this->logAndThrowNotFound($assetID, 'Unsupported Asset type'),
+        };
+
+        if (!is_resource($stream)) {
+            return $this->logAndThrowNotFound($assetID, 'Thumbnail not found');
         }
 
-        $stream = $thumbnail->getStream();
-        if (!$stream) {
-            $this->logger->warning(sprintf('Asset id: %s can not auto generate a thumbnail in the frontend.', $assetID), ['component' => 'can_not_auto_generate_thumbnail']);
-
-            throw $this->createNotFoundException('Thumbnail not found');
-        }
-
-        return new StreamedResponse(function () use ($stream) {
+        $response = new StreamedResponse(function () use ($stream) {
             fpassthru($stream);
         }, 200, [
-            'Content-Type' => $thumbnail->getMimeType(),
-            'Access-Control-Allow-Origin', '*',
+            'Content-Type' => $asset->getMimeType(),
         ]);
+
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Cache-Control', $response->headers->get('Cache-Control') . ', immutable');
+        $response->headers->set('X-Content-Type-Options', 'nosniff');
+
+        return $response;
+    }
+
+    private function logAndThrowNotFound(int $assetID, string $message): Response
+    {
+        $this->logger->warning(sprintf('Asset id: %d: %s', $assetID, $message), [
+            'component' => 'can_not_auto_generate_thumbnail',
+        ]);
+
+        throw $this->createNotFoundException($message);
+    }
+
+    private function logAndThrowAccessDenied(int $assetID, string $message): Response
+    {
+        $this->logger->warning(sprintf('Asset id: %d: %s', $assetID, $message), [
+            'component' => 'can_not_auto_generate_thumbnail',
+        ]);
+
+        throw $this->createAccessDeniedException($message);
     }
 }

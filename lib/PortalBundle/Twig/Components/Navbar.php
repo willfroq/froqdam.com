@@ -11,4 +11,6 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 final class Navbar
 {
     public User $user;
+
+    public string $logoLink;
 }

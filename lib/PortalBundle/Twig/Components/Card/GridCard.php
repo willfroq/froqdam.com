@@ -7,6 +7,8 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 #[AsTwigComponent(name: 'GridCard', template: '@FroqPortal/components/card/GridCard.html.twig')]
 final class GridCard
 {
+    public int $id;
+
     public string $name = '';
 
     /** @var array<int, string> */
@@ -14,5 +16,5 @@ final class GridCard
 
     public ?string $imagePath = null;
 
-    public int $id;
+    public ?string $detailPath = null;
 }

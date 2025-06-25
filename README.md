@@ -17,13 +17,13 @@ Create the `env.local` file
 ###> symfony/framework-bundle ###
 APP_ENV=dev
 APP_DEBUG=true
-###< symfony/framework-bundle ###
+  ###< symfony/framework-bundle ###
 
-###> pimcore/pimcore ###
+  ###> pimcore/pimcore ###
 PIMCORE_DEV_MODE=true
-###< pimcore/pimcore ###
+  ###< pimcore/pimcore ###
 
-#General
+  #General
 FROQ_DB_NAME=pimcore
 FROQ_DB_USER=pimcore
 FROQ_DB_PWD=pimcore
@@ -93,9 +93,23 @@ npm run prod
 
 Create index:
 ```bash
+curl -X DELETE "http://localhost:9200/_all"
 bin/console elasticsearch:synchronous-create-colour-guideline-index
-bin/console youwe:pimcore-elasticsearch:populate
+bin/console elasticsearch:synchronously-create-asset-resource-index
+bin/console elasticsearch:async-create-assetresource-index
+
+bin/console youwe:pimcore-elasticsearch:populate --processes=6
+
+#async
+bin/console elasticsearch:create-assetresource-index
 
 bin/console pimcore:deployment:classes-rebuild --create-classes
 bin/console doctrine:migrations:migrate
+```
+
+CRON:
+```bash
+bin/console messenger:consume pimcore_core
+bin/console messenger:consume pimcore_maintenance
+bin/console messenger:consume supervisor_health_check
 ```

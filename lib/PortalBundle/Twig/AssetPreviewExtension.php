@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Froq\PortalBundle\Twig;
 
 use Froq\AssetBundle\Converter\RtfToHtmlConverter;
+use Froq\AssetBundle\Pimtoday\Enum\ThumbnailTypes;
 use Froq\PortalBundle\Action\GetS3Client;
 use Froq\PortalBundle\Action\GetS3PrefixName;
 use Froq\PortalBundle\Security\AssetPreviewHasher;
+use League\Flysystem\FilesystemException;
+use League\Flysystem\FilesystemOperator;
 use Pimcore\Log\ApplicationLogger;
 use Pimcore\Model\Asset;
 use Symfony\Component\Routing\RouterInterface;
@@ -22,7 +25,8 @@ class AssetPreviewExtension extends AbstractExtension
         protected ApplicationLogger $logger,
         private readonly GetS3Client $getS3Client,
         private readonly GetS3PrefixName $getS3PrefixName,
-        private readonly string $s3BucketNameAssets
+        private readonly string $s3BucketNameAssets,
+        private readonly FilesystemOperator $pimcoreAssetStorage,
     ) {
     }
 
@@ -39,7 +43,7 @@ class AssetPreviewExtension extends AbstractExtension
         ];
     }
 
-    public function getDocumentPreviewURL(Asset\Document $asset): ?string
+    public function getDocumentPreviewURL(Asset\Document $asset): string
     {
         try {
             if ($asset->getMimeType() === 'application/pdf') {
@@ -51,22 +55,19 @@ class AssetPreviewExtension extends AbstractExtension
             $this->logger->warning($ex->getMessage());
         }
 
-        return null;
+        return '';
     }
 
-    public function getImagePreviewURL(Asset\Image $asset, string $thumbnailName = null, bool $deferred = true): null |string | Asset\Image\Thumbnail
+    /**
+     * @throws FilesystemException
+     */
+    public function getImagePreviewURL(Asset\Image $asset): string
     {
-        try {
-            if ($asset->getMimeType() === 'image/gif') {
-                return $asset->getFullPath();
-            } else {
-                return $asset->getThumbnail($thumbnailName, $deferred);
-            }
-        } catch (\Exception $ex) {
-            $this->logger->warning($ex->getMessage());
+        if ($this->pimcoreAssetStorage->fileExists($asset->getFullPath())) {
+            return $asset->getThumbnail(ThumbnailTypes::Preview->value, false)->getPath();
         }
 
-        return null;
+        return $asset->getThumbnail(ThumbnailTypes::Preview->value)->getPath();
     }
 
     public function getTextPreviewContent(Asset\Text $asset): ?string
@@ -119,33 +120,45 @@ class AssetPreviewExtension extends AbstractExtension
         $thumbnailConfig = Asset\Image\Thumbnail\Config::getByName($thumbnailName);
 
         if (!$thumbnailConfig) {
-            throw new \Exception('ThumbnailConfig not found');
+            $this->logger->warning(message: sprintf('AssetId: %s: ThumbnailConfig not found', $asset->getId()));
+
+            return '';
         }
 
         if ($asset instanceof Asset\Image) {
-            $thumbnail = $asset->getThumbnail($thumbnailName, false);
+            $thumbnail = $asset->getThumbnail($thumbnailName);
         } elseif ($asset instanceof Asset\Document) {
-            $thumbnail = $asset->getImageThumbnail($thumbnailName);
+            $thumbnail = $asset->getImageThumbnail(ThumbnailTypes::Preview->value, 1, true);
         } else {
-            throw new \Exception('Asset not found');
+            $this->logger->warning(message: sprintf('AssetId: %s: Asset not found', $asset->getId()));
+
+            return '';
         }
 
         $stream = $thumbnail->getStream();
 
         if (!is_resource($stream)) {
-            throw new \Exception('Asset not found');
+            $this->logger->warning(message: sprintf('AssetId: %s: Asset not found', $asset->getId()));
+
+            return '';
         }
         $s3Client = ($this->getS3Client)();
 
         $prefix = ($this->getS3PrefixName)();
 
-        return (string) $s3Client->createPresignedRequest(
-            $s3Client->getCommand('GetObject', [
-                'Bucket' => $this->s3BucketNameAssets,
-                'Key'    => "$prefix{$asset->getRealPath()}{$asset->getFilename()}"
-            ]),
-            '+20 minutes'
-        )->getUri();
+        try {
+            return (string) $s3Client->createPresignedRequest(
+                $s3Client->getCommand('GetObject', [
+                    'Bucket' => $this->s3BucketNameAssets,
+                    'Key'    => "$prefix{$asset->getRealPath()}{$asset->getFilename()}"
+                ]),
+                '+20 minutes'
+            )->getUri();
+        } catch (\Exception $ex) {
+            $this->logger->warning(message: sprintf('AssetId: %s: Asset not found', $asset->getId()));
+
+            return '';
+        }
     }
 
     public function getAssetById(int $id): ?Asset
