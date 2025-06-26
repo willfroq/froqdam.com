@@ -37,11 +37,18 @@ final class CreateAssetResource
         Organization $organization,
         UploadedFile $uploadedFile
     ): PimtodayUploadResponse {
-        $assetFolderContainer = new Asset\Folder();
-        $assetFolderContainer->setParent($assetFolder);
-        $assetFolderContainer->setFilename((string) $pimtodayUploadRequest->documentData?->documentName);
-        $assetFolderContainer->setPath($assetFolderPath);
-        $assetFolderContainer->save();
+        $assetFolderContainer = (new Asset\Listing())
+            ->addConditionParam('filename = ?', $pimtodayUploadRequest->documentData?->documentName)
+            ->addConditionParam('path = ?', $assetFolderPath)
+            ->current();
+
+        if (!($assetFolderContainer instanceof Asset)) {
+            $assetFolderContainer = new Asset\Folder();
+            $assetFolderContainer->setParent($assetFolder);
+            $assetFolderContainer->setFilename((string) $pimtodayUploadRequest->documentData?->documentName);
+            $assetFolderContainer->setPath($assetFolderPath);
+            $assetFolderContainer->save();
+        }
 
         $newAssetVersionFolder = new Asset\Folder();
         $newAssetVersionFolder->setParent($assetFolderContainer);

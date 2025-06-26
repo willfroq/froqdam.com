@@ -10,6 +10,7 @@ use Froq\AssetBundle\Pimtoday\ValueObject\DocumentFromPayload;
 use Froq\AssetBundle\Pimtoday\ValueObject\ProductFromPayload;
 use Froq\AssetBundle\Pimtoday\ValueObject\ProjectFromPayload;
 use Froq\AssetBundle\Pimtoday\ValueObject\ValidationError;
+use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Organization;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -134,6 +135,20 @@ final class BuildPimtodayUploadRequest
             $errors[] = new ValidationError(propertyPath: 'file', message: 'FILE ERROR! Make sure file is not corrupted!.');
         }
 
+        $createOrUpdate = $request->request->get('createOrUpdate') ?? null;
+
+        if (!in_array(needle: $createOrUpdate, haystack: ['create', 'update'])) {
+            $errors[] = new ValidationError(propertyPath: 'createOrUpdate', message: 'createOrUpdate field is required!');
+        }
+
+        if ((string) $createOrUpdate === 'update') {
+            $existingAssetResource = AssetResource::getById((int) $documentFromPayload?->damId);
+
+            if (!($existingAssetResource instanceof AssetResource)) {
+                $errors[] = new ValidationError(propertyPath: 'createOrUpdate', message: 'File to Update does NOT exist!');
+            }
+        }
+
         $pimtodayUploadRequest = new PimtodayUploadRequest(
             eventName: (string) $request->request->get('eventName'),
             damOrganizationId: (int) $request->request->get('damOrganizationId'),
@@ -143,6 +158,7 @@ final class BuildPimtodayUploadRequest
             fileBase64: (string) $request->request->get('fileBase64'),
             fileContents: $uploadedFile,
             organization: $organization,
+            createOrUpdate: (string) $createOrUpdate,
             errors: []
         );
 

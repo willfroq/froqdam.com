@@ -2,7 +2,7 @@
     <twig:Accordion id="accordion-{{ title|lower }}" title="{{ title }}" :expanded="expanded" :sidebarFilter="sidebarFilter" >
         {% if sidebarFilter.type == 'text' %}
             <div class="mb-3">
-                {% set searchTerm = sidebarFilter.inputFilter is empty ? null : sidebarFilter.inputFilter.text %}
+                {% set searchTerm = sidebarFilter.inputFilter is not empty ? sidebarFilter.inputFilter.text : null %}
 
                 <twig:SearchSidebar
                     :filterName="filterName"

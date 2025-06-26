@@ -85,7 +85,7 @@ final class BuildPimtodayUploadResponse
 
         $existingAssetResource = AssetResource::getById((int) $pimtodayUploadRequest->documentData?->damId);
 
-        if (!($existingAssetResource instanceof AssetResource) && !($parentAssetResource instanceof AssetResource)) {
+        if (!($existingAssetResource instanceof AssetResource) && !($parentAssetResource instanceof AssetResource) && $pimtodayUploadRequest->createOrUpdate === 'create') {
             return ($this->createAssetResource)(
                 $assetFolder,
                 $pimtodayUploadRequest,

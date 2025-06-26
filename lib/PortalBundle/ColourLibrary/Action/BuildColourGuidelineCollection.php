@@ -116,39 +116,53 @@ final class BuildColourGuidelineCollection
                 continue;
             }
 
+            $requestFilter = (array) $searchRequest->filterValueObjects;
+
             if ($sidebarFilter->type === 'text') {
-                array_map(
-                    function (mixed $inputFilter) use ($sidebarFilter) {
-                        if ($inputFilter instanceof InputFilter) {
-                            $sidebarFilter->inputFilter = $inputFilter;
+                array_walk(
+                    $requestFilter,
+                    function (mixed $inputFilter, string $filterName) use ($sidebarFilter, $searchRequest) {
+                        $requestFilter = $searchRequest->filterValueObjects[$filterName] ?? null;
+
+                        $inputFilterDto = $requestFilter instanceof InputFilter ? $requestFilter : null;
+
+                        if ($sidebarFilter->filterName === $inputFilterDto?->filterName) {
+                            $sidebarFilter->inputFilter = $inputFilterDto;
                             $sidebarFilter->shouldExpand = true;
                         }
                     },
-                    (array) $searchRequest->filterValueObjects
                 );
             }
 
             if ($sidebarFilter->type === 'date') {
-                array_map(
-                    function (mixed $dateRangeFilter) use ($sidebarFilter) {
-                        if ($dateRangeFilter instanceof DateRangeFilter) {
-                            $sidebarFilter->dateRangeFilter = $dateRangeFilter;
+                array_walk(
+                    $requestFilter,
+                    function (mixed $dateRangeFilter, string $filterName) use ($sidebarFilter, $searchRequest) {
+                        $requestFilter = $searchRequest->filterValueObjects[$filterName] ?? null;
+
+                        $dateRangeFilterDto = $requestFilter instanceof DateRangeFilter ? $requestFilter : null;
+
+                        if ($sidebarFilter->filterName === $dateRangeFilterDto?->filterName) {
+                            $sidebarFilter->dateRangeFilter = $dateRangeFilterDto;
                             $sidebarFilter->shouldExpand = true;
                         }
-                    },
-                    (array) $searchRequest->filterValueObjects
+                    }
                 );
             }
 
             if ($sidebarFilter->type === 'integer') {
-                array_map(
-                    function (mixed $numberRangeFilter) use ($sidebarFilter) {
-                        if ($numberRangeFilter instanceof NumberRangeFilter) {
-                            $sidebarFilter->numberRangeFilter = $numberRangeFilter;
+                array_walk(
+                    $requestFilter,
+                    function (mixed $numberRangeFilter, string $filterName) use ($sidebarFilter, $searchRequest) {
+                        $requestFilter = $searchRequest->filterValueObjects[$filterName] ?? null;
+
+                        $numberRangeFilterDto = $requestFilter instanceof NumberRangeFilter ? $requestFilter : null;
+
+                        if ($sidebarFilter->filterName === $numberRangeFilterDto?->filterName) {
+                            $sidebarFilter->numberRangeFilter = $numberRangeFilterDto;
                             $sidebarFilter->shouldExpand = true;
                         }
-                    },
-                    (array) $searchRequest->filterValueObjects
+                    }
                 );
             }
 

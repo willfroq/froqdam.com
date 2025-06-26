@@ -21,7 +21,7 @@ final class PimtodayUploadRequest
         #[Assert\Type(type: 'string', message: 'The value {{ value }} is not a valid {{ type }}.')]
         public readonly string $eventName,
 
-        #[NotBlank(message: '$damOrganizationId can not be blank.')]
+        #[NotBlank(message: 'damOrganizationId can not be blank.')]
         public readonly int $damOrganizationId,
 
         public readonly ?ProjectFromPayload $projectData,
@@ -36,6 +36,9 @@ final class PimtodayUploadRequest
         public readonly ?UploadedFile $fileContents,
 
         public readonly ?Organization $organization,
+
+        #[NotBlank(message: 'createOrUpdate can not be blank.')]
+        public readonly string $createOrUpdate,
 
         /** @var array<int, ValidationError> $errors */
         public ?array $errors
