@@ -39,16 +39,19 @@ final class BuildPimtodayBBUploadRequest
 
         $payloadArray = json_decode((string) json_encode($payload), true);
 
-        $document = $payloadArray['documentData'];
-        $project = $payloadArray['projectData'];
-        $product = $payloadArray['productData'];
+        $document = $payloadArray['documentData'] ?? [];
+        $project = $payloadArray['projectData'] ?? [];
+        $product = $payloadArray['productData'] ?? [];
 
         $documentFromPayload= null;
 
         if (!empty($document) && isset($document['pimTodayId'])) {
+            $documentPimTodayId = $document['pimTodayId'];
+            $documentDamId = $document['damId'] ?? null;
+
             $documentFromPayload = new DocumentFromPayload(
-                pimTodayId: (int) $document['pimTodayId'],
-                damId: (int) $document['damId'],
+                pimTodayId: (int) $documentPimTodayId,
+                damId: (int) $documentDamId,
                 documentIdentifier: $document['documentIdentifier'] ?? null,
                 damFilename: $document['damFilename'] ?? null,
                 damVersion: $document['damVersion'] ?? null,
@@ -80,9 +83,12 @@ final class BuildPimtodayBBUploadRequest
         $projectFromPayload= null;
 
         if (!empty($project) && isset($project['pimTodayId'])) {
+            $projectPimTodayId = $project['pimTodayId'];
+            $projectDamId = $project['damId'] ?? null;
+
             $projectFromPayload = new ProjectFromPayload(
-                pimTodayId: (int) $project['pimTodayId'],
-                damId: (int) $project['damId'],
+                pimTodayId: (int) $projectPimTodayId,
+                damId: (int) $projectDamId,
                 projectNumber: $project['projectNumber'] ?? '',
                 froqProjectNumber: $project['froqProjectNumber'] ?? '',
                 projectName: $project['projectName'] ?? '',
@@ -103,9 +109,12 @@ final class BuildPimtodayBBUploadRequest
         $productFromPayload = null;
 
         if (!empty($product) && isset($product['pimTodayId'])) {
+            $productPimTodayId = $product['pimTodayId'];
+            $productDamId = $product['damId'] ?? null;
+
             $productFromPayload = new ProductFromPayload(
-                pimTodayId: (int) $product['pimTodayId'],
-                damId: (int) $product['damId'],
+                pimTodayId: (int) $productPimTodayId,
+                damId: (int) $productDamId,
                 pimTodaySku: $product['pimTodaySku'] ?? '',
                 pimTodayEan: $product['pimTodayEan'] ?? '',
             );
