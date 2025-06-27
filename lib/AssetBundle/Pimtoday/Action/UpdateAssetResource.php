@@ -54,16 +54,14 @@ final class UpdateAssetResource
 
         $asset = ($this->buildFileAsset)($uploadedFile, (string) $pimtodayUploadRequest->documentData?->documentName, $newAssetVersionFolder);
 
-        $newAssetResourceVersionCount = (int) $existingAssetResource->getKey() + 1;
-
         $newAssetResourceLatestVersion = AssetResource::create();
         $newAssetResourceLatestVersion->setPublished(true);
         $newAssetResourceLatestVersion->setPath($assetResourceFolderPath.AssetResourceOrganizationFolderNames::Assets->readable().'/'.$pimtodayUploadRequest->documentData?->documentName.'/');
         $newAssetResourceLatestVersion->setName($pimtodayUploadRequest->documentData?->documentName);
         $newAssetResourceLatestVersion->setParentId((int) $parentAssetResource->getId());
         $newAssetResourceLatestVersion->setAsset($asset);
-        $newAssetResourceLatestVersion->setAssetVersion($newAssetResourceVersionCount);
-        $newAssetResourceLatestVersion->setKey((string) $newAssetResourceVersionCount);
+        $newAssetResourceLatestVersion->setAssetVersion($newVersionCount);
+        $newAssetResourceLatestVersion->setKey((string) $newVersionCount);
         $newAssetResourceLatestVersion->setPimTodayId((int) $pimtodayUploadRequest->documentData?->pimTodayId);
 
         $newAssetResourceLatestVersion->save();

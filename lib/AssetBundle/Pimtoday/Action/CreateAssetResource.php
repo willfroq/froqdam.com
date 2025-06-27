@@ -89,16 +89,16 @@ final class CreateAssetResource
 
         $assetResourceVersionOne->save();
 
-        $product = null;
+        $product = Product::getByPimTodayId($pimtodayUploadRequest->productData->pimTodayId)?->current(); /** @phpstan-ignore-line */
 
-        if (!empty($pimtodayUploadRequest->productData?->pimTodayEan)) {
+        if (!empty($pimtodayUploadRequest->productData?->pimTodayEan) && !($product instanceof Product)) {
             $product = (new Product\Listing())
                 ->addConditionParam('EAN = ?', $pimtodayUploadRequest->productData->pimTodayEan)
                 ->addConditionParam('o_path = ?', $assetResourceFolderPath . AssetResourceOrganizationFolderNames::Products->readable() . '/')
                 ->current();
         }
 
-        if (!empty($pimtodayUploadRequest->productData?->pimTodaySku) && empty($pimtodayUploadRequest->productData?->pimTodayEan)) {
+        if (!empty($pimtodayUploadRequest->productData?->pimTodaySku) && empty($pimtodayUploadRequest->productData?->pimTodayEan) && !($product instanceof Product)) {
             $product = (new Product\Listing())
                 ->addConditionParam('SKU = ?', $pimtodayUploadRequest->productData->pimTodaySku)
                 ->addConditionParam('o_path = ?', $assetResourceFolderPath . AssetResourceOrganizationFolderNames::Products->readable() . '/')
@@ -168,9 +168,9 @@ final class CreateAssetResource
             throw new Exception(message: $message);
         }
 
-        $project = null;
+        $project = Project::getByPimTodayId($pimtodayUploadRequest->projectData->pimTodayId)?->current(); /** @phpstan-ignore-line */
 
-        if (!empty($pimtodayUploadRequest->projectData->froqProjectNumber)) {
+        if (!empty($pimtodayUploadRequest->projectData->froqProjectNumber) && !($project instanceof Project)) {
             $project = (new Project\Listing())
                 ->addConditionParam('o_key = ?', $pimtodayUploadRequest->projectData->froqProjectNumber)
                 ->addConditionParam('o_path = ?', $assetResourceFolderPath . AssetResourceOrganizationFolderNames::Projects->readable() . '/')

@@ -12,6 +12,8 @@ use Froq\AssetBundle\Pimtoday\ValueObject\ProjectFromPayload;
 use Froq\AssetBundle\Pimtoday\ValueObject\ValidationError;
 use Pimcore\Model\DataObject\AssetResource;
 use Pimcore\Model\DataObject\Organization;
+use Pimcore\Model\DataObject\Product;
+use Pimcore\Model\DataObject\Project;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -174,6 +176,18 @@ final class BuildPimtodayBBUploadRequest
             createOrUpdate: $payloadArray['createOrUpdate'],
             errors: []
         );
+
+        $product = Product::getByPimTodayId($pimtodayUploadRequest->productData->pimTodayId)?->current(); /** @phpstan-ignore-line */
+
+        if (!($product instanceof Product) && $pimtodayUploadRequest->createOrUpdate === 'update') {
+            $errors[] = new ValidationError(propertyPath: 'product', message: 'Can NOT update product that does not exist!');
+        }
+
+        $project = Project::getByPimTodayId($pimtodayUploadRequest->projectData->pimTodayId)?->current(); /** @phpstan-ignore-line */
+
+        if (!($project instanceof Project) && $pimtodayUploadRequest->createOrUpdate === 'update') {
+            $errors[] = new ValidationError(propertyPath: 'product', message: 'Can NOT update project that does not exist!');
+        }
 
         if (empty($pimtodayUploadRequest->fileContents) && empty($pimtodayUploadRequest->fileBase64)) {
             $errors[] = new ValidationError(propertyPath: 'file', message: sprintf("Can't upload without file: %s", date('F j, Y H:i')));
