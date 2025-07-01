@@ -88,6 +88,12 @@ final class BuildSearchRequest
                 $hasErrors = !is_string($filterValues);
             }
 
+            $startDateValue = $filterValues['startDate'] ?? '';
+            $endDateValue = $filterValues['endDate'] ?? '';
+
+            $minValue = $filterValues['min'] ?? 0;
+            $maxValue = $filterValues['max'] ?? 0;
+
             $filterValueObjects[$filterKey] = match ($validFiltersForUser[$filterKey]['type']) {
                 FilterTypes::Keyword->readable() => new MultiselectCheckboxFilter(
                     filterName: $filterKey,
@@ -101,14 +107,14 @@ final class BuildSearchRequest
 
                 FilterTypes::Date->readable() => new DateRangeFilter(
                     filterName: $filterKey,
-                    startDate: new \DateTime($filterValues['startDate'] ?? ''),
-                    endDate: new \DateTime($filterValues['endDate'] ?? ''),
+                    startDate: new \DateTime((string) $startDateValue),
+                    endDate: new \DateTime((string) $endDateValue),
                 ),
 
                 FilterTypes::Integer->readable() => new NumberRangeFilter(
                     filterName: $filterKey,
-                    min: $filterValues['min'] ?? 0,
-                    max: $filterValues['max'] ?? 0,
+                    min: (float) $minValue,
+                    max: (float) $maxValue,
                 ),
 
                 default => throw new \InvalidArgumentException(message: 'Unsupported Filter Type')

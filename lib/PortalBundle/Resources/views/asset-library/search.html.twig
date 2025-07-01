@@ -24,26 +24,34 @@
 
             <div class="flex items-center gap-2">
                 <twig:Dropdown
-                        id="sort-dropdown"
-                        keyLabel="Sort by:"
-                        :sortOptions="sortOptions"
-                        :selectedSortOption="selectedSortOption"
-                        placeholder="Search sorting options..."
+                    id="sort-dropdown"
+                    keyLabel="Sort by:"
+                    :sortOptions="sortOptions"
+                    :selectedSortOption="selectedSortOption"
+                    placeholder="Search sorting options..."
                 />
             </div>
 
             <div>
-                <twig:ViewToggle view="grid" />
+                <twig:ViewToggle view="{{ app.request.query.get('view', 'grid') }}" />
             </div>
+
+            <twig:ShareModal url="{{ path('froq_basket.selected_asset_resource') }}">
+                <button id='share-button' data-role="share-button" id="gridViewButton" class="modal-share-button" >
+                    {% include '@FroqPortal/icons/basket-icon.html.twig' %}
+                    Basket
+                    <span class="selected-number-indicator hidden"></span>
+                </button>
+            </twig:ShareModal>
         </div>
 
         <turbo-frame id="asset-page" data-search-target="assetPage">
             <div class="flex flex-col md:flex-row gap-6">
                 <div class="w-full md:w-280 flex-shrink-0">
                     <twig:Sidebar
-                            :sidebarFilters="sidebarFilters"
-                            :hasSelectedFilters="hasSelectedFilters"
-                            homeUrl="{{ path('froq_portal.asset_library.search') }}"
+                        :sidebarFilters="sidebarFilters"
+                        :hasSelectedFilters="hasSelectedFilters"
+                        homeUrl="{{ path('froq_portal.asset_library.search') }}"
                     />
                 </div>
 
@@ -60,9 +68,10 @@
 
                     {% if assetResourceItems is not empty %}
                         <twig:AssetResourceCollection
-                                :columns="columns"
-                                :assetResourceItems="assetResourceItems"
-                                currentView="{{ app.request.query.get('view', 'grid') }}"
+                            :columns="columns"
+                            :assetResourceItems="assetResourceItems"
+                            currentView="{{ app.request.query.get('view', 'grid') }}"
+                            :isHeaderHidden="false"
                         />
                     {% endif %}
                 </div>

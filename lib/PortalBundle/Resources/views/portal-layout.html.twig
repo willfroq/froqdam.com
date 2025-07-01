@@ -16,7 +16,7 @@
             {% endif %}
 
             {%  if app.request.get('_route') == 'froq_portal.asset_library.search' or app.request.get('_route') == 'froq_portal.colour_library.search' or app.request.get('_route') == 'froq_portal.colour_library.detail' %}
-                <script type="text/javascript" src="{{ mix('build/stimulus/bootstrap.js') }}"></script>
+                <script type="text/javascript" src="{{ mix('build/stimulus/app.js') }}"></script>
             {% endif %}
         {% endblock %}
     </head>

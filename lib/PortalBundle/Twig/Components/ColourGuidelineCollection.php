@@ -15,4 +15,5 @@ final class ColourGuidelineCollection
 
     public string $currentView = 'grid';
 
+    public bool $isHeaderHidden;
 }

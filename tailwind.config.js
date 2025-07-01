@@ -9,6 +9,24 @@ module.exports = {
     plugins: [
         plugin(function ({ addVariant }) {
             addVariant('hocus', ['&:hover', '&:focus'])
+        }),
+        plugin(function ({ addBase }) {
+            addBase({
+                '@font-face': [
+                    {
+                        'font-family': 'Open Sans',
+                        'src': 'url("/fonts/open-sans/OpenSans-Regular.ttf") format("truetype")',
+                        'font-weight': '400',
+                        'font-style': 'normal',
+                    },
+                    {
+                        'font-family': 'Open Sans',
+                        'src': 'url("/fonts/open-sans/OpenSans-SemiBold.ttf") format("truetype")',
+                        'font-weight': '600',
+                        'font-style': 'normal',
+                    }
+                ]
+            })
         })
     ],
     theme: {
@@ -151,9 +169,8 @@ module.exports = {
                 '10': '10px',
             },
             fontFamily: {
-                sans: 'Open Sans',
+                sans: ['Open Sans', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'],
             },
         },
     },
 }
-

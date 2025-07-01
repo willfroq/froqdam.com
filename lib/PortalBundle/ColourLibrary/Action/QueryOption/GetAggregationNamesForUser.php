@@ -22,9 +22,6 @@ final class GetAggregationNamesForUser
             'organizations',
             'brands',
             'markets',
-            'mediums',
-            'substrates',
-            'printing_techniques',
         ];
     }
 }

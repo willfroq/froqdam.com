@@ -39,8 +39,8 @@ final class BuildDynamicFilters
                 )(),
                 $filterValueObject instanceof DateRangeFilter => (
                     function () use ($filterValueObject, $boolQuery, $filterName) {
-                        $options['gte'] = $filterValueObject->startDate->setTimezone(new \DateTimeZone('UTC'))->getTimestamp();
-                        $options['lte'] = $filterValueObject->endDate->modify('+1 day')->setTimezone(new \DateTimeZone('UTC'))->getTimestamp();
+                        $options['gte'] = $filterValueObject->startDate->setTimezone(new \DateTimeZone('Europe/Amsterdam'))->getTimestamp();
+                        $options['lte'] = $filterValueObject->endDate->modify('+1 day')->setTimezone(new \DateTimeZone('Europe/Amsterdam'))->getTimestamp();
 
                         $boolQuery->addFilter(new Range((string) $filterName, $options));
                     }

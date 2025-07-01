@@ -11,6 +11,7 @@ final class AssetResourceItem
     public function __construct(
         public int $assetResourceId,
         public int $assetId,
+        public int $parentId,
         public string $filename,
         public string $assetTypeName,
         public string $projectName,
@@ -21,6 +22,7 @@ final class AssetResourceItem
     ) {
         Assert::numeric($this->assetResourceId, 'Expected "assetResourceId" to be a numeric, got %s');
         Assert::numeric($this->assetId, 'Expected "assetResourceId" to be a numeric, got %s');
+        Assert::numeric($this->parentId, 'Expected "parentId" to be a numeric, got %s');
         Assert::string($this->filename, 'Expected "filename" to be a string, got %s');
         Assert::string($this->assetTypeName, 'Expected "assetTypeName" to be a string, got %s');
         Assert::string($this->projectName, 'Expected "projectName" to be a string, got %s');

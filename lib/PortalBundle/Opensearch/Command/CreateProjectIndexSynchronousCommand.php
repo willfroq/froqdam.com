@@ -10,6 +10,7 @@ use Froq\PortalBundle\Opensearch\Enum\IndexNames;
 use Froq\PortalBundle\Opensearch\Mapper\BuildColourGuidelineItemMapper;
 use JoliCode\Elastically\Client;
 use Pimcore\Model\DataObject\ColourGuideline;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -34,6 +35,7 @@ final class CreateProjectIndexSynchronousCommand extends Command
     /**
      * @throws ExceptionInterface
      * @throws \Exception
+     * @throws InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

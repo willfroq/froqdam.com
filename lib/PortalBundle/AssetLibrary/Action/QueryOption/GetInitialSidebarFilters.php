@@ -9,6 +9,7 @@ use Froq\PortalBundle\Opensearch\ValueObject\SidebarFilter;
 use Pimcore\Model\DataObject\Data\BlockElement;
 use Pimcore\Model\DataObject\GroupAssetLibrarySettings;
 use Pimcore\Model\DataObject\User;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 final class GetInitialSidebarFilters
@@ -18,10 +19,10 @@ final class GetInitialSidebarFilters
     }
 
     /**
-     * @throws \Exception
-     *
      * @return array<int, SidebarFilter>
-     */
+     *
+     * @throws InvalidArgumentException
+     * @throws \Exception*/
     public function __invoke(string $indexName, #[CurrentUser] User $user): array
     {
         $settings = $user->getGroupAssetLibrarySettings();

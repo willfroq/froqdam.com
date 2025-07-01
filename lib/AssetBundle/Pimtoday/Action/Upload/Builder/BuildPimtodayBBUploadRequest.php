@@ -178,13 +178,11 @@ final class BuildPimtodayBBUploadRequest
         );
 
         $product = Product::getByPimTodayId($pimtodayUploadRequest->productData->pimTodayId)?->current(); /** @phpstan-ignore-line */
-
         if (!($product instanceof Product) && $pimtodayUploadRequest->createOrUpdate === 'update') {
             $errors[] = new ValidationError(propertyPath: 'product', message: 'Can NOT update product that does not exist!');
         }
 
         $project = Project::getByPimTodayId($pimtodayUploadRequest->projectData->pimTodayId)?->current(); /** @phpstan-ignore-line */
-
         if (!($project instanceof Project) && $pimtodayUploadRequest->createOrUpdate === 'update') {
             $errors[] = new ValidationError(propertyPath: 'product', message: 'Can NOT update project that does not exist!');
         }

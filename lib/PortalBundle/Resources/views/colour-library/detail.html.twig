@@ -8,7 +8,7 @@
     <twig:Navbar logoLink="{{ path('froq_portal.colour_library.search') }}" :user="app.user" />
 
     <div class="mx-auto px-6 pb-12">
-        <twig:Breadcrumb text="< {{ colourGuideline.name }}" />
+        <twig:Breadcrumb text="Back" />
 
         <div class="bg-white rounded-lg shadow-sm p-[38px] mb-6">
             <div class="flex justify-between items-center mb-6 h-52">
@@ -16,6 +16,17 @@
 
                 {# TODO Implement Edit later #}
 {#                <twig:EditButton href="{{ path('froq_portal.colour_library.edit', { id: colourGuideline.id }) }}" />#}
+            </div>
+
+            <div class="h-52">
+                <p class="text-18 leading-32 font-bold mb-2">Brand:
+                    {% set brands = colourGuideline.getBrands() %}
+                    {{ brands|map(b => b.getName())|join(', ') }}
+                </p>
+                <p class="text-18 leading-32 font-bold">Markets:
+                    {% set markets = colourGuideline.getMarkets() %}
+                    {{ markets|map(m => m.getName())|join(', ') }}
+                </p>
             </div>
             
             <twig:ColourGuidelineDescription description="{{ colourGuideline.description|default('') }}" />

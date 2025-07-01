@@ -56,6 +56,17 @@ class AzureController extends AbstractController
 
                 return $this->redirect($targetPath);
             }
+
+            // Handle colour library paths
+            $colourSearchPageRegex = '/^\/portal\/colour-library\/search\/?(?:\?.*)?$/';
+            $colourDetailPageRegex = '/^\/portal\/colour-library\/detail\/\d+\/?(?:\?.*)?$/';
+            $colourEditPageRegex = '/^\/portal\/colour-library\/edit\/\d+\/?(?:\?.*)?$/';
+
+            if (preg_match($colourSearchPageRegex, $fullPath) || preg_match($colourDetailPageRegex, $fullPath) || preg_match($colourEditPageRegex, $fullPath)) {
+                $this->removeTargetPath($session, 'portal');
+
+                return $this->redirect($targetPath);
+            }
         }
 
         return $this->redirectToRoute((string) $defaultRouteName);

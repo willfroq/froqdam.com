@@ -90,5 +90,5 @@ mix.webpackConfig({
     }
 });
 
-mix.js('lib/PortalBundle/Resources/assets/stimulus/bootstrap.js', 'public/build/stimulus')
+mix.js('lib/PortalBundle/Resources/assets/stimulus/app.js', 'public/build/stimulus')
     .version();

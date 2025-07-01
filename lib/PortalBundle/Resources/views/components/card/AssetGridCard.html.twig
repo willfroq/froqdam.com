@@ -1,0 +1,71 @@
+<div 
+    class="bg-white rounded-md shadow-sm h-full transition-all duration-200 hover:shadow-md cursor-pointer"
+    onclick="window.location.href='{{ this.detailPath }}'"
+>
+    <div class="p-4">
+        <div class="flex items-center justify-center py-4">
+            {% if this.imagePath %}
+                <img 
+                    src="{{ this.imagePath }}" 
+                    alt="{{ this.name }}"
+                    loading="lazy"
+                    class="max-h-48 object-contain transition-all duration-300 transform lazyload"
+                >
+            {% else %}
+                <div class="h-48 w-full bg-gray-100 flex items-center justify-center">
+                    <span class="text-gray-400">No image available</span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <twig:Tooltip label="{{ asset ?  asset.fileName : 'No filename' }}">
+        <h6 class="truncate-text-title title-wrap">
+            {{ asset ? asset.fileName : 'No filename' }}
+        </h6>
+    </twig:Tooltip>
+
+    <div class="card-body">
+        <ul>
+            {% for column in columns %}
+                <li><p class="m-0 wrap-text"><span> {{ column.filterName }}: </span>{{ this.name }}:</p></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="hidden gap-4">
+        <a class="flex text-primary no-underline" href="{{ url('froq_portal.asset_library.detail', { 'id' : this.id }) }}">
+            <div class="view-icon">{% include '@FroqPortal/icons/open-link.html.twig' %}</div>
+
+            <div class="text">view</div>
+        </a>
+    </div>
+
+    <div class="card-footer justify-around">
+        <a class="py-2 mx-auto footer-button" href="{{ path('froq_portal.asset_library.detail.download.file', { 'id': this.id }) }}">
+            <twig:Tooltip label="Download">
+                <div class="download-icon">{% include '@FroqPortal/icons/download-link.html.twig' %}</div>
+            </twig:Tooltip>
+        </a>
+        <a class="py-2 mx-auto footer-button" href="{{ url('froq_portal.asset_library.detail', { 'id' : this.id }) }}">
+            <twig:Tooltip label="View">
+                <div class="view-icon">{% include '@FroqPortal/icons/open-link.html.twig' %}</div>
+            </twig:Tooltip>
+        </a>
+        <div class="mx-auto footer-button">
+            <app-selector class="select-element card-footer-element py-2 mx-auto footer-button"
+                          trigger-id="selector-trigger"
+                          state="{{ this.id }}"
+            >
+                <div id="selector-trigger" class="view-icon">
+                    <twig:Tooltip label="Add to Basket">
+                                    <span id="icon-selector-container">
+                                        <span class="icon add-icon">{% include '@FroqPortal/icons/basket-add-icon.html.twig' %}</span>
+                                        <span class="icon remove-icon d-none">{% include '@FroqPortal/icons/basket-remove-icon.html.twig' %}</span>
+                                    </span>
+                    </twig:Tooltip>
+                </div>
+            </app-selector>
+        </div>
+    </div>
+</div>

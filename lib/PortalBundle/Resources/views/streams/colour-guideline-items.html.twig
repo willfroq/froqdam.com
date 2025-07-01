@@ -7,8 +7,10 @@
         {% if colourGuidelineItems is not empty %}
             <div class="flex-grow">
                 <twig:ColourGuidelineCollection
-                        :colourGuidelineItems="colourGuidelineItems"
-                        currentView="{{ app.request.query.get('view', 'grid') }}"
+                    :colourGuidelineItems="colourGuidelineItems"
+                    currentView="{{ app.request.query.get('view', 'grid') }}"
+                    :columns="columns"
+                    :isHeaderHidden="true"
                 />
             </div>
         {% endif %}

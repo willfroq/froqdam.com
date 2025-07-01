@@ -13,6 +13,7 @@ use Elastica\Query\Terms;
 use Froq\PortalBundle\AssetLibrary\DataTransferObject\SearchRequest as AssetSearchRequest;
 use Froq\PortalBundle\ColourLibrary\DataTransferObject\SearchRequest as ColourSearchRequest;
 use Froq\PortalBundle\Opensearch\ValueObject\MultiselectCheckboxFilter;
+use Pimcore\Model\DataObject\Organization;
 use Pimcore\Model\DataObject\User;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -48,6 +49,13 @@ final class BuildAggregation
             }
 
             $globalAggregation = new GlobalAggregation($aggregationName);
+
+            $selfExcludingQuery->addFilter(
+                new Terms(
+                    'organization_id',
+                    array_filter(array_map(callback: fn (Organization $organization) => $organization->getId(), array: $user->getOrganizations()))
+                )
+            );
 
             $filterAggregation = new Filter("filtered_{$aggregationName}", $selfExcludingQuery);
             $filterAggregation->addAggregation($termsAggregation);

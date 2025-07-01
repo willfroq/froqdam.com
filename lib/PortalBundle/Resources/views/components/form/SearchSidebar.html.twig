@@ -11,12 +11,13 @@
         {% set currentFilters = app.request.query.get('filters')|keys %}
 
         <input
-            id="search-sidebar-input"
-            data-action="input->search#connect"
+            id="search-sidebar-input-{{ filterName }}"
+            data-filter-name="{{ filterName }}"
+            data-sidebar-search-input="sidebarSearchInput"
+            data-search-target="sidebarSearchInput"
             type="text"
             class="{{ this.size == 'sm' ? 'py-1.5 text-sm' : 'py-2 text-base' }} pl-10 pr-4 block w-full rounded-lg outline-none {{ class }}"
             placeholder="{{ this.placeholder }}"
-            data-search-target="sidebarSearchInput"
             value="{{ searchTerm }}"
             style="border: 1px solid #E4E7EC; transition: all 0.2s ease-in-out;"
             onFocus="this.style.border='1px solid #00B5A0'; this.style.boxShadow='0px 0px 0px 4px rgba(231, 247, 245, 0.8)'"

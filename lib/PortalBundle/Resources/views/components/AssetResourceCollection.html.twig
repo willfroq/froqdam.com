@@ -12,11 +12,13 @@
             {% if item is not empty and asset is not empty %}
                 {% set imageSrc = get_asset_thumbnail_hashed_url(asset, 'portal_asset_library_item_grid') %}
 
-                <twig:GridCard
-                        id="{{ item.assetResourceId }}"
-                        name="{{ item.filename }}"
-                        imagePath="{{ imageSrc }}"
-                        detailPath="{{ path('froq_portal.asset_library.detail', { id: item.assetResourceId }) }}"
+                <twig:AssetGridCard
+                    id="{{ item.assetResourceId }}"
+                    :asset="asset"
+                    name="{{ item.filename }}"
+                    imagePath="{{ imageSrc }}"
+                    :columns="columns"
+                    detailPath="{{ path('froq_portal.asset_library.detail', { 'id': item.assetResourceId }) }}"
                 />
             {% endif %}
         {% endfor %}
@@ -27,7 +29,7 @@
          data-asset-resource-collection-target="listContainer"
     >
         <table class="w-full" style="border-collapse: separate; border-spacing: 0;">
-            <thead id="asset-resource-header" class="bg-gray-50" style="background-color: #F8F9FA; border-bottom: 1px solid #E4E7EC;">
+            <thead id="asset-resource-header" class="bg-gray-50 {{ isHeaderHidden ? 'hidden' : '' }}" style="background-color: #F8F9FA; border-bottom: 1px solid #E4E7EC;">
             <tr>
                 {% for column in columns|default([]) %}
                     {% if column is not empty %}

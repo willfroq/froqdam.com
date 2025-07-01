@@ -65,6 +65,7 @@ final class BuildAssetResourceItemMapper
             // Denormalized properties for AssetResourceItem
             'assetResourceId' => (int) $assetResourceLatestVersion->getId(),
             'assetId' => (int) $asset?->getId(),
+            'parentId' => (int) $parentAssetResource->getId(),
             'filename' => $assetResourceName,
             'assetTypeName' => $assetTypeName,
             'projectName' => $project instanceof Project ? $project->getName() : '',
@@ -100,6 +101,7 @@ final class BuildAssetResourceItemMapper
             'printer_code' => ($this->getAssetResourceMetadataValues)($parentAssetResource, $mapping, 'printer_code'),
             'printingmaterial' => ($this->getAssetResourceMetadataValues)($parentAssetResource, $mapping, 'printingmaterial'),
             'printing_process' => ($this->getAssetResourceMetadataValues)($parentAssetResource, $mapping, 'printing_process'),
+            'printingprocess' => ($this->getAssetResourceMetadataValues)($parentAssetResource, $mapping, 'printingprocess'),
             'printing_workflow' => ($this->getAssetResourceMetadataValues)($parentAssetResource, $mapping, 'printing_workflow'),
             'materials' => ($this->getAssetResourceMetadataValues)($assetResourceLatestVersion, $mapping, 'materials'),
             'packtype' => ($this->getAssetResourceMetadataValues)($assetResourceLatestVersion, $mapping, 'packtype'),

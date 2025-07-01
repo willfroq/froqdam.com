@@ -5,10 +5,15 @@
         <div class="space-y-1.5">
             <label class="block text-sm font-medium text-dark-600">From</label>
             <label>
-                <input
+                <input id="calendar-startDate-input-{{ filterName }}"
+                    data-filter-name="{{ filterName }}"
+                    data-startDate="startDate"
+                    data-sidebar-start-date-input="sidebarStartDateInput"
+                    data-search-target="sidebarStartDateInput"
+                    data-action="change->search#dateRangeSubmit"
                     type="date"
                     class="block w-full rounded border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
-                    value="{{ fromDate }}"
+                    value="{{ startDate }}"
                 >
             </label>
         </div>
@@ -17,10 +22,14 @@
         <div class="space-y-1.5">
             <label class="block text-sm font-medium text-dark-600">To</label>
             <label>
-                <input
+                <input id="calendar-endDate-input-{{ filterName }}"
+                    data-filter-name="{{ filterName }}"
+                    data-sidebar-end-date-input="sidebarEndDateInput"
+                    data-search-target="sidebarEndDateInput"
+                    data-action="change->search#dateRangeSubmit"
                     type="date"
                     class="block w-full rounded border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
-                    value="{{ toDate }}"
+                    value="{{ endDate }}"
                 >
             </label>
         </div>

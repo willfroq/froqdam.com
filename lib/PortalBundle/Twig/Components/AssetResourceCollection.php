@@ -19,4 +19,5 @@ final class AssetResourceCollection
     /** @var array<int, Column> */
     public array $columns;
 
+    public bool $isHeaderHidden;
 }

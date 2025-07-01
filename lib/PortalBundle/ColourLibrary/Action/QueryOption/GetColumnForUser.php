@@ -25,22 +25,6 @@ final class GetColumnForUser
                 filterName: 'brands',
                 sortDirection: 'brands' === $sortBy ? $sortDirection : ''
             ),
-            new Column(
-                label: 'Substrates',
-                filterName: 'substrates',
-                sortDirection: 'substrates' === $sortBy ? $sortDirection : ''
-            ),
-            new Column(
-                label: 'Printing Technique',
-                filterName: 'printing_techniques',
-                sortDirection: 'printing_technique' === $sortBy ? $sortDirection : ''
-            ),
-
-            new Column(
-                label: 'Mediums',
-                filterName: 'mediums',
-                sortDirection: 'mediums' === $sortBy ? $sortDirection : ''
-            ),
         ];
     }
 }

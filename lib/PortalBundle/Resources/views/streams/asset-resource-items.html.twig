@@ -7,8 +7,10 @@
         {% if assetResourceItems is not empty %}
             <div class="flex-grow">
                 <twig:AssetResourceCollection
-                        :assetResourceItems="assetResourceItems"
-                        currentView="{{ app.request.query.get('view', 'grid') }}"
+                    :assetResourceItems="assetResourceItems"
+                    currentView="{{ app.request.query.get('view', 'grid') }}"
+                    :columns="columns"
+                    :isHeaderHidden="true"
                 />
             </div>
         {% endif %}

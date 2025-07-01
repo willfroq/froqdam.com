@@ -19,10 +19,10 @@
         {% for sidebarFilter in this.sidebarFilters %}
             <div>
                 <twig:FilterGroup
-                        :title="sidebarFilter.label"
-                        :filterName="sidebarFilter.filterName"
-                        :expanded="sidebarFilter.shouldExpand"
-                        :sidebarFilter="sidebarFilter"
+                    :title="sidebarFilter.label"
+                    :filterName="sidebarFilter.filterName"
+                    :expanded="sidebarFilter.shouldExpand"
+                    :sidebarFilter="sidebarFilter"
                 />
             </div>
         {% endfor %}

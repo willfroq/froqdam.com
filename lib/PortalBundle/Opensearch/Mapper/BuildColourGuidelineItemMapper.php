@@ -11,6 +11,7 @@ use Froq\PortalBundle\Opensearch\Exception\MappingDoesNotMatchException;
 use Pimcore\Model\DataObject\ColourDefinition;
 use Pimcore\Model\DataObject\ColourGuideline;
 use Pimcore\Model\DataObject\PrintGuideline;
+use Psr\Cache\InvalidArgumentException;
 
 final class BuildColourGuidelineItemMapper
 {
@@ -24,6 +25,7 @@ final class BuildColourGuidelineItemMapper
      * @return array<string, mixed>
      *
      * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function __invoke(ColourGuideline $colourGuideline): array
     {

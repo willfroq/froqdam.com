@@ -1,8 +1,8 @@
 <div id="colour-guideline-collection"
      class="w-full mb-4"
      data-controller="colour-guideline-collection"
-     data-colour-guideline-collection-current-view-value="{{ currentView }}">
-
+     data-colour-guideline-collection-current-view-value="{{ currentView }}"
+>
     <!-- Grid View -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 !gap-2 {{ currentView == 'grid' ? '' : 'hidden' }}"
          data-colour-guideline-collection-target="gridContainer">
@@ -13,11 +13,12 @@
                 {% set imageSrc = get_asset_thumbnail_hashed_url(asset, 'portal_asset_library_item_grid') %}
 
                 <twig:GridCard
-                        id="{{ item.colourGuidelineId }}"
-                        name="{{ item.name }}"
-                        :markets="item.countries"
-                        imagePath="{{ imageSrc }}"
-                        detailPath="{{ path('froq_portal.colour_library.detail', { id: item.colourGuidelineId }) }}"
+                    id="{{ item.colourGuidelineId }}"
+                    name="{{ item.name }}"
+                    :markets="item.countries"
+                    imagePath="{{ imageSrc }}"
+                    :columns="columns"
+                    detailPath="{{ path('froq_portal.colour_library.detail', { id: item.colourGuidelineId }) }}"
                 />
             {% endif %}
         {% endfor %}
@@ -25,9 +26,10 @@
 
     <!-- List/Table View -->
     <div class="bg-white rounded-lg shadow-sm overflow-hidden {{ currentView == 'list' ? '' : 'hidden' }}"
-         data-colour-guideline-collection-target="listContainer">
+         data-colour-guideline-collection-target="listContainer"
+    >
         <table class="w-full" style="border-collapse: separate; border-spacing: 0;">
-            <thead id="colour-guideline-header" class="bg-gray-50" style="background-color: #F8F9FA; border-bottom: 1px solid #E4E7EC;">
+            <thead id="colour-guideline-header" class="bg-gray-50 {{ isHeaderHidden ? 'hidden' : '' }}" style="background-color: #F8F9FA; border-bottom: 1px solid #E4E7EC;">
             <tr>
                 {% for column in columns|default([]) %}
                     {% if column is not empty %}
@@ -38,6 +40,7 @@
                 {% endfor %}
             </tr>
             </thead>
+
             <tbody class="bg-white divide-y divide-gray-100">
             {% for item in colourGuidelineItems %}
                 {% set asset = get_asset_by_id(item.imageId) %}
@@ -46,11 +49,11 @@
                     {% set imageSrc = get_asset_thumbnail_hashed_url(asset, 'portal_asset_library_item') %}
 
                     <twig:ColourGuidelineTableRow
-                            id="{{ item.colourGuidelineId }}"
-                            name="{{ item.name }}"
-                            :markets="item.countries"
-                            imagePath="{{ imageSrc }}"
-                            detailPath="{{ path('froq_portal.colour_library.detail', { id: item.colourGuidelineId }) }}"
+                        id="{{ item.colourGuidelineId }}"
+                        name="{{ item.name }}"
+                        :markets="item.countries"
+                        imagePath="{{ imageSrc }}"
+                        detailPath="{{ path('froq_portal.colour_library.detail', { id: item.colourGuidelineId }) }}"
                     />
                 {% endif %}
             {% endfor %}

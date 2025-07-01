@@ -37,38 +37,7 @@ final class GetInitialSidebarFilters
                 numberRangeFilter: null,
                 inputFilter: null,
                 shouldExpand: false
-            ),
-            new SidebarFilter(
-                filterName: 'substrates',
-                label: 'Substrates',
-                type: 'keyword',
-                aggregation: null,
-                dateRangeFilter: null,
-                numberRangeFilter: null,
-                inputFilter: null,
-                shouldExpand: false
-            ),
-            new SidebarFilter(
-                filterName: 'printing_technique',
-                label: 'Printing Technique',
-                type: 'keyword',
-                aggregation: null,
-                dateRangeFilter: null,
-                numberRangeFilter: null,
-                inputFilter: null,
-                shouldExpand: false
-            ),
-
-            new SidebarFilter(
-                filterName: 'mediums',
-                label: 'Mediums',
-                type: 'keyword',
-                aggregation: null,
-                dateRangeFilter: null,
-                numberRangeFilter: null,
-                inputFilter: null,
-                shouldExpand: false
-            ),
+            )
         ];
     }
 }

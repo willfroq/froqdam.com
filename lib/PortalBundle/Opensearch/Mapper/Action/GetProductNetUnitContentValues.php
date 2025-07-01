@@ -51,9 +51,19 @@ final class GetProductNetUnitContentValues
                     continue;
                 }
 
-                $values[] = $value.$quantityValue->getUnit()?->getAbbreviation();
+                $values[] = $value;
             }
         }
+
+        usort($values, function ($a, $b) {
+            preg_match('/\d+/', $a, $matchA);
+            preg_match('/\d+/', $b, $matchB);
+
+            $numA = (int) current($matchA);
+            $numB = (int) current($matchB);
+
+            return $numA <=> $numB;
+        });
 
         return array_values(array_unique(array_filter($values, fn (?string $value) => $value !== null)));
     }

@@ -11,6 +11,8 @@ final class Range
 {
     public string $label;
 
+    public string $filterName;
+
     public ?int $minValue = null;
 
     public ?int $maxValue = null;

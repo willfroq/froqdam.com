@@ -23,18 +23,19 @@ final class GetMetricValue
 
     private function getConvertedValueWithMetricUnit(QuantityValue $quantityValue, string $metricUnit): string
     {
-        $result = $quantityValue->getUnit()?->getFactor() * (float) $quantityValue->getValue();
+        $conversionFactor = $quantityValue->getUnit()?->getFactor() ?: 1;
+        $converted = $conversionFactor * (float) $quantityValue->getValue();
 
-        return match ($quantityValue->getUnit()?->getId()) {
+        return match ($metricUnit) {
             MetricUnits::Millilitre->readable(),
             MetricUnits::Litre->readable(),
             MetricUnits::Centilitre->readable() =>
-            $metricUnit === MetricUnits::Millilitre->readable() ? $result.' '.MetricUnits::Millilitre->readable() : '',
+                $metricUnit === MetricUnits::Millilitre->readable() ? $converted.' '.$metricUnit : '',
 
             MetricUnits::Grams->readable(),
             MetricUnits::Kilograms->readable(),
             MetricUnits::Milligrams->readable() =>
-            $metricUnit === MetricUnits::Grams->readable() ? $result.' '.MetricUnits::Grams->readable() : '',
+                $metricUnit === MetricUnits::Grams->readable() ? $converted.' '.$metricUnit : '',
 
             default => ''
         };
@@ -42,9 +43,9 @@ final class GetMetricValue
 
     private function getPiecesEachStringValue(QuantityValue $quantityValue): string
     {
-        return match ($quantityValue->getUnit()?->getId()) {
+        return match ($quantityValue->getUnit()?->getAbbreviation()) {
             MetricUnits::Pieces->readable(),
-            MetricUnits::Each->readable() => $quantityValue->getValue().' '.$quantityValue->getUnit()->getId(),
+            MetricUnits::Each->readable() => $quantityValue->getValue().' '.MetricUnits::Pieces->readable(),
 
             default => ''
         };

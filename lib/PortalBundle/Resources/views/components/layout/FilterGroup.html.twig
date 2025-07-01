@@ -27,14 +27,15 @@
         {% endif %}
 
         {% if sidebarFilter.type == 'date' %}
-            {% set startDate = sidebarFilter.dateRangeFilter is empty ? null : sidebarFilter.dateRangeFilter.startDate %}
-            {% set endDate = sidebarFilter.dateRangeFilter is empty ? null : sidebarFilter.dateRangeFilter.endDate %}
+            {% set startDate = sidebarFilter.dateRangeFilter is empty ? null : sidebarFilter.dateRangeFilter.startDate|date('Y-m-d') %}
+            {% set endDate = sidebarFilter.dateRangeFilter is empty ? null : sidebarFilter.dateRangeFilter.endDate|date('Y-m-d') %}
 
             <div class="space-y-2">
                 <twig:Calendar
                     :label="sidebarFilter.label"
-                    :toDate="startDate"
-                    :fromDate="endDate"
+                    :filterName="filterName"
+                    :startDate="startDate"
+                    :endDate="endDate"
                     class="text-[#171B3F] text-14 leading-20"
                 />
             </div>
@@ -45,7 +46,13 @@
             {% set max = sidebarFilter.numberRangeFilter is empty ? null : sidebarFilter.numberRangeFilter.max %}
 
             <div class="space-y-2">
-                <twig:Range :minValue="min" :maxValue="max" class="text-[#171B3F] text-14 leading-20" />
+                <twig:Range
+                    :label="sidebarFilter.label"
+                    :filterName="filterName"
+                    :minValue="min"
+                    :maxValue="max"
+                    class="text-[#171B3F] text-14 leading-20"
+                />
             </div>
         {% endif %}
     </twig:Accordion>

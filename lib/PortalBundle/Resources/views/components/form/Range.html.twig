@@ -5,7 +5,12 @@
         <div class="space-y-1.5">
             <label class="block text-sm font-medium text-dark-600">Minimum</label>
             <label>
-                <input
+                <input id="range-min-input-{{ filterName }}"
+                    data-filter-name="{{ filterName }}"
+                    data-min="min"
+                    data-sidebar-range-min-input="sidebarRangeMinInput"
+                    data-search-target="sidebarRangeMinInput"
+                    data-action="keydown->search#numberRangeSubmit"
                     type="number"
                     class="block w-full rounded border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm h-8 p-2"
                     value="{{ minValue }}"
@@ -18,7 +23,12 @@
         <div class="space-y-1.5">
             <label class="block text-sm font-medium text-dark-600">Maximum</label>
             <label>
-                <input
+                <input id="range-max-input-{{ filterName }}"
+                    data-filter-name="{{ filterName }}"
+                    data-max="max"
+                    data-sidebar-range-max-input="sidebarRangeMaxInput"
+                    data-search-target="sidebarRangeMaxInput"
+                    data-action="keydown->search#numberRangeSubmit"
                     type="number"
                     class="block w-full rounded border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm h-8 p-2"
                     value="{{ maxValue }}"
