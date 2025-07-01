@@ -33,6 +33,8 @@ mappings:
             type: integer
         assetId:
             type: integer
+        parentId:
+            type: integer
         filename:
             type: keyword
         assetTypeName:
@@ -187,6 +189,13 @@ mappings:
                     type: text
                     analyzer: general_analyzer
         printing_process:
+            type: keyword
+            normalizer: 'keyword_norm'
+            fields:
+                analysed:
+                    type: text
+                    analyzer: general_analyzer
+        printingprocess:
             type: keyword
             normalizer: 'keyword_norm'
             fields:
